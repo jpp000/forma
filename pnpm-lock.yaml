@@ -239,25 +239,7 @@ importers:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.1)(typescript@5.9.2)
 
-  packages/types: {}
-
   packages/typescript-config: {}
-
-  packages/utils:
-    dependencies:
-      dayjs:
-        specifier: '*'
-        version: 1.11.20
-    devDependencies:
-      '@forma/types':
-        specifier: workspace:*
-        version: link:../types
-      '@forma/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: ~5.9.2
-        version: 5.9.2
 
 packages:
 

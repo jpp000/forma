@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import dayjs from "dayjs";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { Colors, Spacing } from "@/constants/theme";
 import { Text, Card } from "@/components/ui";
 import type { ProgressEntry } from "@/types";
 
