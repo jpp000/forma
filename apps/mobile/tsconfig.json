@@ -1,6 +1,8 @@
 {
   "extends": "@forma/typescript-config/expo.json",
   "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./*"]
     }
