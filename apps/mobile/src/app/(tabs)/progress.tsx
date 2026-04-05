@@ -64,7 +64,7 @@ export default function ProgressScreen() {
       showsVerticalScrollIndicator={false}
       bounces
     >
-      <Text variant="title2" style={styles.title}>
+      <Text variant="title1" style={styles.title}>
         Progress
       </Text>
 

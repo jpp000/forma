@@ -3,20 +3,29 @@ import dayjs from "dayjs";
 import { Colors, Spacing } from "@/constants/theme";
 import { Text } from "@/components/ui";
 import { useUserStore } from "@/store/userStore";
+import { useMemo } from "react";
 
 export function GreetingHeader() {
-  const name = useUserStore((s) => s.profile.name);
+  const { profile } = useUserStore();
   const hour = dayjs().hour();
+
+  const name = profile.name.split(" ")[0] || "";
 
   const greeting =
     hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
+  const message = useMemo(() => {
+    if (!name || name.length > 7) {
+      return greeting;
+    }
+
+    return `${greeting}, ${name}`
+  }, [greeting, name]);
+
   return (
     <View style={styles.container}>
       <View>
-        <Text variant="title2">
-          {greeting}, {name}
-        </Text>
+        <Text variant="title1">{message}</Text>
         <Text variant="subheadline" color={Colors.textSecondary} style={styles.date}>
           {dayjs().format("dddd, D MMMM")}
         </Text>

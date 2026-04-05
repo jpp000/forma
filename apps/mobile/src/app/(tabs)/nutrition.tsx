@@ -39,7 +39,7 @@ export default function NutritionScreen() {
         bounces
         overScrollMode="always"
       >
-        <Text variant="title2" style={styles.title}>
+        <Text variant="title1" style={styles.title}>
           Nutrition
         </Text>
 

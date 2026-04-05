@@ -46,7 +46,7 @@ export default function WorkoutScreen() {
       bounces
     >
       <View style={styles.headerRow}>
-        <Text variant="title2">Workout</Text>
+        <Text variant="title1">Workout</Text>
         <Pressable
           style={styles.addBtn}
           onPress={() => router.push("/(modals)/exercise-library" as any)}
