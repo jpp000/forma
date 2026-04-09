@@ -109,3 +109,41 @@ export type PersonalRecord = {
   reps: number;
   date: string;
 };
+
+// Training Plan types
+
+export type DayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+export type PlanExercise = {
+  exerciseId: string;
+  defaultSets: number;
+  defaultReps: number;
+  defaultRestSeconds: number;
+};
+
+export type PlanDay = {
+  dayOfWeek: DayOfWeek;
+  label: string;
+  muscleGroups: MuscleGroup[];
+  exercises: PlanExercise[];
+  isRestDay: boolean;
+};
+
+export type TrainingPlan = {
+  id: string;
+  name: string;
+  description: string;
+  days: PlanDay[];
+  isPreset: boolean;
+};
+
+export type WorkoutLog = {
+  id: string;
+  date: string;
+  planDayLabel: string;
+  exercises: WorkoutExercise[];
+  startedAt: string;
+  finishedAt?: string;
+  durationSeconds?: number;
+  completed: boolean;
+};

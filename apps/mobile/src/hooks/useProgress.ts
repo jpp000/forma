@@ -9,7 +9,7 @@ export type TimeRange = "7d" | "30d" | "3m";
 
 export function useProgress(range: TimeRange = "7d") {
   const meals = useNutritionStore((s) => s.meals);
-  const workouts = useWorkoutStore((s) => s.workouts);
+  const workouts = useWorkoutStore((s) => s.logs);
 
   return useMemo(() => {
     const daysCount = range === "7d" ? 7 : range === "30d" ? 30 : 90;

@@ -1,3 +1,4 @@
+import { useState, useCallback, useMemo } from "react";
 import { ScrollView, StyleSheet, View, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -5,189 +6,189 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
-import { Text, Card, Button } from "@/components/ui";
-import { ExerciseRow } from "@/components/workout/ExerciseRow";
+import { Text, Card } from "@/components/ui";
+import { WorkoutCalendarStrip } from "@/components/workout/WorkoutCalendarStrip";
+import { DayWorkoutCard } from "@/components/workout/DayWorkoutCard";
 import { WorkoutCard } from "@/components/workout/WorkoutCard";
-import { useActiveWorkout } from "@/hooks/useActiveWorkout";
+import { useTrainingPlanStore } from "@/store/trainingPlanStore";
 import { useWorkoutStore } from "@/store/workoutStore";
-
-const AI_SUGGESTIONS = [
-  "Push Day: Bench, OHP, Flies",
-  "Pull Day: Deadlift, Rows, Curls",
-  "Leg Day: Squats, RDL, Leg Press",
-];
+import { todayISO } from "@/utils";
 
 export default function WorkoutScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const {
-    activeWorkout,
-    progress,
-    completeSet,
-    addSetToExercise,
-    finishWorkout,
-  } = useActiveWorkout();
-  const workouts = useWorkoutStore((s) => s.workouts);
+  const [selectedDate, setSelectedDate] = useState(todayISO());
 
-  const handleFinish = () => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    finishWorkout();
-  };
+  const activePlanId = useTrainingPlanStore((s) => s.activePlanId);
+  const plans = useTrainingPlanStore((s) => s.plans);
+  const getPlanDayForDate = useTrainingPlanStore((s) => s.getPlanDayForDate);
+  const activePlan = useMemo(
+    () => plans.find((p) => p.id === activePlanId) ?? null,
+    [plans, activePlanId],
+  );
+  const startWorkoutFromPlan = useWorkoutStore((s) => s.startWorkoutFromPlan);
+  const activeWorkout = useWorkoutStore((s) => s.activeWorkout);
+  const logs = useWorkoutStore((s) => s.logs);
+  const recentLogs = useMemo(
+    () => logs.filter((l) => l.completed).slice(0, 3),
+    [logs],
+  );
+
+  const planDay = getPlanDayForDate(selectedDate);
+  const isToday = selectedDate === todayISO();
+  const hasCompletedToday = logs.some(
+    (l) => l.date === selectedDate && l.completed,
+  );
+
+  const handleStartWorkout = useCallback(() => {
+    if (!planDay || planDay.isRestDay) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    startWorkoutFromPlan(planDay);
+    router.push("/(modals)/active-workout" as any);
+  }, [planDay, startWorkoutFromPlan, router]);
+
+  const handleContinueWorkout = useCallback(() => {
+    router.push("/(modals)/active-workout" as any);
+  }, [router]);
 
   return (
     <View style={styles.container}>
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={[
-        styles.content,
-        { paddingTop: insets.top + Spacing.md, paddingBottom: insets.bottom + 120 },
-      ]}
-      showsVerticalScrollIndicator={false}
-      bounces
-    >
-      <View style={styles.headerRow}>
-        <Text variant="title1">Workout</Text>
-        <Pressable
-          style={styles.addBtn}
-          onPress={() => router.push("/(modals)/exercise-library" as any)}
-        >
-          <Ionicons name="add" size={22} color={Colors.primary} />
-        </Pressable>
-      </View>
-
-      {activeWorkout ? (
-        <Animated.View entering={FadeInDown.springify()} style={styles.section}>
-          <View style={styles.activeHeader}>
-            <View style={styles.activeInfo}>
-              <Text variant="title3">{activeWorkout.name}</Text>
-              <Text variant="footnote" color={Colors.textSecondary}>
-                {progress.completed}/{progress.total} sets completed
-              </Text>
-            </View>
-            <View style={styles.progressPill}>
-              <Text variant="caption2" weight="600" color={Colors.secondary}>
-                {Math.round(progress.percent)}%
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.progressBar}>
-            <Animated.View
-              style={[
-                styles.progressFill,
-                { width: `${progress.percent}%` },
-              ]}
-            />
-          </View>
-
-          <View style={styles.exercises}>
-            {activeWorkout.exercises.map((we, idx) => (
-              <Animated.View
-                key={we.id}
-                entering={FadeInDown.delay(100 + idx * 80).springify()}
-              >
-                <ExerciseRow
-                  workoutExercise={we}
-                  onToggleSet={(setId) => completeSet(we.id, setId)}
-                  onAddSet={() => addSetToExercise(we.id)}
-                />
-              </Animated.View>
-            ))}
-          </View>
-
-          <View style={styles.actionRow}>
-            <Button
-              title="Add Exercise"
-              variant="secondary"
-              icon={
-                <Ionicons name="add-circle-outline" size={18} color={Colors.primary} />
-              }
-              onPress={() => router.push("/(modals)/exercise-library" as any)}
-              fullWidth
-            />
-            <Button
-              title="Finish Workout"
-              onPress={handleFinish}
-              fullWidth
-            />
-          </View>
-        </Animated.View>
-      ) : (
-        <Animated.View entering={FadeInDown.springify()}>
-          <Card padding={Spacing.xxl}>
-            <View style={styles.emptyState}>
-              <Ionicons
-                name="barbell-outline"
-                size={48}
-                color={Colors.textTertiary}
-              />
-              <Text
-                variant="subheadline"
-                color={Colors.textSecondary}
-                align="center"
-              >
-                No active workout
-              </Text>
-              <Text
-                variant="caption1"
-                color={Colors.textTertiary}
-                align="center"
-              >
-                Start a workout or get an AI suggestion
-              </Text>
-            </View>
-          </Card>
-        </Animated.View>
-      )}
-
-      {/* AI Suggestions */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Ionicons name="sparkles" size={18} color={Colors.secondary} />
-          <Text variant="headline">Workout Suggestions</Text>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          {
+            paddingTop: insets.top + Spacing.md,
+            paddingBottom: insets.bottom + 120,
+          },
+        ]}
+        showsVerticalScrollIndicator={false}
+        bounces
+      >
+        {/* Header */}
+        <View style={styles.headerRow}>
+          <Text variant="title1">Workout</Text>
         </View>
-        <View style={styles.suggestions}>
-          {AI_SUGGESTIONS.map((suggestion, idx) => (
-            <Animated.View
-              key={idx}
-              entering={FadeInDown.delay(200 + idx * 60).springify()}
+
+        {/* Calendar Strip */}
+        <WorkoutCalendarStrip
+          selectedDate={selectedDate}
+          onSelectDate={setSelectedDate}
+        />
+
+        <View style={styles.section}>
+          <View style={styles.planRow}>
+            <View style={styles.planInfo}>
+              <Text variant="caption2" color={Colors.textSecondary}>
+                Training plan
+              </Text>
+              <Text variant="subheadline" weight="600">
+                {activePlan ? activePlan.name : "No plan selected"}
+              </Text>
+            </View>
+            <Pressable
+              style={styles.planBtn}
+              onPress={() => router.push("/(modals)/plan-picker" as any)}
             >
-              <Pressable style={styles.suggestionItem}>
+              <Ionicons name="calendar-outline" size={16} color={Colors.secondary} />
+              <Text variant="caption1" color={Colors.secondary} weight="600">
+                {activePlan ? "Change plan" : "Pick plan"}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Active Workout Banner */}
+        {activeWorkout && (
+          <Animated.View
+            entering={FadeInDown.springify()}
+            style={styles.section}
+          >
+            <Pressable onPress={handleContinueWorkout}>
+              <Card padding={Spacing.lg} lifted>
+                <View style={styles.activeBanner}>
+                  <View style={styles.activePulse} />
+                  <View style={styles.activeInfo}>
+                    <Text variant="headline">
+                      {activeWorkout.planDayLabel}
+                    </Text>
+                    <Text variant="caption1" color={Colors.textSecondary}>
+                      Workout in progress · Tap to continue
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={20}
+                    color={Colors.secondary}
+                  />
+                </View>
+              </Card>
+            </Pressable>
+          </Animated.View>
+        )}
+
+        {/* Day Workout Card */}
+        {planDay ? (
+          <View style={styles.section}>
+            <DayWorkoutCard
+              planDay={planDay}
+              isToday={isToday && !activeWorkout}
+              hasCompleted={hasCompletedToday}
+              onStartWorkout={handleStartWorkout}
+            />
+          </View>
+        ) : (
+          <Animated.View entering={FadeInDown.springify()} style={styles.section}>
+            <Card padding={Spacing.xxl}>
+              <View style={styles.emptyState}>
                 <Ionicons
-                  name="flash-outline"
-                  size={18}
-                  color={Colors.secondary}
-                />
-                <Text variant="subheadline" style={styles.suggestionText}>
-                  {suggestion}
-                </Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={16}
+                  name="barbell-outline"
+                  size={48}
                   color={Colors.textTertiary}
                 />
-              </Pressable>
-            </Animated.View>
-          ))}
-        </View>
-      </View>
+                <Text
+                  variant="subheadline"
+                  color={Colors.textSecondary}
+                  align="center"
+                >
+                  {activePlan
+                    ? "No workout scheduled for this day"
+                    : "Pick a training plan to get started"}
+                </Text>
+              </View>
+            </Card>
+          </Animated.View>
+        )}
 
-      {/* History */}
-      {workouts.filter((w) => w.completed).length > 0 && (
-        <View style={styles.section}>
-          <Text variant="headline" style={styles.sectionTitle}>
-            History
-          </Text>
-          <View style={styles.history}>
-            {workouts
-              .filter((w) => w.completed)
-              .map((w) => (
-                <WorkoutCard key={w.id} workout={w} />
+        {/* Recent History */}
+        {recentLogs.length > 0 && (
+          <View style={styles.section}>
+            <Text variant="headline" style={styles.sectionTitle}>
+              Recent Workouts
+            </Text>
+            <View style={styles.history}>
+              {recentLogs.map((log, idx) => (
+                <Animated.View
+                  key={log.id}
+                  entering={FadeInDown.delay(100 + idx * 60).springify()}
+                >
+                  <WorkoutCard
+                    workout={{
+                      id: log.id,
+                      name: log.planDayLabel,
+                      date: log.date,
+                      exercises: log.exercises,
+                      durationMinutes: log.durationSeconds
+                        ? Math.round(log.durationSeconds / 60)
+                        : undefined,
+                      completed: log.completed,
+                    }}
+                  />
+                </Animated.View>
               ))}
+            </View>
           </View>
-        </View>
-      )}
-    </ScrollView>
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -197,86 +198,55 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  scroll: {
-    flex: 1,
-  },
   content: {
-    gap: Spacing.xl,
-    paddingHorizontal: Spacing.xl,
+    gap: Spacing.lg,
   },
   headerRow: {
+    paddingHorizontal: Spacing.xl,
+  },
+  planBtn: {
     flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    backgroundColor: `${Colors.secondary}15`,
+    borderRadius: BorderRadius.full,
+  },
+  planRow: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    alignItems: "center",
+    gap: Spacing.md,
   },
-  addBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.surfaceSecondary,
-    alignItems: "center",
-    justifyContent: "center",
+  planInfo: {
+    flex: 1,
+    gap: 2,
   },
-  activeHeader: {
+  section: {
+    paddingHorizontal: Spacing.xl,
+  },
+  sectionTitle: {
+    marginBottom: Spacing.sm,
+  },
+  activeBanner: {
     flexDirection: "row",
     alignItems: "center",
     gap: Spacing.md,
+  },
+  activePulse: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: Colors.success,
   },
   activeInfo: {
     flex: 1,
     gap: 2,
   },
-  progressPill: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.xs,
-    backgroundColor: `${Colors.secondary}15`,
-    borderRadius: BorderRadius.full,
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: Colors.surfaceSecondary,
-    borderRadius: 3,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: Colors.secondary,
-    borderRadius: 3,
-  },
-  section: {
-    gap: Spacing.md,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  sectionTitle: {
-    marginBottom: Spacing.xs,
-  },
-  exercises: {
-    gap: Spacing.md,
-  },
-  actionRow: {
-    gap: Spacing.sm,
-  },
   emptyState: {
     alignItems: "center",
     gap: Spacing.sm,
-  },
-  suggestions: {
-    gap: Spacing.sm,
-  },
-  suggestionItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.md,
-    backgroundColor: Colors.surface,
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.md,
-  },
-  suggestionText: {
-    flex: 1,
   },
   history: {
     gap: Spacing.sm,

@@ -50,6 +50,22 @@ export default function RootLayout() {
               gestureEnabled: true,
             }}
           />
+          <Stack.Screen
+            name="(modals)/active-workout"
+            options={{
+              presentation: "fullScreenModal",
+              animation: "slide_from_bottom",
+              gestureEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="(modals)/plan-picker"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              gestureEnabled: true,
+            }}
+          />
           <Stack.Screen name="+not-found" />
         </Stack>
       </GestureHandlerRootView>

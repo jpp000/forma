@@ -1,11 +1,14 @@
-import { View, StyleSheet, Pressable } from "react-native";
+import { useMemo } from "react";
+import { View, StyleSheet } from "react-native";
+import dayjs from "dayjs";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { Text, Card } from "@/components/ui";
 import { useDailyMacros } from "@/hooks/useDailyMacros";
 import { useActiveWorkout } from "@/hooks/useActiveWorkout";
+import { useTrainingPlanStore } from "@/store/trainingPlanStore";
 import { formatMacroGrams } from "@/utils";
-import type { MealType } from "@/types";
+import type { DayOfWeek, MealType } from "@/types";
 
 const MEAL_LABELS: Record<MealType, string> = {
   breakfast: "Breakfast",
@@ -189,6 +192,20 @@ const mealStyles = StyleSheet.create({
 
 export function WorkoutStatusCard() {
   const { activeWorkout, progress } = useActiveWorkout();
+  const activePlanId = useTrainingPlanStore((s) => s.activePlanId);
+  const plans = useTrainingPlanStore((s) => s.plans);
+  const todayPlanDay = useMemo(() => {
+    const plan = plans.find((p) => p.id === activePlanId);
+    if (!plan) return null;
+    const dow = dayjs().day() as DayOfWeek;
+    return plan.days.find((d) => d.dayOfWeek === dow) ?? null;
+  }, [plans, activePlanId]);
+
+  const label = activeWorkout
+    ? activeWorkout.planDayLabel
+    : todayPlanDay?.label ?? null;
+
+  const isRestDay = !activeWorkout && todayPlanDay?.isRestDay;
 
   return (
     <View style={workoutStyles.container}>
@@ -202,7 +219,7 @@ export function WorkoutStatusCard() {
               <Ionicons name="barbell" size={24} color={Colors.secondary} />
               <View style={workoutStyles.info}>
                 <Text variant="subheadline" weight="600">
-                  {activeWorkout.name}
+                  {label}
                 </Text>
                 <Text variant="caption1" color={Colors.textSecondary}>
                   {activeWorkout.exercises.length} exercises ·{" "}
@@ -217,6 +234,31 @@ export function WorkoutStatusCard() {
                   { width: `${progress.percent}%` },
                 ]}
               />
+            </View>
+          </View>
+        ) : isRestDay ? (
+          <View style={workoutStyles.empty}>
+            <Ionicons name="bed-outline" size={32} color={Colors.textTertiary} />
+            <Text
+              variant="subheadline"
+              color={Colors.textSecondary}
+              align="center"
+            >
+              Rest day — recovery matters
+            </Text>
+          </View>
+        ) : label ? (
+          <View style={workoutStyles.content}>
+            <View style={workoutStyles.header}>
+              <Ionicons name="barbell-outline" size={24} color={Colors.secondary} />
+              <View style={workoutStyles.info}>
+                <Text variant="subheadline" weight="600">
+                  {label}
+                </Text>
+                <Text variant="caption1" color={Colors.textSecondary}>
+                  {todayPlanDay?.exercises.length ?? 0} exercises planned
+                </Text>
+              </View>
             </View>
           </View>
         ) : (

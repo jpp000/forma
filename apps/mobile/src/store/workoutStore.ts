@@ -1,71 +1,75 @@
 import { create } from "zustand";
-import type { Workout, WorkoutExercise, WorkoutSet, Exercise } from "@/types";
+import type {
+  WorkoutLog,
+  WorkoutExercise,
+  WorkoutSet,
+  Exercise,
+  PlanDay,
+} from "@/types";
 import { generateId, todayISO } from "@/utils";
 import { EXERCISES } from "@/constants/exercises";
 
 type WorkoutState = {
-  workouts: Workout[];
-  activeWorkout: Workout | null;
-  startWorkout: (name: string, exercises: WorkoutExercise[]) => void;
+  logs: WorkoutLog[];
+  activeWorkout: WorkoutLog | null;
+
+  startWorkoutFromPlan: (planDay: PlanDay) => void;
+  startEmptyWorkout: (name: string) => void;
   completeSet: (exerciseId: string, setId: string) => void;
+  updateSet: (
+    exerciseId: string,
+    setId: string,
+    field: "weight" | "reps",
+    value: number,
+  ) => void;
   addSetToExercise: (exerciseId: string) => void;
   addExerciseToActive: (exercise: Exercise) => void;
   finishWorkout: () => void;
-  getWorkoutsForDate: (date: string) => Workout[];
+  cancelWorkout: () => void;
+  getLogsForDate: (date: string) => WorkoutLog[];
+  getRecentLogs: (count: number) => WorkoutLog[];
 };
 
-const today = todayISO();
-
-const SEED_WORKOUTS: Workout[] = [
-  {
-    id: "w-1",
-    name: "Upper Body Push",
-    date: today,
-    completed: false,
-    durationMinutes: 55,
-    exercises: [
-      {
-        id: "we-1",
-        exercise: EXERCISES[0]!,
-        sets: [
-          { id: "s-1", reps: 10, weight: 80, completed: true },
-          { id: "s-2", reps: 8, weight: 85, completed: true },
-          { id: "s-3", reps: 8, weight: 85, completed: false },
-          { id: "s-4", reps: 6, weight: 90, completed: false },
-        ],
-      },
-      {
-        id: "we-2",
-        exercise: EXERCISES[1]!,
-        sets: [
-          { id: "s-5", reps: 12, weight: 30, completed: false },
-          { id: "s-6", reps: 10, weight: 32, completed: false },
-          { id: "s-7", reps: 10, weight: 32, completed: false },
-        ],
-      },
-      {
-        id: "we-3",
-        exercise: EXERCISES[9]!,
-        sets: [
-          { id: "s-8", reps: 10, weight: 50, completed: false },
-          { id: "s-9", reps: 8, weight: 55, completed: false },
-          { id: "s-10", reps: 8, weight: 55, completed: false },
-        ],
-      },
-    ],
-  },
-];
+function resolveExercise(id: string): Exercise {
+  return EXERCISES.find((e) => e.id === id) ?? { id, name: id, muscleGroup: "full_body" };
+}
 
 export const useWorkoutStore = create<WorkoutState>((set, get) => ({
-  workouts: SEED_WORKOUTS,
-  activeWorkout: SEED_WORKOUTS[0] || null,
+  logs: [],
+  activeWorkout: null,
 
-  startWorkout: (name, exercises) => {
-    const workout: Workout = {
+  startWorkoutFromPlan: (planDay) => {
+    const exercises: WorkoutExercise[] = planDay.exercises.map((pe) => ({
       id: generateId(),
-      name,
+      exercise: resolveExercise(pe.exerciseId),
+      sets: Array.from({ length: pe.defaultSets }, () => ({
+        id: generateId(),
+        reps: pe.defaultReps,
+        weight: 0,
+        completed: false,
+        restSeconds: pe.defaultRestSeconds,
+      })),
+    }));
+
+    const workout: WorkoutLog = {
+      id: generateId(),
       date: todayISO(),
+      planDayLabel: planDay.label,
       exercises,
+      startedAt: new Date().toISOString(),
+      completed: false,
+    };
+
+    set({ activeWorkout: workout });
+  },
+
+  startEmptyWorkout: (name) => {
+    const workout: WorkoutLog = {
+      id: generateId(),
+      date: todayISO(),
+      planDayLabel: name,
+      exercises: [],
+      startedAt: new Date().toISOString(),
       completed: false,
     };
     set({ activeWorkout: workout });
@@ -92,6 +96,27 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     });
   },
 
+  updateSet: (exerciseId, setId, field, value) => {
+    set((state) => {
+      if (!state.activeWorkout) return state;
+      return {
+        activeWorkout: {
+          ...state.activeWorkout,
+          exercises: state.activeWorkout.exercises.map((e) =>
+            e.id === exerciseId
+              ? {
+                  ...e,
+                  sets: e.sets.map((s) =>
+                    s.id === setId ? { ...s, [field]: value } : s,
+                  ),
+                }
+              : e,
+          ),
+        },
+      };
+    });
+  },
+
   addSetToExercise: (exerciseId) => {
     set((state) => {
       if (!state.activeWorkout) return state;
@@ -103,9 +128,10 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
             const lastSet = e.sets[e.sets.length - 1];
             const newSet: WorkoutSet = {
               id: generateId(),
-              reps: lastSet?.reps || 10,
-              weight: lastSet?.weight || 0,
+              reps: lastSet?.reps ?? 10,
+              weight: lastSet?.weight ?? 0,
               completed: false,
+              restSeconds: lastSet?.restSeconds ?? 90,
             };
             return { ...e, sets: [...e.sets, newSet] };
           }),
@@ -120,11 +146,13 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
       const workoutExercise: WorkoutExercise = {
         id: generateId(),
         exercise,
-        sets: [
-          { id: generateId(), reps: 10, weight: 0, completed: false },
-          { id: generateId(), reps: 10, weight: 0, completed: false },
-          { id: generateId(), reps: 10, weight: 0, completed: false },
-        ],
+        sets: Array.from({ length: 3 }, () => ({
+          id: generateId(),
+          reps: 10,
+          weight: 0,
+          completed: false,
+          restSeconds: 90,
+        })),
       };
       return {
         activeWorkout: {
@@ -138,19 +166,34 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
   finishWorkout: () => {
     set((state) => {
       if (!state.activeWorkout) return state;
-      const completed = { ...state.activeWorkout, completed: true };
+      const now = new Date();
+      const startedAt = new Date(state.activeWorkout.startedAt);
+      const durationSeconds = Math.round((now.getTime() - startedAt.getTime()) / 1000);
+
+      const completed: WorkoutLog = {
+        ...state.activeWorkout,
+        completed: true,
+        finishedAt: now.toISOString(),
+        durationSeconds,
+      };
       return {
         activeWorkout: null,
-        workouts: state.workouts.map((w) =>
-          w.id === completed.id ? completed : w,
-        ).concat(
-          state.workouts.some((w) => w.id === completed.id) ? [] : [completed],
-        ),
+        logs: [completed, ...state.logs],
       };
     });
   },
 
-  getWorkoutsForDate: (date) => {
-    return get().workouts.filter((w) => w.date === date);
+  cancelWorkout: () => {
+    set({ activeWorkout: null });
+  },
+
+  getLogsForDate: (date) => {
+    return get().logs.filter((l) => l.date === date);
+  },
+
+  getRecentLogs: (count) => {
+    return get()
+      .logs.filter((l) => l.completed)
+      .slice(0, count);
   },
 }));

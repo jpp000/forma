@@ -10,12 +10,14 @@ type ExerciseRowProps = {
   workoutExercise: WorkoutExercise;
   onToggleSet: (setId: string) => void;
   onAddSet: () => void;
+  onUpdateSet: (setId: string, field: "weight" | "reps", value: number) => void;
 };
 
 export function ExerciseRow({
   workoutExercise,
   onToggleSet,
   onAddSet,
+  onUpdateSet,
 }: ExerciseRowProps) {
   const completedSets = workoutExercise.sets.filter((s) => s.completed).length;
   const totalSets = workoutExercise.sets.length;
@@ -35,12 +37,14 @@ export function ExerciseRow({
       <Divider marginVertical={Spacing.sm} />
 
       <View style={styles.sets}>
-        {workoutExercise.sets.map((set, idx) => (
+        {workoutExercise.sets.map((s, idx) => (
           <SetRow
-            key={set.id}
-            set={set}
+            key={s.id}
+            set={s}
             index={idx}
-            onToggle={() => onToggleSet(set.id)}
+            onToggle={() => onToggleSet(s.id)}
+            onUpdateWeight={(v) => onUpdateSet(s.id, "weight", v)}
+            onUpdateReps={(v) => onUpdateSet(s.id, "reps", v)}
           />
         ))}
       </View>
