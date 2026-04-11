@@ -104,6 +104,7 @@ export function DayWorkoutCard({
             icon={
               <Ionicons name="play" size={16} color={Colors.white} />
             }
+            style={{ marginTop: Spacing.md }}
           />
         )}
       </Card>

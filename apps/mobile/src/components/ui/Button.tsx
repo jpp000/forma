@@ -3,6 +3,8 @@ import {
   type PressableProps,
   StyleSheet,
   ActivityIndicator,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -25,6 +27,7 @@ type ButtonProps = Omit<PressableProps, "style"> & {
   loading?: boolean;
   icon?: React.ReactNode;
   fullWidth?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 const sizeConfig = {
@@ -42,6 +45,7 @@ export function Button({
   fullWidth = false,
   onPress,
   disabled,
+  style,
   ...props
 }: ButtonProps) {
   const scale = useSharedValue(1);
@@ -84,6 +88,7 @@ export function Button({
         fullWidth && styles.fullWidth,
         disabled && styles.disabled,
         animatedStyle,
+        style,
       ]}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
