@@ -37,7 +37,7 @@ export const config = [
     },
   },
   {
-    files: ["metro.config.js", "scripts/**/*.js"],
+    files: ["metro.config.js", "metro.config.cjs", "scripts/**/*.js"],
     languageOptions: {
       globals: {
         ...globals.node,
