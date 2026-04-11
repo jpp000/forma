@@ -55,3 +55,17 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Tooling caches
+.eslintcache
+
+# IDEs
+.idea/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Cursor — local MCP / secrets (keep .cursor/rules and skills in git when you want team defaults)
+.cursor/mcp.json
