@@ -4,6 +4,8 @@ import { AuthGuard } from '../../common/auth.guard';
 import { EmailModule } from './email/email.module';
 import { IdentityController } from './identity.controller';
 import { IdentityService } from './identity.service';
+import { OAuthController } from './oauth/oauth.controller';
+import { OAuthService } from './oauth/oauth.service';
 
 @Module({
   imports: [
@@ -13,8 +15,8 @@ import { IdentityService } from './identity.service';
       signOptions: { expiresIn: '30d' },
     }),
   ],
-  controllers: [IdentityController],
-  providers: [IdentityService, AuthGuard],
+  controllers: [IdentityController, OAuthController],
+  providers: [IdentityService, AuthGuard, OAuthService],
   exports: [IdentityService, JwtModule, AuthGuard],
 })
 export class IdentityModule {}

@@ -193,3 +193,86 @@ describe('Identity OTP (e2e)', () => {
     });
   });
 });
+
+describe('Identity OAuth (e2e)', () => {
+  let app: NestFastifyApplication;
+  let prisma: PrismaService;
+
+  beforeAll(async () => {
+    process.env.EMAIL_PROVIDER = 'mock';
+    process.env.JWT_SECRET = 'test-jwt-secret';
+    process.env.OAUTH_MOCK = 'true';
+
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter(),
+    );
+    await configureApp(app);
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+
+    prisma = app.get(PrismaService);
+  });
+
+  beforeEach(async () => {
+    await prisma.identitySession.deleteMany();
+    await prisma.identityOAuthAccount.deleteMany();
+    await prisma.identityUser.deleteMany();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  for (const provider of ['google', 'apple', 'facebook'] as const) {
+    it(`GET /api/identity/oauth/${provider} redirects to callback in mock mode`, async () => {
+      const response = await request(app.getHttpServer())
+        .get(`/api/identity/oauth/${provider}`)
+        .redirects(0);
+
+      expect(response.status).toBe(302);
+      expect(response.headers.location).toContain(
+        `/api/identity/oauth/${provider}/callback`,
+      );
+      expect(response.headers.location).toContain('mockToken=');
+    });
+  }
+
+  it('OAuth callback with valid mock token returns JWT and creates user', async () => {
+    const start = await request(app.getHttpServer())
+      .get('/api/identity/oauth/google')
+      .redirects(0);
+
+    const callbackPath = new URL(
+      start.headers.location as string,
+      'http://localhost',
+    ).pathname + new URL(start.headers.location as string, 'http://localhost').search;
+
+    const response = await request(app.getHttpServer()).get(callbackPath);
+
+    expect(response.status).toBe(200);
+    expect(response.body.accessToken).toEqual(expect.any(String));
+
+    const user = await prisma.identityUser.findUnique({
+      where: { email: 'oauth-test@example.com' },
+    });
+    expect(user).not.toBeNull();
+
+    const account = await prisma.identityOAuthAccount.findFirst({
+      where: { userId: user?.id, provider: 'google' },
+    });
+    expect(account).not.toBeNull();
+  });
+
+  it('OAuth callback with invalid token returns 401 with localized error', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/identity/oauth/google/callback?mockToken=invalid')
+      .set('Accept-Language', 'en');
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe('OAuth authentication failed');
+  });
+});
