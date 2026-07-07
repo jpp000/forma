@@ -13,3 +13,53 @@ model PlatformHealthCheck {
 
   @@map("platform_health_checks")
 }
+
+model IdentityUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  sessions      IdentitySession[]
+  oauthAccounts IdentityOAuthAccount[]
+
+  @@map("identity_users")
+}
+
+model IdentityOtpToken {
+  id        String    @id @default(cuid())
+  email     String
+  codeHash  String    @map("code_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([email, createdAt])
+  @@map("identity_otp_tokens")
+}
+
+model IdentitySession {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user IdentityUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("identity_sessions")
+}
+
+model IdentityOAuthAccount {
+  id                String   @id @default(cuid())
+  userId            String   @map("user_id")
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  user IdentityUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("identity_oauth_accounts")
+}
