@@ -28,7 +28,9 @@ export class QueueService implements OnModuleDestroy {
     );
 
     this.worker.on('ready', () => {
-      this.logger.log('Worker connected to Redis and listening on forma-default');
+      this.logger.log(
+        'Worker connected to Redis and listening on forma-default',
+      );
     });
 
     this.worker.on('failed', (job, error) => {
