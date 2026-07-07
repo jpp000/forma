@@ -7,6 +7,7 @@ import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { CreateWorkoutPlanDto } from './dto/create-workout-plan.dto';
+import { CreateWorkoutSessionDto } from './dto/create-workout-session.dto';
 import { ListExercisesQueryDto } from './dto/list-exercises-query.dto';
 import { TrainingService } from './training.service';
 
@@ -56,6 +57,28 @@ export class TrainingController {
     @Query() query: ListExercisesQueryDto,
   ) {
     return this.trainingService.listWorkoutPlans(
+      user.id,
+      query.page ?? 1,
+      query.limit ?? 20,
+    );
+  }
+
+  @Post('sessions')
+  @ApiOperation({ summary: 'Log workout session' })
+  async logSession(
+    @CurrentUser() user: { id: string },
+    @Body() body: CreateWorkoutSessionDto,
+  ) {
+    return this.trainingService.logWorkoutSession(user.id, body);
+  }
+
+  @Get('sessions')
+  @ApiOperation({ summary: 'Workout session history' })
+  async listSessions(
+    @CurrentUser() user: { id: string },
+    @Query() query: ListExercisesQueryDto,
+  ) {
+    return this.trainingService.listWorkoutSessions(
       user.id,
       query.page ?? 1,
       query.limit ?? 20,

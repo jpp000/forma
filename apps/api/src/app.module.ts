@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CommonModule } from './common/common.module';
 import { I18nModule } from './i18n/i18n.module';
 import { HealthModule } from './modules/health/health.module';
@@ -9,6 +10,7 @@ import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     PrismaModule,
     I18nModule,
     CommonModule,

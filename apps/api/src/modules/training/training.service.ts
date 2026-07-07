@@ -1,11 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { CreateExerciseDto } from './dto/create-exercise.dto';
 import type { CreateWorkoutPlanDto } from './dto/create-workout-plan.dto';
+import type { CreateWorkoutSessionDto } from './dto/create-workout-session.dto';
+import {
+  TRAINING_SESSION_COMPLETED,
+  type TrainingSessionCompletedEvent,
+} from './events/training.events';
 
 @Injectable()
 export class TrainingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async createExercise(userId: string, dto: CreateExerciseDto) {
     return this.prisma.trainingExercise.create({
@@ -90,6 +99,80 @@ export class TrainingService {
         },
       }),
       this.prisma.trainingWorkoutPlan.count({ where: { userId } }),
+    ]);
+
+    return {
+      items,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  }
+
+  async logWorkoutSession(userId: string, dto: CreateWorkoutSessionDto) {
+    const exerciseIds = dto.exercises.map((item) => item.exerciseId);
+    const exercises = await this.prisma.trainingExercise.findMany({
+      where: { id: { in: exerciseIds }, userId },
+    });
+
+    if (exercises.length !== exerciseIds.length) {
+      throw new BadRequestException('errors.invalid_exercise_reference');
+    }
+
+    if (dto.planId) {
+      const plan = await this.prisma.trainingWorkoutPlan.findFirst({
+        where: { id: dto.planId, userId },
+      });
+      if (!plan) {
+        throw new BadRequestException('errors.invalid_plan_reference');
+      }
+    }
+
+    const completedAt = new Date(dto.completedAt);
+
+    const session = await this.prisma.trainingWorkoutSession.create({
+      data: {
+        userId,
+        planId: dto.planId,
+        completedAt,
+        exercises: {
+          create: dto.exercises.map((item) => ({
+            exerciseId: item.exerciseId,
+            sets: item.sets,
+          })),
+        },
+      },
+      include: {
+        exercises: {
+          include: { exercise: true },
+        },
+      },
+    });
+
+    const date = completedAt.toISOString().slice(0, 10);
+    const payload: TrainingSessionCompletedEvent = { userId, date };
+    this.eventEmitter.emit(TRAINING_SESSION_COMPLETED, payload);
+
+    return session;
+  }
+
+  async listWorkoutSessions(userId: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await Promise.all([
+      this.prisma.trainingWorkoutSession.findMany({
+        where: { userId },
+        orderBy: { completedAt: 'desc' },
+        skip,
+        take: limit,
+        include: {
+          exercises: {
+            include: { exercise: true },
+          },
+        },
+      }),
+      this.prisma.trainingWorkoutSession.count({ where: { userId } }),
     ]);
 
     return {

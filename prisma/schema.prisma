@@ -104,7 +104,8 @@ model TrainingExercise {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  planItems TrainingWorkoutPlanItem[]
+  planItems        TrainingWorkoutPlanItem[]
+  sessionExercises TrainingWorkoutSessionExercise[]
 
   @@index([userId])
   @@map("training_exercises")
@@ -117,7 +118,8 @@ model TrainingWorkoutPlan {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  items TrainingWorkoutPlanItem[]
+  items    TrainingWorkoutPlanItem[]
+  sessions TrainingWorkoutSession[]
 
   @@index([userId])
   @@map("training_workout_plans")
@@ -137,4 +139,31 @@ model TrainingWorkoutPlanItem {
 
   @@index([planId])
   @@map("training_workout_plan_items")
+}
+
+model TrainingWorkoutSession {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  planId      String?  @map("plan_id")
+  completedAt DateTime @map("completed_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  plan      TrainingWorkoutPlan?             @relation(fields: [planId], references: [id], onDelete: SetNull)
+  exercises TrainingWorkoutSessionExercise[]
+
+  @@index([userId, completedAt])
+  @@map("training_workout_sessions")
+}
+
+model TrainingWorkoutSessionExercise {
+  id         String @id @default(cuid())
+  sessionId  String @map("session_id")
+  exerciseId String @map("exercise_id")
+  sets       Json
+
+  session  TrainingWorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise TrainingExercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("training_workout_session_exercises")
 }

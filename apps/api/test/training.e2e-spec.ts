@@ -38,6 +38,8 @@ describe('Training (e2e)', () => {
 
   beforeEach(async () => {
     mockEmail.clear();
+    await prisma.trainingWorkoutSessionExercise.deleteMany();
+    await prisma.trainingWorkoutSession.deleteMany();
     await prisma.trainingWorkoutPlanItem.deleteMany();
     await prisma.trainingWorkoutPlan.deleteMany();
     await prisma.trainingExercise.deleteMany();
@@ -206,5 +208,63 @@ describe('Training (e2e)', () => {
     expect(response.status).toBe(200);
     expect(response.body.items).toHaveLength(1);
     expect(response.body.items[0].name).toBe('Pull Day');
+  });
+
+  it('POST /api/training/sessions logs session and GET returns history ordered by date desc', async () => {
+    const token = await createStudent(testEmail);
+
+    const exerciseResponse = await request(app.getHttpServer())
+      .post('/api/training/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Overhead Press',
+        muscleGroup: 'shoulders',
+        equipment: 'barbell',
+      });
+
+    const olderSession = await request(app.getHttpServer())
+      .post('/api/training/sessions')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        completedAt: '2026-07-05T10:00:00.000Z',
+        exercises: [
+          {
+            exerciseId: exerciseResponse.body.id,
+            sets: [{ reps: 8, weightKg: 40 }],
+          },
+        ],
+      });
+
+    const newerSession = await request(app.getHttpServer())
+      .post('/api/training/sessions')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        completedAt: '2026-07-07T10:00:00.000Z',
+        exercises: [
+          {
+            exerciseId: exerciseResponse.body.id,
+            sets: [
+              { reps: 10, weightKg: 42.5 },
+              { reps: 8, weightKg: 45 },
+            ],
+          },
+        ],
+      });
+
+    expect(olderSession.status).toBe(201);
+    expect(newerSession.status).toBe(201);
+    expect(newerSession.body.exercises[0].sets).toEqual([
+      { reps: 10, weightKg: 42.5 },
+      { reps: 8, weightKg: 45 },
+    ]);
+
+    const history = await request(app.getHttpServer())
+      .get('/api/training/sessions')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(history.status).toBe(200);
+    expect(history.body.items).toHaveLength(2);
+    expect(history.body.items[0].id).toBe(newerSession.body.id);
+    expect(history.body.items[1].id).toBe(olderSession.body.id);
   });
 });
