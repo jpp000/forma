@@ -50,14 +50,16 @@
 
 ## Handoff
 
-**Feature in flight:** `platform-foundation` — Phase 0 complete, ready for Phase 1 (Identity & Student).
+**Feature in flight:** `platform-foundation` — Phase 1 complete (Identity & Student).
 
-**Completed:** T01–T06 (Foundation) — commits `429ce75` through `1f107b7` on `feat-platform-foundation`, merged to `main`.
+**Branch:** `feat-platform-foundation` (synced with `origin/main`, pushed).
 
-**Next task:** T07 — Identity Prisma schema + migration.
+**Completed:** T01–T13 (Phase 0 + Phase 1).
 
-**Blockers:** None.
+**Next task:** T14 — Custom exercise CRUD (Training phase).
 
-**Test gate (Phase 0):** `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 9/9 e2e tests passing.
+**Blockers:** Docker unavailable locally — e2e uses `TEST_DATABASE_URL` fallback (`postgresql://${USER}@localhost:5432/forma`). CI should use `docker compose postgres` with `postgresql://forma:forma@localhost:5432/forma`.
 
-**Notes:** E2E harness uses `TEST_DATABASE_URL` or falls back to `postgresql://$USER@localhost:5432/forma` (Docker `forma:forma` via `.env` still supported).
+**Test gate (Phase 1):** `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 27/27 e2e tests passing.
+
+**Notes:** OAuth runs in mock mode when `OAUTH_MOCK=true` or `GOOGLE_CLIENT_ID` unset. Email OTP uses mock provider in test/dev.
