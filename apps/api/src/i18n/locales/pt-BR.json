@@ -1,0 +1,9 @@
+{
+  "errors": {
+    "unauthorized": "Não autorizado",
+    "internal": "Erro interno do servidor"
+  },
+  "validation": {
+    "email": "Informe um e-mail válido"
+  }
+}

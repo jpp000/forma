@@ -5,6 +5,7 @@ import {
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { configureApp } from '../src/app.configure';
 
 describe('Health (e2e)', () => {
   let app: NestFastifyApplication;
@@ -17,7 +18,7 @@ describe('Health (e2e)', () => {
     app = moduleFixture.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
-    app.setGlobalPrefix('api');
+    await configureApp(app);
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
   });

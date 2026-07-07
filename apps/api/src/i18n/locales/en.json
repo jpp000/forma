@@ -1,0 +1,9 @@
+{
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "internal": "Internal server error"
+  },
+  "validation": {
+    "email": "Must be a valid email address"
+  }
+}
