@@ -8,9 +8,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 import { isOAuthProvider } from './oauth.types';
 import { OAuthService } from './oauth.service';
+
+type OAuthRequest = { protocol: string; headers: { host?: string } };
+type OAuthReply = { redirect: (url: string, statusCode: number) => Promise<void> };
 
 @ApiTags('identity')
 @Controller('identity/oauth')
@@ -21,8 +23,8 @@ export class OAuthController {
   @ApiOperation({ summary: 'Start OAuth flow' })
   async start(
     @Param('provider') providerParam: string,
-    @Req() request: FastifyRequest,
-    @Res() reply: FastifyReply,
+    @Req() request: OAuthRequest,
+    @Res() reply: OAuthReply,
   ): Promise<void> {
     if (!isOAuthProvider(providerParam)) {
       throw new UnauthorizedException('errors.oauth_invalid');
