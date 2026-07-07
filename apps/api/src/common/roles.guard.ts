@@ -1,3 +1,4 @@
+import { Role } from '@forma/types';
 import {
   CanActivate,
   ExecutionContext,
@@ -5,10 +6,9 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '@forma/types';
+import { IdentityService } from '../modules/identity/identity.service';
 import type { AuthenticatedRequest } from './auth.guard';
 import { ROLES_KEY } from './roles.decorator';
-import { IdentityService } from '../modules/identity/identity.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

@@ -23,7 +23,11 @@ export class OAuthService {
 
   getRedirectUrl(provider: OAuthProvider, baseUrl: string): string {
     if (this.isMockMode()) {
-      const token = this.signMockToken(provider, 'oauth-test@example.com', 'mock-account-1');
+      const token = this.signMockToken(
+        provider,
+        'oauth-test@example.com',
+        'mock-account-1',
+      );
       return `${baseUrl}/api/identity/oauth/${provider}/callback?mockToken=${token}`;
     }
 

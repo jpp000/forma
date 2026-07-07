@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { IdentityModule } from '../identity/identity.module';
 import { RolesGuard } from '../../common/roles.guard';
+import { IdentityModule } from '../identity/identity.module';
 import { StudentController } from './student.controller';
 import { StudentService } from './student.service';
 

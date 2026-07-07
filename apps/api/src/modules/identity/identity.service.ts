@@ -1,4 +1,5 @@
 import { createHash, randomInt } from 'node:crypto';
+import { Role } from '@forma/types';
 import {
   HttpException,
   HttpStatus,
@@ -7,7 +8,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '@forma/types';
 import type { SupportedLocale } from '../../i18n/i18n.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { EmailProvider } from './email/email-provider.interface';
@@ -38,7 +38,10 @@ export class IdentityService {
     });
 
     if (recentCount >= OTP_RATE_LIMIT) {
-      throw new HttpException('errors.otp_rate_limit', HttpStatus.TOO_MANY_REQUESTS);
+      throw new HttpException(
+        'errors.otp_rate_limit',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
     }
 
     const code = String(randomInt(100000, 999999));
@@ -110,7 +113,9 @@ export class IdentityService {
     return { accessToken };
   }
 
-  async getMe(userId: string): Promise<{ id: string; email: string; roles: Role[] }> {
+  async getMe(
+    userId: string,
+  ): Promise<{ id: string; email: string; roles: Role[] }> {
     const user = await this.prisma.identityUser.findUniqueOrThrow({
       where: { id: userId },
     });

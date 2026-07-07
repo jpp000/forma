@@ -145,7 +145,9 @@ describe('Identity OTP (e2e)', () => {
     }
 
     it('rejects missing JWT with 401', async () => {
-      const response = await request(app.getHttpServer()).get('/api/identity/me');
+      const response = await request(app.getHttpServer()).get(
+        '/api/identity/me',
+      );
 
       expect(response.status).toBe(401);
       expect(response.body.message).toBe('Não autorizado');
@@ -246,10 +248,9 @@ describe('Identity OAuth (e2e)', () => {
       .get('/api/identity/oauth/google')
       .redirects(0);
 
-    const callbackPath = new URL(
-      start.headers.location as string,
-      'http://localhost',
-    ).pathname + new URL(start.headers.location as string, 'http://localhost').search;
+    const callbackPath =
+      new URL(start.headers.location as string, 'http://localhost').pathname +
+      new URL(start.headers.location as string, 'http://localhost').search;
 
     const response = await request(app.getHttpServer()).get(callbackPath);
 

@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '@forma/types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class MeResponseDto {
   @ApiProperty()

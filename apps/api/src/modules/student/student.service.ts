@@ -1,9 +1,9 @@
+import { Role } from '@forma/types';
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { HealthGoal, Role } from '@forma/types';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { CreateStudentProfileDto } from './dto/create-student-profile.dto';
 import type { SetHealthGoalDto } from './dto/set-health-goal.dto';

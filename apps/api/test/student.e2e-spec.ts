@@ -1,9 +1,9 @@
+import { HealthGoal } from '@forma/types';
 import {
   FastifyAdapter,
   type NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { Test, type TestingModule } from '@nestjs/testing';
-import { HealthGoal } from '@forma/types';
 import request from 'supertest';
 import { configureApp } from '../src/app.configure';
 import { AppModule } from '../src/app.module';

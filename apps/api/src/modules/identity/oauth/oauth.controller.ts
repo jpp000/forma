@@ -8,11 +8,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { isOAuthProvider } from './oauth.types';
 import { OAuthService } from './oauth.service';
+import { isOAuthProvider } from './oauth.types';
 
 type OAuthRequest = { protocol: string; headers: { host?: string } };
-type OAuthReply = { redirect: (url: string, statusCode: number) => Promise<void> };
+type OAuthReply = {
+  redirect: (url: string, statusCode: number) => Promise<void>;
+};
 
 @ApiTags('identity')
 @Controller('identity/oauth')
@@ -33,7 +35,10 @@ export class OAuthController {
     const protocol = request.protocol;
     const host = request.headers.host ?? 'localhost:3000';
     const baseUrl = `${protocol}://${host}`;
-    const redirectUrl = this.oauthService.getRedirectUrl(providerParam, baseUrl);
+    const redirectUrl = this.oauthService.getRedirectUrl(
+      providerParam,
+      baseUrl,
+    );
 
     await reply.redirect(redirectUrl, 302);
   }
