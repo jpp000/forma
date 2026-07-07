@@ -124,8 +124,17 @@ export class IdentityService {
     };
   }
 
-  async computeRoles(_userId: string): Promise<Role[]> {
-    return [];
+  async computeRoles(userId: string): Promise<Role[]> {
+    const roles: Role[] = [];
+
+    const studentProfile = await this.prisma.studentProfile.findUnique({
+      where: { userId },
+    });
+    if (studentProfile) {
+      roles.push(Role.Student);
+    }
+
+    return roles;
   }
 
   private hashCode(code: string): string {

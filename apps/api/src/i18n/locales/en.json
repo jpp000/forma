@@ -6,7 +6,9 @@
     "otp_expired": "Code expired",
     "otp_rate_limit": "Too many attempts. Try again in a few minutes",
     "email_delivery_failed": "Could not send email. Please try again",
-    "oauth_invalid": "OAuth authentication failed"
+    "oauth_invalid": "OAuth authentication failed",
+    "forbidden": "Access denied",
+    "student_profile_required": "Student profile required"
   },
   "validation": {
     "email": "Must be a valid email address"
