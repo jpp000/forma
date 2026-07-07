@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export async function configureApp(app: NestFastifyApplication): Promise<void> {
   app.setGlobalPrefix('api');

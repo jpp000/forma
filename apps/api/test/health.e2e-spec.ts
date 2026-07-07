@@ -4,8 +4,8 @@ import {
 } from '@nestjs/platform-fastify';
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/app.configure';
+import { AppModule } from '../src/app.module';
 
 describe('Health (e2e)', () => {
   let app: NestFastifyApplication;
