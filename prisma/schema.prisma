@@ -167,3 +167,33 @@ model TrainingWorkoutSessionExercise {
   @@index([sessionId])
   @@map("training_workout_session_exercises")
 }
+
+model NutritionMealLog {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  mealType  String   @map("meal_type")
+  logDate   DateTime @map("log_date") @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items NutritionMealItem[]
+
+  @@unique([userId, mealType, logDate])
+  @@index([userId, logDate])
+  @@map("nutrition_meal_logs")
+}
+
+model NutritionMealItem {
+  id       String @id @default(cuid())
+  mealLogId String @map("meal_log_id")
+  name     String
+  calories Float
+  protein  Float
+  carbs    Float
+  fat      Float
+
+  mealLog NutritionMealLog @relation(fields: [mealLogId], references: [id], onDelete: Cascade)
+
+  @@index([mealLogId])
+  @@map("nutrition_meal_items")
+}
