@@ -8,7 +8,8 @@
     "email_delivery_failed": "Could not send email. Please try again",
     "oauth_invalid": "OAuth authentication failed",
     "forbidden": "Access denied",
-    "student_profile_required": "Student profile required"
+    "student_profile_required": "Student profile required",
+    "invalid_exercise_reference": "Invalid exercise reference"
   },
   "validation": {
     "email": "Must be a valid email address"

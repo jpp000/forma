@@ -104,6 +104,37 @@ model TrainingExercise {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  planItems TrainingWorkoutPlanItem[]
+
   @@index([userId])
   @@map("training_exercises")
+}
+
+model TrainingWorkoutPlan {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items TrainingWorkoutPlanItem[]
+
+  @@index([userId])
+  @@map("training_workout_plans")
+}
+
+model TrainingWorkoutPlanItem {
+  id          String @id @default(cuid())
+  planId      String @map("plan_id")
+  exerciseId  String @map("exercise_id")
+  sets        Int
+  reps        Int
+  restSeconds Int    @map("rest_seconds")
+  sortOrder   Int    @default(0) @map("sort_order")
+
+  plan     TrainingWorkoutPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  exercise TrainingExercise    @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@map("training_workout_plan_items")
 }

@@ -38,6 +38,8 @@ describe('Training (e2e)', () => {
 
   beforeEach(async () => {
     mockEmail.clear();
+    await prisma.trainingWorkoutPlanItem.deleteMany();
+    await prisma.trainingWorkoutPlan.deleteMany();
     await prisma.trainingExercise.deleteMany();
     await prisma.studentHealthGoal.deleteMany();
     await prisma.studentProfile.deleteMany();
@@ -131,5 +133,78 @@ describe('Training (e2e)', () => {
     expect(response.body.page).toBe(1);
     expect(response.body.limit).toBe(20);
     expect(response.body.total).toBe(1);
+  });
+
+  it('POST /api/training/plans creates plan with valid exercise references', async () => {
+    const token = await createStudent(testEmail);
+
+    const exerciseResponse = await request(app.getHttpServer())
+      .post('/api/training/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Bench Press',
+        muscleGroup: 'chest',
+        equipment: 'barbell',
+      });
+
+    const response = await request(app.getHttpServer())
+      .post('/api/training/plans')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Push Day',
+        items: [
+          {
+            exerciseId: exerciseResponse.body.id,
+            sets: 4,
+            reps: 8,
+            restSeconds: 90,
+          },
+        ],
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body.name).toBe('Push Day');
+    expect(response.body.items).toHaveLength(1);
+    expect(response.body.items[0]).toMatchObject({
+      sets: 4,
+      reps: 8,
+      restSeconds: 90,
+    });
+  });
+
+  it('GET /api/training/plans lists user workout plans', async () => {
+    const token = await createStudent(testEmail);
+
+    const exerciseResponse = await request(app.getHttpServer())
+      .post('/api/training/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Deadlift',
+        muscleGroup: 'back',
+        equipment: 'barbell',
+      });
+
+    await request(app.getHttpServer())
+      .post('/api/training/plans')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Pull Day',
+        items: [
+          {
+            exerciseId: exerciseResponse.body.id,
+            sets: 3,
+            reps: 5,
+            restSeconds: 120,
+          },
+        ],
+      });
+
+    const response = await request(app.getHttpServer())
+      .get('/api/training/plans')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.items).toHaveLength(1);
+    expect(response.body.items[0].name).toBe('Pull Day');
   });
 });
