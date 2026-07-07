@@ -50,10 +50,14 @@
 
 ## Handoff
 
-**Feature in flight:** `platform-foundation` — planning complete (assumptions confirmed), ready for Execute (Phase 0).
+**Feature in flight:** `platform-foundation` — Phase 0 complete, ready for Phase 1 (Identity & Student).
 
-**Next task:** T01 — Create shared packages (`packages/types`, `packages/config`).
+**Completed:** T01–T06 (Foundation) — commits `429ce75` through `1f107b7` on `feat-platform-foundation`, merged to `main`.
+
+**Next task:** T07 — Identity Prisma schema + migration.
 
 **Blockers:** None.
 
-**Context:** User-confirmed assumptions recorded in `.specs/features/platform-foundation/context.md` (AD-016–AD-020).
+**Test gate (Phase 0):** `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 9/9 e2e tests passing.
+
+**Notes:** E2E harness uses `TEST_DATABASE_URL` or falls back to `postgresql://$USER@localhost:5432/forma` (Docker `forma:forma` via `.env` still supported).
