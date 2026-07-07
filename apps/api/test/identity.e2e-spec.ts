@@ -129,4 +129,67 @@ describe('Identity OTP (e2e)', () => {
       'Too many attempts. Try again in a few minutes',
     );
   });
+
+  describe('GET /api/identity/me', () => {
+    async function authenticate(): Promise<string> {
+      await request(app.getHttpServer())
+        .post('/api/identity/otp/request')
+        .send({ email: testEmail });
+
+      const code = mockEmail.getLastCode(testEmail);
+      const verifyResponse = await request(app.getHttpServer())
+        .post('/api/identity/otp/verify')
+        .send({ email: testEmail, code });
+
+      return verifyResponse.body.accessToken as string;
+    }
+
+    it('rejects missing JWT with 401', async () => {
+      const response = await request(app.getHttpServer()).get('/api/identity/me');
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Não autorizado');
+    });
+
+    it('rejects invalid JWT with 401', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/identity/me')
+        .set('Authorization', 'Bearer invalid-token');
+
+      expect(response.status).toBe(401);
+    });
+
+    it('returns user id, email, and roles for valid JWT', async () => {
+      const token = await authenticate();
+
+      const response = await request(app.getHttpServer())
+        .get('/api/identity/me')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        id: expect.any(String),
+        email: testEmail,
+        roles: [],
+      });
+    });
+
+    it('rejects expired session with 401', async () => {
+      const token = await authenticate();
+      const user = await prisma.identityUser.findUniqueOrThrow({
+        where: { email: testEmail },
+      });
+
+      await prisma.identitySession.updateMany({
+        where: { userId: user.id },
+        data: { expiresAt: new Date(Date.now() - 60_000) },
+      });
+
+      const response = await request(app.getHttpServer())
+        .get('/api/identity/me')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(401);
+    });
+  });
 });

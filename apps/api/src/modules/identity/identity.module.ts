@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthGuard } from '../../common/auth.guard';
 import { EmailModule } from './email/email.module';
 import { IdentityController } from './identity.controller';
 import { IdentityService } from './identity.service';
@@ -13,7 +14,7 @@ import { IdentityService } from './identity.service';
     }),
   ],
   controllers: [IdentityController],
-  providers: [IdentityService],
-  exports: [IdentityService, JwtModule],
+  providers: [IdentityService, AuthGuard],
+  exports: [IdentityService, JwtModule, AuthGuard],
 })
 export class IdentityModule {}

@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@forma/types';
 import type { SupportedLocale } from '../../i18n/i18n.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { EmailProvider } from './email/email-provider.interface';
@@ -107,6 +108,24 @@ export class IdentityService {
     });
 
     return { accessToken };
+  }
+
+  async getMe(userId: string): Promise<{ id: string; email: string; roles: Role[] }> {
+    const user = await this.prisma.identityUser.findUniqueOrThrow({
+      where: { id: userId },
+    });
+
+    const roles = await this.computeRoles(userId);
+
+    return {
+      id: user.id,
+      email: user.email,
+      roles,
+    };
+  }
+
+  async computeRoles(_userId: string): Promise<Role[]> {
+    return [];
   }
 
   private hashCode(code: string): string {
