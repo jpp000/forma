@@ -44,37 +44,37 @@ Phases run sequentially. Tasks within a phase execute in order.
 ### Phase 0: Foundation
 
 ```
-T01 → T02 → T03 → T04 → T05
+T01 → T02 → T03 → T04 → T05 → T06
 ```
 
 ### Phase 1: Identity & Student
 
 ```
-T06 → T07 → T08 → T09 → T10 → T11
+T07 → T08 → T09 → T10 → T11 → T12 → T13
 ```
 
 ### Phase 2: Training
 
 ```
-T12 → T13 → T14 → T15
+T14 → T15 → T16
 ```
 
 ### Phase 3: Nutrition
 
 ```
-T16 → T17 → T18 → T19
+T17 → T18 → T19 → T20
 ```
 
 ### Phase 4: Progress & Guidance
 
 ```
-T20 → T21 → T22 → T23 → T24
+T21 → T22 → T23 → T24 → T25
 ```
 
 ### Phase 5: Coaching
 
 ```
-T25 → T26 → T27 → T28
+T26 → T27 → T28
 ```
 
 ### Phase 6: Billing
@@ -196,11 +196,33 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T06: Identity Prisma schema + migration
+### T06: i18n setup (pt-BR + en)
 
-**What**: Add `IdentityUser`, `IdentityOtpToken`, `IdentitySession` models with migration
-**Where**: `prisma/schema.prisma`, `prisma/migrations/`
+**What**: JSON locale files, `I18nService`, `Accept-Language` resolution, localized exception filter
+**Where**: `apps/api/src/i18n/`, update `apps/api/src/common/http-exception.filter.ts`
 **Depends on**: T05
+**Reuses**: Existing exception filter from T05
+**Requirement**: I18N-01
+**Complexity**: M
+
+**Done when**:
+- [ ] `pt-BR.json` and `en.json` locale files exist with error/validation keys
+- [ ] `Accept-Language: en` returns English error messages; default is pt-BR
+- [ ] Validation errors return localized messages
+- [ ] E2E test covers locale switching on a 400/401 response
+- [ ] Gate: `pnpm --filter @forma/api test:e2e`
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(api): add i18n with pt-BR and en locales`
+
+---
+
+### T07: Identity Prisma schema + migration
+
+**What**: Add `IdentityUser`, `IdentityOtpToken`, `IdentitySession`, `IdentityOAuthAccount` models with migration
+**Where**: `prisma/schema.prisma`, `prisma/migrations/`
+**Depends on**: T06
 **Reuses**: Existing Prisma setup
 **Requirement**: AUTH-01
 **Complexity**: M
@@ -212,40 +234,41 @@ T29 → T30 → T31 → T32
 
 **Tests**: none
 **Gate**: quick
-**Commit**: `feat(identity): add user and otp prisma schema`
+**Commit**: `feat(identity): add user otp and oauth prisma schema`
 
 ---
 
-### T07: Email OTP request + verify endpoints
+### T08: Email OTP request + verify endpoints (Resend)
 
-**What**: `POST /api/identity/otp/request` and `POST /api/identity/otp/verify` with OTP generation, email send (mock in dev), rate limiting
-**Where**: `apps/api/src/modules/identity/`
-**Depends on**: T06
-**Reuses**: T05 validation pipe
-**Requirement**: AUTH-01, AUTH-02, AUTH-05
+**What**: `POST /api/identity/otp/request` and `POST /api/identity/otp/verify` with OTP generation, Resend email (mock in dev), rate limiting
+**Where**: `apps/api/src/modules/identity/`, `apps/api/src/modules/identity/email/`
+**Depends on**: T07
+**Reuses**: T05 validation pipe, T06 i18n for error messages
+**Requirement**: AUTH-01, AUTH-03, AUTH-05
 **Complexity**: L
 
 **Done when**:
 - [ ] Request OTP with valid email returns 202
+- [ ] Resend provider used when `EMAIL_PROVIDER=resend`; mock logs OTP in dev
 - [ ] Verify correct OTP returns JWT + creates User
-- [ ] Wrong/expired OTP returns 401
+- [ ] Wrong/expired OTP returns 401 with localized message
 - [ ] Rate limit (>3 in 15min) returns 429
-- [ ] E2E tests cover all 4 ACs above
+- [ ] E2E tests cover all ACs above
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
 
 **Tests**: e2e
 **Gate**: full
-**Commit**: `feat(identity): add email otp auth endpoints`
+**Commit**: `feat(identity): add email otp auth with resend`
 
 ---
 
-### T08: JWT auth guard + GET /identity/me
+### T09: JWT auth guard + GET /identity/me
 
 **What**: JWT generation on verify, AuthGuard, `GET /api/identity/me` returning user + computed roles
 **Where**: `apps/api/src/modules/identity/`, `apps/api/src/common/auth.guard.ts`
-**Depends on**: T07
-**Reuses**: JWT from T07
-**Requirement**: AUTH-03, AUTH-04
+**Depends on**: T08
+**Reuses**: JWT from T08
+**Requirement**: AUTH-04
 **Complexity**: M
 
 **Done when**:
@@ -261,12 +284,34 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T09: Student Prisma schema + create profile endpoint
+### T10: OAuth providers (Google, Apple, Facebook)
+
+**What**: Passport OAuth strategies, redirect + callback endpoints returning JWT
+**Where**: `apps/api/src/modules/identity/oauth/`
+**Depends on**: T09
+**Reuses**: JWT/session from T09, `IdentityOAuthAccount` from T07
+**Requirement**: AUTH-02
+**Complexity**: L
+
+**Done when**:
+- [ ] `GET /api/identity/oauth/:provider` redirects to provider (google, apple, facebook)
+- [ ] Callback creates/links User and returns JWT
+- [ ] Invalid provider token returns 401 with localized error
+- [ ] E2E tests cover OAuth callback flow (mocked provider)
+- [ ] Gate: `pnpm --filter @forma/api test:e2e`
+
+**Tests**: e2e
+**Gate**: full
+**Commit**: `feat(identity): add oauth google apple facebook`
+
+---
+
+### T11: Student Prisma schema + create profile endpoint
 
 **What**: `StudentProfile` model + `POST /api/student/profile` with onboarding fields
 **Where**: `prisma/schema.prisma`, `apps/api/src/modules/student/`
-**Depends on**: T08
-**Reuses**: AuthGuard from T08
+**Depends on**: T10
+**Reuses**: AuthGuard from T09
 **Requirement**: STUD-01
 **Complexity**: M
 
@@ -284,12 +329,12 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T10: Health goal model + set goal endpoint
+### T12: Health goal model + set goal endpoint
 
 **What**: `StudentHealthGoal` model + `PUT /api/student/goal` with goal type and targets
 **Where**: `prisma/schema.prisma`, `apps/api/src/modules/student/`
-**Depends on**: T09
-**Reuses**: StudentModule from T09
+**Depends on**: T11
+**Reuses**: StudentModule from T11
 **Requirement**: STUD-02
 **Complexity**: S
 
@@ -306,12 +351,12 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T11: Roles decorator + role-based access
+### T13: Roles decorator + role-based access
 
 **What**: `@Roles('student')` decorator + RolesGuard for endpoint protection
 **Where**: `apps/api/src/common/roles.decorator.ts`, `apps/api/src/common/roles.guard.ts`
-**Depends on**: T10
-**Reuses**: AuthGuard from T08
+**Depends on**: T12
+**Reuses**: AuthGuard from T09
 **Requirement**: AUTH-04
 **Complexity**: S
 
@@ -327,34 +372,33 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T12: Exercise library schema + seed + list/search
+### T14: Custom exercise CRUD (manual)
 
-**What**: `TrainingExercise` model, seed ~50 exercises, `GET /api/training/exercises?q=`
-**Where**: `prisma/schema.prisma`, `apps/api/src/modules/training/`, `prisma/seed.ts`
-**Depends on**: T11
+**What**: `TrainingExercise` model (user-owned), `POST/GET /api/training/exercises` — no seed library
+**Where**: `prisma/schema.prisma`, `apps/api/src/modules/training/`
+**Depends on**: T13
 **Reuses**: RolesGuard, AuthGuard
 **Requirement**: TRAIN-01
 **Complexity**: M
 
 **Done when**:
-- [ ] Migration + seed runs successfully
-- [ ] `GET /api/training/exercises` returns paginated list
-- [ ] Search by name/muscle group filters results
-- [ ] Empty query returns default paginated list
-- [ ] E2E tests cover list, search, empty query
+- [ ] Student can create custom exercise (name, muscle group, equipment)
+- [ ] `GET /api/training/exercises` returns user's exercises (paginated)
+- [ ] Exercises scoped to creating user
+- [ ] E2E tests cover create + list
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
 
 **Tests**: e2e
 **Gate**: full
-**Commit**: `feat(training): add exercise library with seed`
+**Commit**: `feat(training): add manual custom exercise crud`
 
 ---
 
-### T13: Workout plan schema + CRUD endpoints
+### T15: Workout plan schema + CRUD endpoints
 
 **What**: `TrainingWorkoutPlan` + items, `POST/GET /api/training/plans`
 **Where**: `prisma/schema.prisma`, `apps/api/src/modules/training/`
-**Depends on**: T12
+**Depends on**: T14
 **Reuses**: TrainingModule, exercise references
 **Requirement**: TRAIN-02
 **Complexity**: M
@@ -372,11 +416,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T14: Workout session logging + history
+### T16: Workout session logging + history
 
 **What**: `TrainingWorkoutSession` model, `POST /api/training/sessions`, `GET /api/training/sessions`
 **Where**: `apps/api/src/modules/training/`
-**Depends on**: T13
+**Depends on**: T15
 **Reuses**: TrainingModule
 **Requirement**: TRAIN-03, TRAIN-04
 **Complexity**: M
@@ -394,38 +438,37 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T15: Food/macros schema + seed + search
+### T17: Meal log schema (manual macros)
 
-**What**: `NutritionFood` model, seed foods, `GET /api/nutrition/foods?q=`
-**Where**: `prisma/schema.prisma`, `apps/api/src/modules/nutrition/`, `prisma/seed.ts`
-**Depends on**: T14
+**What**: `NutritionMealLog` + `NutritionMealItem` models with inline macro fields (no food database)
+**Where**: `prisma/schema.prisma`, `apps/api/src/modules/nutrition/`
+**Depends on**: T16
 **Reuses**: AuthGuard, RolesGuard
 **Requirement**: NUTR-01
 **Complexity**: M
 
 **Done when**:
-- [ ] Migration + seed with foods (name, calories, protein, carbs, fat per serving)
-- [ ] Search by name returns matching foods
-- [ ] E2E tests cover search
-- [ ] Gate: `pnpm --filter @forma/api test:e2e`
+- [ ] Migration applies for meal log tables with manual macro columns
+- [ ] Schema supports calories, protein, carbs, fat per item (user-entered)
+- [ ] Gate: `pnpm db:generate && pnpm lint`
 
-**Tests**: e2e
-**Gate**: full
-**Commit**: `feat(nutrition): add food database with seed`
+**Tests**: none
+**Gate**: quick
+**Commit**: `feat(nutrition): add manual meal log schema`
 
 ---
 
-### T16: Meal logging endpoints
+### T18: Meal logging endpoints
 
-**What**: `NutritionMealLog` model, `POST /api/nutrition/meals` with meal type + food items
+**What**: `POST /api/nutrition/meals` with meal type + manual macro items
 **Where**: `apps/api/src/modules/nutrition/`
-**Depends on**: T15
-**Reuses**: NutritionModule, food references
+**Depends on**: T17
+**Reuses**: NutritionModule
 **Requirement**: NUTR-02
 **Complexity**: M
 
 **Done when**:
-- [ ] Student can log meal (breakfast/lunch/dinner/snack) with food items and quantities
+- [ ] Student can log meal (breakfast/lunch/dinner/snack) with manual macro values
 - [ ] Duplicate meal type same day appends items (not replace)
 - [ ] Emits `nutrition.meal.logged` event
 - [ ] E2E tests cover log + append behavior
@@ -433,15 +476,15 @@ T29 → T30 → T31 → T32
 
 **Tests**: e2e
 **Gate**: full
-**Commit**: `feat(nutrition): add meal logging endpoints`
+**Commit**: `feat(nutrition): add manual meal logging endpoints`
 
 ---
 
-### T17: Daily macro summary endpoint
+### T19: Daily macro summary endpoint
 
 **What**: `GET /api/nutrition/daily?date=` returning consumed macros for the day
 **Where**: `apps/api/src/modules/nutrition/`
-**Depends on**: T16
+**Depends on**: T18
 **Reuses**: NutritionModule
 **Requirement**: NUTR-04
 **Complexity**: S
@@ -458,12 +501,12 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T18: Nutrition plan prescription endpoints
+### T20: Nutrition plan prescription endpoints
 
 **What**: `NutritionPlan` model, `POST /api/nutrition/plans` (professional prescribes for linked student)
 **Where**: `apps/api/src/modules/nutrition/`
-**Depends on**: T17
-**Reuses**: NutritionModule (CoachingService added in T27 — stub link check for now, wired in T27)
+**Depends on**: T19
+**Reuses**: NutritionModule (CoachingService stub until T28)
 **Requirement**: NUTR-03
 **Complexity**: M
 
@@ -479,11 +522,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T19: Weight entry schema + log/list endpoints
+### T21: Weight entry schema + log/list endpoints
 
 **What**: `ProgressWeightEntry` model, `POST /api/progress/weight`, `GET /api/progress/weight`
 **Where**: `prisma/schema.prisma`, `apps/api/src/modules/progress/`
-**Depends on**: T18
+**Depends on**: T20
 **Reuses**: AuthGuard, RolesGuard
 **Requirement**: PROG-01, PROG-02
 **Complexity**: M
@@ -501,12 +544,12 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T20: Streak tracking via event listeners
+### T22: Streak tracking via event listeners
 
 **What**: `ProgressStreak` model, listeners for `training.session.completed` and `nutrition.meal.logged`
 **Where**: `apps/api/src/modules/progress/`
-**Depends on**: T19
-**Reuses**: Events from T14, T16
+**Depends on**: T21
+**Reuses**: Events from T16, T18
 **Requirement**: PROG-03
 **Complexity**: M
 
@@ -523,11 +566,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T21: Streak query endpoint
+### T23: Streak query endpoint
 
 **What**: `GET /api/progress/streaks` returning current and longest streaks
 **Where**: `apps/api/src/modules/progress/`
-**Depends on**: T20
+**Depends on**: T22
 **Reuses**: ProgressModule
 **Requirement**: PROG-04
 **Complexity**: S
@@ -543,19 +586,19 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T22: Rule-based guidance engine
+### T24: Rule-based guidance engine
 
-**What**: `GuidanceService` with rules mapping health goal + recent activity → suggestions
+**What**: `GuidanceService` with rules mapping health goal + recent activity → localized suggestions
 **Where**: `apps/api/src/modules/guidance/`
-**Depends on**: T21
-**Reuses**: StudentService, TrainingService, NutritionService, ProgressService
+**Depends on**: T23
+**Reuses**: StudentService, TrainingService, NutritionService, ProgressService, I18nService
 **Requirement**: GUID-01
 **Complexity**: M
 
 **Done when**:
 - [ ] Rules exist for each HealthGoal type
 - [ ] Suggestions reference actual student data (last workout, macro gap, weight trend)
-- [ ] Unit-testable logic covered via e2e through endpoint
+- [ ] Suggestion messages localized via i18n
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
 
 **Tests**: e2e
@@ -564,11 +607,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T23: Daily guidance endpoint
+### T25: Daily guidance endpoint
 
 **What**: `GET /api/guidance/daily` returning today's suggestions for authenticated student
 **Where**: `apps/api/src/modules/guidance/`
-**Depends on**: T22
+**Depends on**: T24
 **Reuses**: GuidanceService
 **Requirement**: GUID-02
 **Complexity**: S
@@ -585,11 +628,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T24: Professional profile schema + create endpoint
+### T26: Professional profile schema + create endpoint
 
-**What**: `CoachingProfessionalProfile` model, `POST /api/coaching/profile` (trainer or nutritionist)
+**What**: `CoachingProfessionalProfile` model, `POST /api/coaching/profile` (trainer or nutritionist); subscription check wired in T32
 **Where**: `prisma/schema.prisma`, `apps/api/src/modules/coaching/`
-**Depends on**: T23
+**Depends on**: T25
 **Reuses**: AuthGuard
 **Requirement**: COACH-01
 **Complexity**: M
@@ -597,7 +640,7 @@ T29 → T30 → T31 → T32
 **Done when**:
 - [ ] Professional can create profile with type (trainer/nutritionist) and credentials
 - [ ] `GET /api/identity/me` includes `trainer` or `nutritionist` role
-- [ ] E2E tests cover create profile + role assignment
+- [ ] E2E tests cover create profile + role assignment (subscription gate added in T32)
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
 
 **Tests**: e2e
@@ -606,11 +649,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T25: Invite create + accept flow
+### T27: Invite create + accept flow
 
 **What**: `CoachingInvite` + `CoachingLink` models, invite/accept endpoints
 **Where**: `apps/api/src/modules/coaching/`
-**Depends on**: T24
+**Depends on**: T26
 **Reuses**: CoachingModule
 **Requirement**: COACH-02, COACH-03
 **Complexity**: M
@@ -629,11 +672,11 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T26: Coaching link validation + dashboard
+### T28: Coaching link validation + dashboard
 
 **What**: `CoachingService.assertLinked()`, wire into Training/Nutrition prescribe, `GET /api/coaching/dashboard`
 **Where**: `apps/api/src/modules/coaching/`, update training/nutrition prescribe guards
-**Depends on**: T25
+**Depends on**: T27
 **Reuses**: CoachingModule exports
 **Requirement**: COACH-04, COACH-05
 **Complexity**: M
@@ -650,18 +693,18 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T27: Billing plans schema + seed + list endpoint
+### T29: Billing plans schema + seed + list endpoint
 
-**What**: `BillingPlan` + `BillingSubscription` models, seed free/pro tiers, `GET /api/billing/plans`
+**What**: `BillingPlan` + `BillingSubscription` models, seed student (free/pro) + professional tiers, `GET /api/billing/plans`
 **Where**: `prisma/schema.prisma`, `apps/api/src/modules/billing/`
-**Depends on**: T26
+**Depends on**: T28
 **Reuses**: AuthGuard
 **Requirement**: BILL-01
 **Complexity**: S
 
 **Done when**:
-- [ ] Free and pro plans seeded with feature limits
-- [ ] `GET /api/billing/plans` returns both tiers
+- [ ] Student free/pro and professional paid plans seeded with feature entitlements
+- [ ] `GET /api/billing/plans` returns all tiers with limits
 - [ ] E2E test covers list plans
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
 
@@ -671,17 +714,17 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T28: Stripe checkout session endpoint
+### T30: Stripe checkout session endpoint
 
-**What**: `POST /api/billing/checkout` creating Stripe Checkout session, returns URL
+**What**: `POST /api/billing/checkout` creating Stripe Checkout session for student pro or professional plan
 **Where**: `apps/api/src/modules/billing/`
-**Depends on**: T27
+**Depends on**: T29
 **Reuses**: Stripe SDK
-**Requirement**: BILL-02
+**Requirement**: BILL-04
 **Complexity**: M
 
 **Done when**:
-- [ ] Authenticated user can start pro checkout
+- [ ] Authenticated user can start checkout for pro or professional plan
 - [ ] Returns `{ url }` for Stripe Checkout
 - [ ] E2E test with Stripe test mode (or mock)
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
@@ -692,18 +735,18 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T29: Stripe webhook + subscription lifecycle
+### T31: Stripe webhook + subscription lifecycle
 
 **What**: `POST /api/billing/webhook` handling checkout.session.completed, subscription updated/deleted
 **Where**: `apps/api/src/modules/billing/`
-**Depends on**: T28
+**Depends on**: T30
 **Reuses**: Stripe webhook signature verification
-**Requirement**: BILL-03, BILL-04
+**Requirement**: BILL-05
 **Complexity**: M
 
 **Done when**:
-- [ ] Valid webhook activates pro subscription
-- [ ] Cancellation/downgrade sets tier to free
+- [ ] Valid webhook activates subscription (student pro or professional)
+- [ ] Cancellation/downgrade sets tier appropriately
 - [ ] Invalid signature returns 400
 - [ ] E2E tests cover webhook flows (mock Stripe events)
 - [ ] Gate: `pnpm --filter @forma/api test:e2e`
@@ -714,41 +757,43 @@ T29 → T30 → T31 → T32
 
 ---
 
-### T30: Feature limit enforcement
+### T32: Entitlement enforcement (Pro AI gate + professional subscription)
 
-**What**: Tier check on feature endpoints; free tier limits return 402 with upgrade hint
-**Where**: `apps/api/src/modules/billing/`, `apps/api/src/common/`
-**Depends on**: T29
-**Reuses**: BillingService tier check
-**Requirement**: BILL-05
+**What**: `BillingService.assertEntitlement()`, `@RequiresEntitlement` guard; wire professional subscription check on coaching profile; stub AI food gate for P2
+**Where**: `apps/api/src/modules/billing/`, `apps/api/src/common/`, `apps/api/src/modules/coaching/`
+**Depends on**: T31
+**Reuses**: BillingService tier check, I18nService for localized 402 messages
+**Requirement**: BILL-02, BILL-03, BILL-06
 **Complexity**: M
 
 **Done when**:
-- [ ] Free user exceeding plan limit gets 402 with `{ upgradeUrl }`
-- [ ] Pro user has no limits (for MVP features)
-- [ ] E2E test covers limit enforcement
+- [ ] User without professional subscription gets 402 on `POST /api/coaching/profile` (`BILL-03`)
+- [ ] `assertEntitlement('ai_food_recognition')` returns 402 for free tier (`BILL-02` — ready for P2 endpoint)
+- [ ] Free user exceeding plan limit gets 402 with localized `{ upgradeUrl }` (`BILL-06`)
+- [ ] Pro student passes AI entitlement check
+- [ ] E2E tests cover professional gate + entitlement checks
 - [ ] Gate: `pnpm build && pnpm --filter @forma/api test:e2e`
 
 **Tests**: e2e
 **Gate**: build
-**Commit**: `feat(billing): add feature limit enforcement`
+**Commit**: `feat(billing): add entitlement enforcement`
 
 ---
 
 ## Phase Execution Map
 
 ```
-Phase 0:  T01 ──→ T02 ──→ T03 ──→ T04 ──→ T05
-Phase 1:  T06 ──→ T07 ──→ T08 ──→ T09 ──→ T10 ──→ T11
-Phase 2:  T12 ──→ T13 ──→ T14
-Phase 3:  T15 ──→ T16 ──→ T17 ──→ T18
-Phase 4:  T19 ──→ T20 ──→ T21 ──→ T22 ──→ T23
-Phase 5:  T24 ──→ T25 ──→ T26
-Phase 6:  T27 ──→ T28 ──→ T29 ──→ T30
+Phase 0:  T01 ──→ T02 ──→ T03 ──→ T04 ──→ T05 ──→ T06
+Phase 1:  T07 ──→ T08 ──→ T09 ──→ T10 ──→ T11 ──→ T12 ──→ T13
+Phase 2:  T14 ──→ T15 ──→ T16
+Phase 3:  T17 ──→ T18 ──→ T19 ──→ T20
+Phase 4:  T21 ──→ T22 ──→ T23 ──→ T24 ──→ T25
+Phase 5:  T26 ──→ T27 ──→ T28
+Phase 6:  T29 ──→ T30 ──→ T31 ──→ T32
 ```
 
-**Total tasks:** 30
-**Estimated batches:** ~4 workers (~7-8 tasks each)
+**Total tasks:** 32
+**Estimated batches:** ~4 workers (~8 tasks each)
 
 ---
 
@@ -761,31 +806,33 @@ Phase 6:  T27 ──→ T28 ──→ T29 ──→ T30
 | T03: Test harness | 1 test setup + 1 test file | ✅ Granular |
 | T04: Module skeleton | Directory restructure | ✅ Granular |
 | T05: Swagger + validation | 2-3 files | ✅ Granular |
-| T06: Identity schema | 1 migration | ✅ Granular |
-| T07: OTP endpoints | 1 module, 2 endpoints | ✅ Granular |
-| T08: JWT + me | Guard + 1 endpoint | ✅ Granular |
-| T09: Student profile | 1 endpoint + schema | ✅ Granular |
-| T10: Health goal | 1 endpoint + schema | ✅ Granular |
-| T11: Roles guard | 2 decorator files | ✅ Granular |
-| T12: Exercise library | 1 endpoint + seed | ✅ Granular |
-| T13: Workout plans | 2 endpoints + schema | ✅ Granular |
-| T14: Session logging | 2 endpoints + events | ✅ Granular |
-| T15: Food database | 1 endpoint + seed | ✅ Granular |
-| T16: Meal logging | 1 endpoint | ✅ Granular |
-| T17: Daily summary | 1 endpoint | ✅ Granular |
-| T18: Nutrition plan | 1 endpoint | ✅ Granular |
-| T19: Weight tracking | 2 endpoints | ✅ Granular |
-| T20: Streak listeners | Event handlers | ✅ Granular |
-| T21: Streak query | 1 endpoint | ✅ Granular |
-| T22: Guidance engine | 1 service | ✅ Granular |
-| T23: Guidance endpoint | 1 endpoint | ✅ Granular |
-| T24: Professional profile | 1 endpoint | ✅ Granular |
-| T25: Invite flow | 2 endpoints | ✅ Granular |
-| T26: Dashboard + auth | 1 endpoint + service | ✅ Granular |
-| T27: Billing plans | 1 endpoint + seed | ✅ Granular |
-| T28: Stripe checkout | 1 endpoint | ✅ Granular |
-| T29: Stripe webhook | 1 endpoint | ✅ Granular |
-| T30: Feature limits | Guard/middleware | ✅ Granular |
+| T06: i18n setup | locale files + service | ✅ Granular |
+| T07: Identity schema | 1 migration | ✅ Granular |
+| T08: OTP + Resend | 1 module, 2 endpoints | ✅ Granular |
+| T09: JWT + me | Guard + 1 endpoint | ✅ Granular |
+| T10: OAuth providers | 3 strategies + callbacks | ✅ Granular |
+| T11: Student profile | 1 endpoint + schema | ✅ Granular |
+| T12: Health goal | 1 endpoint + schema | ✅ Granular |
+| T13: Roles guard | 2 decorator files | ✅ Granular |
+| T14: Custom exercises | 2 endpoints, no seed | ✅ Granular |
+| T15: Workout plans | 2 endpoints + schema | ✅ Granular |
+| T16: Session logging | 2 endpoints + events | ✅ Granular |
+| T17: Meal log schema | 1 migration | ✅ Granular |
+| T18: Meal logging | 1 endpoint | ✅ Granular |
+| T19: Daily summary | 1 endpoint | ✅ Granular |
+| T20: Nutrition plan | 1 endpoint | ✅ Granular |
+| T21: Weight tracking | 2 endpoints | ✅ Granular |
+| T22: Streak listeners | Event handlers | ✅ Granular |
+| T23: Streak query | 1 endpoint | ✅ Granular |
+| T24: Guidance engine | 1 service | ✅ Granular |
+| T25: Guidance endpoint | 1 endpoint | ✅ Granular |
+| T26: Professional profile | 1 endpoint | ✅ Granular |
+| T27: Invite flow | 2 endpoints | ✅ Granular |
+| T28: Dashboard + auth | 1 endpoint + service | ✅ Granular |
+| T29: Billing plans | 1 endpoint + seed | ✅ Granular |
+| T30: Stripe checkout | 1 endpoint | ✅ Granular |
+| T31: Stripe webhook | 1 endpoint | ✅ Granular |
+| T32: Entitlement enforcement | Guard + service wiring | ✅ Granular |
 
 ---
 
@@ -823,6 +870,8 @@ Phase 6:  T27 ──→ T28 ──→ T29 ──→ T30
 | T28 | T27 | T27 → T28 | ✅ Match |
 | T29 | T28 | T28 → T29 | ✅ Match |
 | T30 | T29 | T29 → T30 | ✅ Match |
+| T31 | T30 | T30 → T31 | ✅ Match |
+| T32 | T31 | T31 → T32 | ✅ Match |
 
 ---
 
@@ -835,28 +884,30 @@ Phase 6:  T27 ──→ T28 ──→ T29 ──→ T30
 | T03 | Controller | e2e | e2e | ✅ OK |
 | T04 | Restructure | e2e (existing) | e2e | ✅ OK |
 | T05 | Controller + filter | e2e | e2e | ✅ OK |
-| T06 | Prisma schema | none | none | ✅ OK |
-| T07 | Service + Controller | e2e | e2e | ✅ OK |
-| T08 | Guard + Controller | e2e | e2e | ✅ OK |
-| T09 | Service + Controller | e2e | e2e | ✅ OK |
-| T10 | Service + Controller | e2e | e2e | ✅ OK |
-| T11 | Guard | e2e | e2e | ✅ OK |
+| T06 | i18n service | e2e | e2e | ✅ OK |
+| T07 | Prisma schema | none | none | ✅ OK |
+| T08 | Service + Controller | e2e | e2e | ✅ OK |
+| T09 | Guard + Controller | e2e | e2e | ✅ OK |
+| T10 | OAuth strategies | e2e | e2e | ✅ OK |
+| T11 | Service + Controller | e2e | e2e | ✅ OK |
 | T12 | Service + Controller | e2e | e2e | ✅ OK |
-| T13 | Service + Controller | e2e | e2e | ✅ OK |
+| T13 | Guard | e2e | e2e | ✅ OK |
 | T14 | Service + Controller | e2e | e2e | ✅ OK |
 | T15 | Service + Controller | e2e | e2e | ✅ OK |
 | T16 | Service + Controller | e2e | e2e | ✅ OK |
-| T17 | Controller | e2e | e2e | ✅ OK |
+| T17 | Prisma schema | none | none | ✅ OK |
 | T18 | Service + Controller | e2e | e2e | ✅ OK |
-| T19 | Service + Controller | e2e | e2e | ✅ OK |
-| T20 | Service (events) | e2e | e2e | ✅ OK |
-| T21 | Controller | e2e | e2e | ✅ OK |
-| T22 | Service | e2e | e2e | ✅ OK |
+| T19 | Controller | e2e | e2e | ✅ OK |
+| T20 | Service + Controller | e2e | e2e | ✅ OK |
+| T21 | Service + Controller | e2e | e2e | ✅ OK |
+| T22 | Service (events) | e2e | e2e | ✅ OK |
 | T23 | Controller | e2e | e2e | ✅ OK |
-| T24 | Service + Controller | e2e | e2e | ✅ OK |
-| T25 | Service + Controller | e2e | e2e | ✅ OK |
+| T24 | Service | e2e | e2e | ✅ OK |
+| T25 | Controller | e2e | e2e | ✅ OK |
 | T26 | Service + Controller | e2e | e2e | ✅ OK |
 | T27 | Service + Controller | e2e | e2e | ✅ OK |
 | T28 | Service + Controller | e2e | e2e | ✅ OK |
 | T29 | Service + Controller | e2e | e2e | ✅ OK |
-| T30 | Guard + Service | e2e | e2e | ✅ OK |
+| T30 | Service + Controller | e2e | e2e | ✅ OK |
+| T31 | Service + Controller | e2e | e2e | ✅ OK |
+| T32 | Guard + Service | e2e | e2e | ✅ OK |

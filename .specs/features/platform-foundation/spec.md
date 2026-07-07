@@ -15,7 +15,9 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 
 | Feature | Reason |
 |---------|--------|
-| AI food photo analysis | P2 — requer worker/IA |
+| AI food photo analysis | P2 — Pro-only; requer worker/IA |
+| Curated food database (busca TACO/USDA) | P2 — MVP é logging manual |
+| Exercise library com vídeos | P2 — MVP é setup manual |
 | WhatsApp (mensagens, grupos) | P2/P3 — canal pós-MVP |
 | Mobile app UI completa | P2 — API-first no MVP |
 | Web portal UI (profissionais) | P2 — dashboard API no MVP |
@@ -30,18 +32,21 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 
 | Assumption / decision | Chosen default | Rationale | Confirmed? |
 |-----------------------|----------------|-----------|------------|
-| Idioma da API (mensagens de erro) | Português (pt-BR) | Produto brasileiro; CONTEXT.md em PT | n |
-| OTP delivery | Email via provider genérico (Resend/SendGrid) — mock em dev | Sem SMS no MVP; email já no escopo auth | n |
-| OAuth timing | Mesma fase que OTP se Passport setup for simples; senão P2 | User disse "later or same phase if simple" | n |
-| Stripe tiers | `free` (limitado) + `pro` (ilimitado básico) | MVP billing mínimo | n |
-| Unidade de peso | kg (padrão BR) | Mercado alvo | n |
-| Timezone streaks | UTC com data do servidor | Simplicidade MVP; timezone do user em P2 | n |
-| Professional invite | Link com token único, expira em 7 dias | Padrão comum; evita complexidade | n |
-| Exercise library seed | Dataset inicial curado (~50 exercícios) | Evita biblioteca vazia no demo | n |
-| Food database | Tabela manual + busca por nome; sem integração TACO/USDA no MVP | Pragmatismo | n |
-| Rate limit OTP | 3 requests/email/15min | Previne abuso | n |
+| Idioma da API e strings | **pt-BR + en** (i18n completo) | Mercado BR + internacionalização desde MVP | y |
+| OTP delivery | **Email via Resend** em produção; mock em dev/test | Confirmado pelo usuário; sem SMS no MVP | y |
+| OAuth timing | **P1** — Google, Apple, Facebook junto com email OTP | Confirmado pelo usuário | y |
+| Stripe — aluno | `free` (sem AI) + `pro` (desbloqueia AI food em P2) | Alunos podem usar free sem AI | y |
+| Stripe — profissional | **Assinatura paga obrigatória** para trainer/nutritionist | Sem free tier para profissionais | y |
+| AI food recognition | **Pro-only** (feature P2; entitlement P1) | Monetização clara; não no MVP funcional | y |
+| Treino MVP | Setup **manual** de exercícios e planos | Sem biblioteca curada no MVP | y |
+| Nutrição MVP | Logging **manual** de macros/alimentos | Sem database pronta no MVP | y |
+| Food DB + exercise library (P2) | Database pronta + biblioteca com vídeos | Escopo explícito P2, não MVP | y |
+| Unidade de peso | kg (padrão BR) | Mercado alvo | y |
+| Timezone streaks | UTC com data do servidor | Simplicidade MVP; timezone do user em P2 | y |
+| Professional invite | Link com token único, expira em 7 dias | Padrão comum; evita complexidade | y |
+| Rate limit OTP | 3 requests/email/15min | Previne abuso | y |
 
-**Open questions:** none — all resolved or logged above.
+**Open questions:** none — all resolved via user confirmation (see `context.md`).
 
 ---
 
@@ -66,21 +71,22 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 
 ---
 
-### P1-02: Identity & Auth (Email OTP) ⭐ MVP
+### P1-02: Identity & Auth (Email OTP + OAuth) ⭐ MVP
 
-**User Story**: As a User, I want to sign in with my email via OTP so that I can access Forma without managing a password.
+**User Story**: As a User, I want to sign in with my email via OTP or via Google/Apple/Facebook so that I can access Forma without friction.
 
 **Why P1**: Every other feature requires authenticated identity.
 
 **Acceptance Criteria**:
 
-1. WHEN a User requests OTP with valid email THEN system SHALL send OTP and return `202 Accepted` without revealing if email exists
+1. WHEN a User requests OTP with valid email THEN system SHALL send OTP via Resend (mock in dev) and return `202 Accepted` without revealing if email exists
 2. WHEN a User submits correct OTP within 10 minutes THEN system SHALL return JWT access token and create/update User record
-3. WHEN a User submits expired or wrong OTP THEN system SHALL return `401` with clear error
-4. WHEN a request includes valid JWT THEN protected endpoints SHALL identify the User
-5. WHEN OTP is requested more than 3 times in 15 minutes for same email THEN system SHALL return `429 Too Many Requests`
+3. WHEN a User submits expired or wrong OTP THEN system SHALL return `401` with localized clear error
+4. WHEN a User completes OAuth flow (Google, Apple, or Facebook) THEN system SHALL return JWT and create/update User record linked to provider
+5. WHEN a request includes valid JWT THEN protected endpoints SHALL identify the User
+6. WHEN OTP is requested more than 3 times in 15 minutes for same email THEN system SHALL return `429 Too Many Requests`
 
-**Independent Test**: Request OTP → verify → use token on `GET /api/identity/me`.
+**Independent Test**: Request OTP → verify → OAuth callback → use token on `GET /api/identity/me`.
 
 **Requirements**: `AUTH-01`, `AUTH-02`, `AUTH-03`, `AUTH-04`, `AUTH-05`
 
@@ -105,39 +111,39 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 
 ---
 
-### P1-04: Training — Exercise Library + Plans + Sessions ⭐ MVP
+### P1-04: Training — Manual Exercises + Plans + Sessions ⭐ MVP
 
-**User Story**: As a Student, I want to follow a workout plan and log my training sessions so that I track my exercise consistently.
+**User Story**: As a Student, I want to create my own exercises, build a workout plan, and log sessions so that I track my training consistently.
 
 **Why P1**: Training is a core pillar of Forma.
 
 **Acceptance Criteria**:
 
-1. WHEN Student queries exercise library THEN system SHALL return searchable list with name, muscle group, equipment
+1. WHEN Student creates a custom exercise THEN system SHALL store name, muscle group, and equipment (user-defined)
 2. WHEN Student or linked Professional creates workout plan THEN system SHALL store plan with exercises, sets, reps, rest
 3. WHEN Student starts and completes a workout session THEN system SHALL log exercises performed with actual sets/reps/weight
 4. WHEN Student views workout history THEN system SHALL return sessions ordered by date
 
-**Independent Test**: List exercises → create plan → log session → view history.
+**Independent Test**: Create exercise → create plan → log session → view history.
 
 **Requirements**: `TRAIN-01`, `TRAIN-02`, `TRAIN-03`, `TRAIN-04`
 
 ---
 
-### P1-05: Nutrition — Macros + Meal Logging + Prescribed Plan ⭐ MVP
+### P1-05: Nutrition — Manual Macro Logging + Prescribed Plan ⭐ MVP
 
-**User Story**: As a Student, I want to log meals and follow a nutrition plan with macro targets so that I manage my diet.
+**User Story**: As a Student, I want to manually log meals with macro values and follow a nutrition plan so that I manage my diet.
 
 **Why P1**: Nutrition is a core pillar alongside training.
 
 **Acceptance Criteria**:
 
-1. WHEN Student searches foods THEN system SHALL return items with calories, protein, carbs, fat per serving
-2. WHEN Student logs a meal (breakfast/lunch/dinner/snack) THEN system SHALL store items and compute daily macro totals
+1. WHEN Student logs a meal entry (breakfast/lunch/dinner/snack) with manual macro values THEN system SHALL store calories, protein, carbs, fat per item
+2. WHEN Student logs multiple items same meal type on same day THEN system SHALL append items and compute daily macro totals
 3. WHEN Professional prescribes nutrition plan for linked Student THEN system SHALL store daily macro targets
 4. WHEN Student views daily nutrition summary THEN system SHALL show consumed vs target macros
 
-**Independent Test**: Search food → log meal → view daily summary → verify macro math.
+**Independent Test**: Log meal with macros → view daily summary → verify macro math.
 
 **Requirements**: `NUTR-01`, `NUTR-02`, `NUTR-03`, `NUTR-04`
 
@@ -170,7 +176,8 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 
 **Acceptance Criteria**:
 
-1. WHEN Professional creates profile (trainer or nutritionist) THEN system SHALL store credentials and assign corresponding role
+1. WHEN User with active professional subscription creates profile (trainer or nutritionist) THEN system SHALL store credentials and assign corresponding role
+1b. WHEN User without active professional subscription tries to create professional profile THEN system SHALL return `402 Payment Required`
 2. WHEN Professional sends invite to student email THEN system SHALL create invite token valid for 7 days
 3. WHEN Student accepts invite THEN system SHALL create coaching link between Professional and Student
 4. WHEN Professional views dashboard THEN system SHALL return linked students with summary stats (last workout, last meal, weight trend)
@@ -182,38 +189,56 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 
 ---
 
-### P1-08: Billing — Stripe Free/Pro Tiers ⭐ MVP
+### P1-08: Billing — Stripe Student + Professional Tiers ⭐ MVP
 
-**User Story**: As a User, I want to subscribe to a pro plan so that I unlock premium features.
+**User Story**: As a User, I want to subscribe to the right plan (student pro or professional) so that I unlock the features I need.
 
-**Why P1**: Monetization path; even basic tiers validate Stripe integration.
+**Why P1**: Monetization path; validates Stripe integration and entitlement model.
 
 **Acceptance Criteria**:
 
-1. WHEN User views plans THEN system SHALL return free and pro tier details with feature limits
-2. WHEN User starts checkout for pro THEN system SHALL create Stripe Checkout session and return URL
-3. WHEN Stripe webhook confirms payment THEN system SHALL activate pro subscription on User
-4. WHEN pro subscription expires or is cancelled THEN system SHALL downgrade User to free
-5. WHEN free User exceeds feature limit THEN system SHALL return `402 Payment Required` with upgrade hint
+1. WHEN User views plans THEN system SHALL return student (`free`, `pro`) and professional (paid-only) tier details with feature limits
+2. WHEN free/pro User requests AI food analysis (P2 endpoint) THEN system SHALL return `402` unless on `pro` tier (`BILL-02`)
+3. WHEN User without professional subscription tries professional features THEN system SHALL return `402 Payment Required` (`BILL-03`)
+4. WHEN User starts checkout THEN system SHALL create Stripe Checkout session and return URL
+5. WHEN Stripe webhook confirms payment THEN system SHALL activate subscription on User
+6. WHEN subscription expires or is cancelled THEN system SHALL downgrade User to appropriate free tier
+7. WHEN free User exceeds feature limit THEN system SHALL return `402 Payment Required` with localized upgrade hint
 
-**Independent Test**: List plans → checkout → simulate webhook → verify tier change.
+**Independent Test**: List plans → checkout → simulate webhook → verify tier + entitlement gates.
 
-**Requirements**: `BILL-01`, `BILL-02`, `BILL-03`, `BILL-04`, `BILL-05`
+**Requirements**: `BILL-01`, `BILL-02`, `BILL-03`, `BILL-04`, `BILL-05`, `BILL-06`
 
 ---
 
-### P2: AI Food Photo Analysis
+### P2: AI Food Photo Analysis (Pro-only)
 
-**User Story**: As a Student, I want to photograph my meal and get macro estimates so that logging is faster.
+**User Story**: As a Pro Student, I want to photograph my meal and get macro estimates so that logging is faster.
 
-**Why P2**: Requires async worker + AI; not MVP.
+**Why P2**: Requires async worker + AI; not MVP. Gated by `BILL-02` (Pro entitlement).
 
 **Acceptance Criteria**:
 
-1. WHEN Student uploads meal photo THEN system SHALL enqueue analysis job and return job ID
-2. WHEN analysis completes THEN system SHALL return estimated macros with confidence score
+1. WHEN Pro Student uploads meal photo THEN system SHALL enqueue analysis job and return job ID
+2. WHEN free Student uploads meal photo THEN system SHALL return `402 Payment Required`
+3. WHEN analysis completes THEN system SHALL return estimated macros with confidence score
 
 **Requirements**: `NUTR-05`, `NUTR-06`
+
+---
+
+### P2: Food Database + Exercise Video Library
+
+**User Story**: As a Student, I want to search a curated food database and browse exercises with videos so that logging and training setup are faster.
+
+**Why P2**: MVP uses manual entry; curated content requires data sourcing and media.
+
+**Acceptance Criteria**:
+
+1. WHEN Student searches foods THEN system SHALL return items with calories, protein, carbs, fat per serving
+2. WHEN Student queries exercise library THEN system SHALL return exercises with instructional video URLs
+
+**Requirements**: `NUTR-07`, `TRAIN-05`
 
 ---
 
@@ -265,7 +290,8 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 - WHEN invite token is expired THEN system SHALL return `410 Gone` with re-invite suggestion
 - WHEN Stripe webhook signature is invalid THEN system SHALL return `400` and ignore payload
 - WHEN coaching link already exists THEN system SHALL return `409 Conflict`
-- WHEN empty exercise search query THEN system SHALL return paginated default list
+- WHEN API error occurs THEN response message SHALL be localized per `Accept-Language` (pt-BR or en)
+- WHEN OAuth provider returns invalid token THEN system SHALL return `401` with localized error
 
 ---
 
@@ -277,6 +303,7 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 | FOUND-02 | P1-01 | 0 | Pending |
 | FOUND-03 | P1-01 | 0 | Pending |
 | FOUND-04 | P1-01 | 0 | Pending |
+| I18N-01 | P1-01, P1-02 | 0 | Pending |
 | AUTH-01 | P1-02 | 1 | Pending |
 | AUTH-02 | P1-02 | 1 | Pending |
 | AUTH-03 | P1-02 | 1 | Pending |
@@ -304,22 +331,36 @@ Forma precisa de uma base técnica sólida para conectar alunos a profissionais 
 | COACH-04 | P1-07 | 5 | Pending |
 | COACH-05 | P1-07 | 5 | Pending |
 | BILL-01 | P1-08 | 6 | Pending |
-| BILL-02 | P1-08 | 6 | Pending |
-| BILL-03 | P1-08 | 6 | Pending |
+| BILL-02 | P1-08, P2 AI | 6 | Pending |
+| BILL-03 | P1-08, P1-07 | 6 | Pending |
 | BILL-04 | P1-08 | 6 | Pending |
 | BILL-05 | P1-08 | 6 | Pending |
+| BILL-06 | P1-08 | 6 | Pending |
 
-**Coverage:** 37 total, 0 mapped to tasks (pending tasks.md), 0 unmapped
+**Coverage:** 39 total, mapped in tasks.md, 0 unmapped
+
+### Requirement Definitions (new/updated)
+
+| ID | Description |
+|----|-------------|
+| I18N-01 | API supports pt-BR and en for errors, validation, and user-facing messages via `Accept-Language` |
+| AUTH-01 | Email OTP request + verify flow |
+| AUTH-02 | OAuth P1 — Google, Apple, Facebook sign-in |
+| AUTH-03 | Email OTP delivery via Resend (production); mock provider in dev/test |
+| AUTH-04 | JWT sessions, auth guard, `GET /identity/me` |
+| AUTH-05 | OTP rate limiting (3/email/15min) |
+| BILL-02 | Pro entitlement gates AI food recognition (P2 feature; entitlement enforced in P1) |
+| BILL-03 | Professional profiles and features require active professional subscription |
 
 ---
 
 ## MVP Vertical Slices (Priority Order)
 
-1. **Foundation** — monorepo packages, test harness, module skeleton, Swagger
-2. **Identity** — email OTP, JWT, User CRUD
+1. **Foundation** — monorepo packages, i18n, test harness, module skeleton, Swagger
+2. **Identity** — email OTP (Resend), OAuth (Google/Apple/Facebook), JWT, User CRUD
 3. **Student + Goal** — onboarding, health goal
-4. **Training** — exercises, plans, sessions
-5. **Nutrition** — foods, meals, plans
+4. **Training** — manual exercises, plans, sessions
+5. **Nutrition** — manual macro logging, plans
 6. **Progress + Guidance** — weight, streaks, rule-based suggestions
 7. **Coaching** — professional profiles, invites, links, dashboard
 8. **Billing** — Stripe free/pro

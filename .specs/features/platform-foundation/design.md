@@ -106,14 +106,14 @@ model IdentitySession { ... @@map("identity_sessions") }
 model StudentProfile { ... @@map("student_profiles") }
 model StudentHealthGoal { ... @@map("student_health_goals") }
 
-// Training
+// Training (MVP: user-owned custom exercises — no seeded library)
 model TrainingExercise { ... @@map("training_exercises") }
 model TrainingWorkoutPlan { ... @@map("training_workout_plans") }
 model TrainingWorkoutSession { ... @@map("training_workout_sessions") }
 
-// Nutrition
-model NutritionFood { ... @@map("nutrition_foods") }
+// Nutrition (MVP: manual macro entry — no food database)
 model NutritionMealLog { ... @@map("nutrition_meal_logs") }
+model NutritionMealItem { ... @@map("nutrition_meal_items") }
 model NutritionPlan { ... @@map("nutrition_plans") }
 
 // Progress
@@ -236,7 +236,8 @@ graph TB
 
     subgraph External["External Services"]
         Stripe["Stripe"]
-        Email["Email Provider"]
+        Email["Resend (OTP)"]
+        OAuth["OAuth Providers"]
     end
 
     Mobile --> API
@@ -258,6 +259,7 @@ graph TB
     Billing --> Identity
     Billing --> Stripe
     Identity --> Email
+    Identity --> OAuth
 
     Prisma --> PG
 ```
@@ -273,7 +275,8 @@ graph TB
 | Auth | Bearer JWT in `Authorization` header |
 | Validation | `class-validator` + global `ValidationPipe` |
 | Docs | `@nestjs/swagger` decorators on controllers |
-| Errors | Consistent `{ statusCode, message, error }` via global filter |
+| Errors | Consistent `{ statusCode, message, error }` via global filter; **localized** per `Accept-Language` |
+| i18n | `pt-BR` (default) and `en` — see Internationalization section |
 | Pagination | `?page=1&limit=20` query params |
 | IDs | CUID (Prisma default) |
 
@@ -283,18 +286,20 @@ graph TB
 
 | Method | Path | Module | Description |
 |--------|------|--------|-------------|
-| POST | `/api/identity/otp/request` | Identity | Request email OTP |
+| POST | `/api/identity/otp/request` | Identity | Request email OTP (Resend prod / mock dev) |
 | POST | `/api/identity/otp/verify` | Identity | Verify OTP → JWT |
+| GET | `/api/identity/oauth/:provider` | Identity | Start OAuth flow (google, apple, facebook) |
+| GET | `/api/identity/oauth/:provider/callback` | Identity | OAuth callback → JWT |
 | GET | `/api/identity/me` | Identity | Current user + roles |
 | POST | `/api/student/profile` | Student | Create StudentProfile |
 | PUT | `/api/student/goal` | Student | Set health goal |
 | GET | `/api/guidance/daily` | Guidance | Daily suggestions |
-| GET | `/api/training/exercises` | Training | List/search exercises |
+| GET | `/api/training/exercises` | Training | List user's custom exercises |
+| POST | `/api/training/exercises` | Training | Create custom exercise |
 | POST | `/api/training/plans` | Training | Create workout plan |
 | POST | `/api/training/sessions` | Training | Log workout session |
 | GET | `/api/training/sessions` | Training | Session history |
-| GET | `/api/nutrition/foods` | Nutrition | Search foods |
-| POST | `/api/nutrition/meals` | Nutrition | Log meal |
+| POST | `/api/nutrition/meals` | Nutrition | Log meal with manual macro values |
 | GET | `/api/nutrition/daily` | Nutrition | Daily macro summary |
 | POST | `/api/nutrition/plans` | Nutrition | Prescribe nutrition plan |
 | POST | `/api/progress/weight` | Progress | Log weight |
@@ -307,6 +312,94 @@ graph TB
 | GET | `/api/billing/plans` | Billing | List tiers |
 | POST | `/api/billing/checkout` | Billing | Start Stripe checkout |
 | POST | `/api/billing/webhook` | Billing | Stripe webhook |
+
+---
+
+## Internationalization (i18n)
+
+**Approach:** Lightweight JSON locale files — no heavy framework dependency.
+
+```
+apps/api/src/i18n/
+  locales/
+    pt-BR.json
+    en.json
+  i18n.service.ts      # resolve(key, lang) → string
+  i18n.module.ts
+```
+
+- **Default locale:** `pt-BR`
+- **Resolution:** `Accept-Language` header → `pt-BR` or `en` (fallback `pt-BR`)
+- **Scope:** API error messages, validation messages, billing/upgrade hints, guidance suggestions
+- **Usage:** `I18nService.t('errors.otp_expired', lang)` in services and exception filter
+- **Shared keys:** Validation messages can reference i18n keys in DTO decorators where practical
+
+`nestjs-i18n` is optional if needs grow; start with a simple `I18nService` + JSON files to avoid ceremony (AD-001).
+
+---
+
+## Identity — Email OTP (Resend)
+
+```
+apps/api/src/modules/identity/
+  email/
+    email.module.ts
+    resend-email.provider.ts   # production — RESEND_API_KEY env
+    mock-email.provider.ts     # dev/test — logs OTP to console
+```
+
+- **Interface:** `EmailProvider.sendOtp(to, code)` — swap via env (`EMAIL_PROVIDER=resend|mock`)
+- **Resend:** single transactional email per OTP request; template in pt-BR/en based on request locale
+- **Failure:** provider error → `503 Service Unavailable` (no OTP leaked)
+
+---
+
+## Identity — OAuth (P1)
+
+- Passport strategies: `passport-google-oauth20`, `passport-apple`, `passport-facebook`
+- Flow: redirect → provider → callback → upsert `IdentityUser` + link `IdentityOAuthAccount` → JWT
+- Same JWT/session model as OTP — unified auth guard
+
+---
+
+## Billing — Entitlement Check Pattern
+
+```typescript
+// billing.service.ts
+async assertEntitlement(userId: string, feature: EntitlementFeature): Promise<void> {
+  const sub = await this.getActiveSubscription(userId);
+  if (!this.hasFeature(sub, feature)) {
+    throw new PaymentRequiredException('billing.upgrade_required', { upgradeUrl: '...' });
+  }
+}
+
+// Usage in coaching.service.ts
+await this.billing.assertEntitlement(userId, 'professional_profile');
+
+// Usage in nutrition (P2 AI endpoint)
+await this.billing.assertEntitlement(userId, 'ai_food_recognition');
+```
+
+**Entitlement matrix (MVP):**
+
+| Feature | free (student) | pro (student) | professional (paid) |
+|---------|----------------|---------------|---------------------|
+| Manual training/nutrition | ✅ | ✅ | N/A (professional uses coaching) |
+| AI food recognition (P2) | ❌ | ✅ | N/A |
+| Professional profile | ❌ | ❌ | ✅ (subscription required) |
+| Coaching dashboard | ❌ | ❌ | ✅ |
+
+**Guard option:** `@RequiresEntitlement('ai_food_recognition')` decorator wrapping `BillingService.assertEntitlement`.
+
+---
+
+## P2 Scope (documented, not MVP)
+
+| Capability | Notes |
+|------------|-------|
+| Curated food database | Searchable foods with macros; optional TACO/USDA integration |
+| Exercise video library | Pre-seeded exercises with instructional video URLs |
+| AI food photo → macros | Async worker + vision model; gated by `BILL-02` Pro entitlement |
 
 ---
 
