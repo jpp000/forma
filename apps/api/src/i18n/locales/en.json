@@ -1,7 +1,11 @@
 {
   "errors": {
     "unauthorized": "Unauthorized",
-    "internal": "Internal server error"
+    "internal": "Internal server error",
+    "otp_invalid": "Invalid code",
+    "otp_expired": "Code expired",
+    "otp_rate_limit": "Too many attempts. Try again in a few minutes",
+    "email_delivery_failed": "Could not send email. Please try again"
   },
   "validation": {
     "email": "Must be a valid email address"
