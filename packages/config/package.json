@@ -1,0 +1,13 @@
+{
+  "name": "@forma/config",
+  "version": "0.0.1",
+  "private": true,
+  "exports": {
+    "./tsconfig/tsconfig.base.json": "./tsconfig/tsconfig.base.json"
+  },
+  "scripts": {
+    "build": "echo 'no build needed'",
+    "lint": "echo 'no lint needed'",
+    "check-types": "echo 'no types to check'"
+  }
+}

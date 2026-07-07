@@ -11,10 +11,10 @@ importers:
       '@prisma/client':
         specifier: ^6.9.0
         version: 6.19.3(prisma@6.19.3(typescript@5.9.2))(typescript@5.9.2)
-    devDependencies:
       prisma:
         specifier: ^6.9.0
         version: 6.19.3(typescript@5.9.2)
+    devDependencies:
       turbo:
         specifier: ^2.9.3
         version: 2.10.4
@@ -24,6 +24,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@forma/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@nestjs/common':
         specifier: ^11.1.3
         version: 11.1.27(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -43,6 +46,9 @@ importers:
         specifier: ^7.8.2
         version: 7.8.2
     devDependencies:
+      '@forma/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@nestjs/cli':
         specifier: ^11.0.7
         version: 11.0.23(@types/node@22.20.0)
@@ -67,9 +73,6 @@ importers:
       bullmq:
         specifier: ^5.53.0
         version: 5.79.3
-      ioredis:
-        specifier: ^5.6.1
-        version: 5.11.1
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -83,6 +86,17 @@ importers:
       '@types/node':
         specifier: ^22.15.21
         version: 22.20.0
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/config: {}
+
+  packages/types:
+    devDependencies:
+      '@forma/config':
+        specifier: workspace:*
+        version: link:../config
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -301,9 +315,6 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
-
-  '@ioredis/commands@1.10.0':
-    resolution: {integrity: sha512-UmeW7z4LfctwoQ5wkhVzgq8tXkreED2xZGpX+Bg+zA+WJFZCT6c062AfCK/Dfk81xZnnwdhJCUMkitihRaoC2Q==}
 
   '@ioredis/commands@1.5.1':
     resolution: {integrity: sha512-JH8ZL/ywcJyR9MmJ5BNqZllXNZQqQbnVZOqpPQqE1vHiFgAw4NHbvE0FOduNU8IX9babitBT46571OnPTT0Zcw==}
@@ -742,10 +753,6 @@ packages:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
 
-  cluster-key-slot@1.1.1:
-    resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
-    engines: {node: '>=0.10.0'}
-
   cluster-key-slot@1.1.2:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
@@ -988,10 +995,6 @@ packages:
 
   ioredis@5.10.1:
     resolution: {integrity: sha512-HuEDBTI70aYdx1v6U97SbNx9F1+svQKBDo30o0b9fw055LMepzpOOd0Ccg9Q6tbqmBSJaMuY0fB7yw9/vjBYCA==}
-    engines: {node: '>=12.22.0'}
-
-  ioredis@5.11.1:
-    resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
     engines: {node: '>=12.22.0'}
 
   ipaddr.js@2.4.0:
@@ -1800,8 +1803,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.20.0
 
-  '@ioredis/commands@1.10.0': {}
-
   '@ioredis/commands@1.5.1': {}
 
   '@jridgewell/gen-mapping@0.3.13':
@@ -2266,8 +2267,6 @@ snapshots:
 
   clone@1.0.4: {}
 
-  cluster-key-slot@1.1.1: {}
-
   cluster-key-slot@1.1.2: {}
 
   color-convert@2.0.1:
@@ -2518,18 +2517,6 @@ snapshots:
       denque: 2.1.0
       lodash.defaults: 4.2.0
       lodash.isarguments: 3.1.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-      standard-as-callback: 2.1.0
-    transitivePeerDependencies:
-      - supports-color
-
-  ioredis@5.11.1:
-    dependencies:
-      '@ioredis/commands': 1.10.0
-      cluster-key-slot: 1.1.1
-      debug: 4.4.3
-      denque: 2.1.0
       redis-errors: 1.2.0
       redis-parser: 3.0.0
       standard-as-callback: 2.1.0
