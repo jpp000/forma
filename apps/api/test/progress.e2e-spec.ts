@@ -38,6 +38,7 @@ describe('Progress (e2e)', () => {
 
   beforeEach(async () => {
     mockEmail.clear();
+    await prisma.progressTrainingRestDay.deleteMany();
     await prisma.progressWeightEntry.deleteMany();
     await prisma.progressStreak.deleteMany();
     await prisma.trainingWorkoutSessionExercise.deleteMany();
@@ -78,6 +79,51 @@ describe('Progress (e2e)', () => {
         activityLevel: 'moderate',
       });
     return token;
+  }
+
+  async function createExercise(token: string) {
+    const response = await request(app.getHttpServer())
+      .post('/api/training/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Squat',
+        muscleGroup: 'legs',
+        equipment: 'barbell',
+      });
+    return response.body.id as string;
+  }
+
+  function logSession(token: string, exerciseId: string, date: string) {
+    return request(app.getHttpServer())
+      .post('/api/training/sessions')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        completedAt: `${date}T10:00:00.000Z`,
+        exercises: [
+          {
+            exerciseId,
+            sets: [{ reps: 5, weightKg: 100 }],
+          },
+        ],
+      });
+  }
+
+  function markRestDay(token: string, date: string) {
+    return request(app.getHttpServer())
+      .post('/api/progress/training-rest-days')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ date });
+  }
+
+  async function getTrainingStreak(token: string) {
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email: testEmail },
+    });
+    return prisma.progressStreak.findUnique({
+      where: {
+        userId_streakType: { userId: user.id, streakType: 'training' },
+      },
+    });
   }
 
   it('POST /api/progress/weight logs weight in kg', async () => {
@@ -137,47 +183,119 @@ describe('Progress (e2e)', () => {
     expect(response.body[1].weightKg).toBe(75);
   });
 
-  it('increments training streak on session and resets after skipped day', async () => {
+  it('uses grace gap once per week then continues training streak', async () => {
     const token = await createStudent();
+    const exerciseId = await createExercise(token);
 
-    const exercise = await request(app.getHttpServer())
-      .post('/api/training/exercises')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Squat',
-        muscleGroup: 'legs',
-        equipment: 'barbell',
-      });
+    await logSession(token, exerciseId, '2026-07-05');
+    await logSession(token, exerciseId, '2026-07-06');
+    await logSession(token, exerciseId, '2026-07-08');
 
-    const logSession = (date: string) =>
-      request(app.getHttpServer())
-        .post('/api/training/sessions')
-        .set('Authorization', `Bearer ${token}`)
-        .send({
-          completedAt: `${date}T10:00:00.000Z`,
-          exercises: [
-            {
-              exerciseId: exercise.body.id,
-              sets: [{ reps: 5, weightKg: 100 }],
-            },
-          ],
-        });
+    const streak = await getTrainingStreak(token);
 
-    await logSession('2026-07-05');
-    await logSession('2026-07-06');
-    await logSession('2026-07-08');
+    expect(streak?.currentStreak).toBe(3);
+    expect(streak?.longestStreak).toBe(3);
+    expect(streak?.graceGapsUsed).toBe(1);
+  });
 
-    const user = await prisma.identityUser.findFirstOrThrow({
-      where: { email: testEmail },
-    });
-    const streak = await prisma.progressStreak.findUnique({
-      where: {
-        userId_streakType: { userId: user.id, streakType: 'training' },
-      },
-    });
+  it('resets training streak after two unexplained gap days in same week', async () => {
+    const token = await createStudent();
+    const exerciseId = await createExercise(token);
+
+    await logSession(token, exerciseId, '2026-07-06');
+    await logSession(token, exerciseId, '2026-07-09');
+
+    const streak = await getTrainingStreak(token);
 
     expect(streak?.currentStreak).toBe(1);
-    expect(streak?.longestStreak).toBe(2);
+    expect(streak?.longestStreak).toBe(1);
+  });
+
+  it('continues streak when rest day covers gap between workouts', async () => {
+    const token = await createStudent();
+    const exerciseId = await createExercise(token);
+
+    await logSession(token, exerciseId, '2026-07-06');
+    await markRestDay(token, '2026-07-07');
+    await logSession(token, exerciseId, '2026-07-08');
+
+    const streak = await getTrainingStreak(token);
+
+    expect(streak?.currentStreak).toBe(3);
+    expect(streak?.longestStreak).toBe(3);
+  });
+
+  it('combines rest day and grace gap in same week', async () => {
+    const token = await createStudent();
+    const exerciseId = await createExercise(token);
+
+    await logSession(token, exerciseId, '2026-07-06');
+    await markRestDay(token, '2026-07-07');
+    await logSession(token, exerciseId, '2026-07-09');
+
+    const streak = await getTrainingStreak(token);
+
+    expect(streak?.currentStreak).toBe(3);
+    expect(streak?.graceGapsUsed).toBe(1);
+  });
+
+  it('starts training streak at 1 for rest-only day', async () => {
+    const token = await createStudent();
+
+    const response = await markRestDay(token, '2026-07-07');
+    expect(response.status).toBe(201);
+
+    const streak = await getTrainingStreak(token);
+
+    expect(streak?.currentStreak).toBe(1);
+    expect(streak?.longestStreak).toBe(1);
+  });
+
+  it('POST /api/progress/training-rest-days upserts idempotently', async () => {
+    const token = await createStudent();
+
+    const first = await markRestDay(token, '2026-07-07');
+    const second = await markRestDay(token, '2026-07-07');
+
+    expect(first.status).toBe(201);
+    expect(second.status).toBe(201);
+    expect(first.body.id).toBe(second.body.id);
+
+    const count = await prisma.progressTrainingRestDay.count({
+      where: { userId: first.body.userId },
+    });
+    expect(count).toBe(1);
+  });
+
+  it('GET /api/progress/training-rest-days returns rest days in range', async () => {
+    const token = await createStudent();
+
+    await markRestDay(token, '2026-07-05');
+    await markRestDay(token, '2026-07-07');
+
+    const response = await request(app.getHttpServer())
+      .get('/api/progress/training-rest-days?from=2026-07-01&to=2026-07-06')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0].restDate).toBe('2026-07-05');
+    expect(response.body[0].source).toBe('explicit');
+  });
+
+  it('increments training streak on session and resets after skipped day', async () => {
+    const token = await createStudent();
+    const exerciseId = await createExercise(token);
+
+    await logSession(token, exerciseId, '2026-07-05');
+    await logSession(token, exerciseId, '2026-07-06');
+    await logSession(token, exerciseId, '2026-07-08');
+    await logSession(token, exerciseId, '2026-07-10');
+
+    const streak = await getTrainingStreak(token);
+
+    expect(streak?.currentStreak).toBe(1);
+    expect(streak?.longestStreak).toBe(3);
   });
 
   it('GET /api/progress/streaks returns current and longest streaks', async () => {
