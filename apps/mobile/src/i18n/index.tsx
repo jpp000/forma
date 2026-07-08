@@ -73,7 +73,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       setLocale,
       t,
     }),
-    [locale, t],
+    [locale, t, setLocale],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
