@@ -69,3 +69,24 @@ const light: FormaColors = {
 };
 
 export const palettes = { dark, light } as const;
+
+export const ringConfig = [
+  {
+    key: 'move' as const,
+    color: brand.move,
+    track: 'rgba(250,17,79,0.22)',
+    label: brand.moveLabel,
+  },
+  {
+    key: 'exercise' as const,
+    color: brand.exercise,
+    track: 'rgba(146,232,42,0.22)',
+    label: brand.exercise,
+  },
+  {
+    key: 'stand' as const,
+    color: brand.stand,
+    track: 'rgba(30,228,225,0.22)',
+    label: brand.stand,
+  },
+] as const;
