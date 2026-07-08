@@ -1,6 +1,6 @@
 generator client {
   provider     = "prisma-client"
-  output       = "../generated/prisma"
+  output       = "../apps/api/src/generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -21,9 +21,10 @@ model IdentityUser {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  sessions      IdentitySession[]
-  oauthAccounts IdentityOAuthAccount[]
-  studentProfile StudentProfile?
+  sessions           IdentitySession[]
+  oauthAccounts      IdentityOAuthAccount[]
+  studentProfile     StudentProfile?
+  trainingRestDays   ProgressTrainingRestDay[]
 
   @@map("identity_users")
 }
@@ -228,16 +229,32 @@ model ProgressWeightEntry {
 }
 
 model ProgressStreak {
-  id            String   @id @default(cuid())
-  userId        String   @map("user_id")
-  streakType    String   @map("streak_type")
-  currentStreak Int      @default(0) @map("current_streak")
-  longestStreak Int      @default(0) @map("longest_streak")
+  id             String    @id @default(cuid())
+  userId         String    @map("user_id")
+  streakType     String    @map("streak_type")
+  currentStreak  Int       @default(0) @map("current_streak")
+  longestStreak  Int       @default(0) @map("longest_streak")
   lastActiveDate DateTime? @map("last_active_date") @db.Date
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  graceWeekKey   String?   @map("grace_week_key")
+  graceGapsUsed  Int       @default(0) @map("grace_gaps_used")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
   @@unique([userId, streakType])
   @@map("progress_streaks")
+}
+
+model ProgressTrainingRestDay {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  restDate  DateTime @map("rest_date") @db.Date
+  source    String   @default("explicit")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user IdentityUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, restDate])
+  @@index([userId, restDate])
+  @@map("progress_training_rest_days")
 }
 
 model CoachingProfessionalProfile {

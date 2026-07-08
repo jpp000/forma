@@ -14,27 +14,34 @@ Plataforma integrada de saúde, treino e nutrição.
 
 ## Desenvolvimento local
 
+### Docker (recomendado)
+
+Deps ficam na imagem/volume do Docker — **não mistura** com `node_modules` do Mac.
+
 ```bash
-# 1. Subir Postgres e Redis
-docker compose up -d
+# primeira vez ou quando mudar package.json
+docker compose up --build
 
-# 2. Instalar dependências
-pnpm install
-
-# 3. Configurar ambiente
-cp .env.example .env
-
-# 4. Rodar migrations
-pnpm db:migrate
-
-# 5. Subir API e worker
-pnpm dev
+# depois disso, sobe rápido
+docker compose up
 ```
 
-Endpoints locais:
+- API: `http://localhost:3000`
+- No terminal do `mobile`: `i` (iOS) ou `a` (Android)
 
-- `GET http://localhost:3000/api/health` — liveness
-- `GET http://localhost:3000/api/ready` — readiness (testa Postgres)
+Se mudou dependências: `docker compose build --no-cache && docker compose up`
+
+### Sem Docker (apps no Mac)
+
+```bash
+docker compose up -d postgres
+pnpm install
+cp .env.example .env
+pnpm db:migrate
+pnpm --filter @forma/api dev
+# outro terminal
+pnpm --filter @forma/mobile dev
+```
 
 ## Deploy no Render
 

@@ -5,7 +5,7 @@ import { getWiredIdentityApi, mapApiError } from '../../src/api';
 import type { OAuthProvider } from '../../src/api/identity';
 import { isValidEmail } from '../../src/auth/validators';
 import { useT } from '../../src/i18n';
-import { OAuthCancelledError, startOAuth, useSession } from '../../src/session';
+import { OAuthCancelledError, devMockSignIn, startOAuth, useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
 import {
   InlineError,
@@ -55,8 +55,9 @@ export default function AuthIndexScreen() {
   const [formError, setFormError] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<OAuthProvider | null>(null);
+  const [devMockLoading, setDevMockLoading] = useState(false);
 
-  const isBusy = isSubmitting || oauthLoading !== null;
+  const isBusy = isSubmitting || oauthLoading !== null || devMockLoading;
 
   function handleEmailChange(value: string) {
     setEmail(value);
@@ -110,6 +111,20 @@ export default function AuthIndexScreen() {
       }
     } finally {
       setOauthLoading(null);
+    }
+  }
+
+  async function handleDevMockLogin() {
+    setDevMockLoading(true);
+    setFormError(undefined);
+
+    try {
+      const accessToken = await devMockSignIn();
+      await signIn(accessToken);
+    } catch {
+      setFormError(t('auth.devMockFailed'));
+    } finally {
+      setDevMockLoading(false);
     }
   }
 
@@ -177,6 +192,25 @@ export default function AuthIndexScreen() {
         loading={isSubmitting}
         disabled={isBusy && !isSubmitting}
       />
+
+      {__DEV__ ? (
+        <Pressable
+          accessibilityRole="button"
+          disabled={isBusy}
+          onPress={() => void handleDevMockLogin()}
+          style={({ pressed }) => [
+            styles.devMockButton,
+            {
+              borderColor: colors.separator,
+              opacity: isBusy ? 0.5 : pressed ? 0.85 : 1,
+            },
+          ]}
+        >
+          <Text style={[typography.footnote, { color: colors.labelTertiary }]}>
+            {devMockLoading ? t('common.loading') : t('auth.devMockLogin')}
+          </Text>
+        </Pressable>
+      ) : null}
     </Screen>
   );
 }
@@ -208,5 +242,14 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
+  },
+  devMockButton: {
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 14,
+    borderStyle: 'dashed',
   },
 });

@@ -1,7 +1,15 @@
+x-app-volumes: &app-volumes
+  - .:/app
+  - dev_node_modules:/app/node_modules
+  - dev_api_node_modules:/app/apps/api/node_modules
+  - dev_mobile_node_modules:/app/apps/mobile/node_modules
+  - dev_worker_node_modules:/app/apps/worker/node_modules
+  - dev_types_node_modules:/app/packages/types/node_modules
+  - dev_config_node_modules:/app/packages/config/node_modules
+
 services:
   postgres:
     image: postgres:16-alpine
-    restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
@@ -12,20 +20,69 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U forma -d forma"]
-      interval: 5s
-      timeout: 5s
+      interval: 3s
+      timeout: 3s
       retries: 10
 
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
     ports:
-      - "6379:6379"
+      - "3000:3000"
+    environment:
+      CI: "true"
+      DATABASE_URL: postgresql://forma:forma@postgres:5432/forma
+      PORT: "3000"
+      NODE_ENV: development
+      EMAIL_PROVIDER: mock
+      JWT_SECRET: dev-secret-change-in-production
+      OAUTH_MOCK: "true"
+      OAUTH_MOBILE_SUCCESS_URL: forma://oauth
+      RUN_MIGRATIONS: "true"
+    volumes: *app-volumes
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"fetch('http://127.0.0.1:3000/api/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))\"",
+        ]
       interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 15
+      start_period: 25s
+    command: ["pnpm", "--filter", "@forma/api", "dev"]
+
+  mobile:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    stdin_open: true
+    tty: true
+    ports:
+      - "8081:8081"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment:
+      EXPO_PUBLIC_API_URL: http://localhost:3000
+      EXPO_PUBLIC_OAUTH_SUCCESS_URL: forma://oauth
+      REACT_NATIVE_PACKAGER_HOSTNAME: localhost
+      CHOKIDAR_USEPOLLING: "true"
+    volumes: *app-volumes
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["pnpm", "--filter", "@forma/mobile", "dev"]
 
 volumes:
   postgres_data:
+  dev_node_modules:
+  dev_api_node_modules:
+  dev_mobile_node_modules:
+  dev_worker_node_modules:
+  dev_types_node_modules:
+  dev_config_node_modules:

@@ -5,7 +5,9 @@ import {
   Headers,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -47,6 +49,16 @@ export class IdentityController {
   @ApiOkResponse({ type: AuthResponseDto })
   async verifyOtp(@Body() body: VerifyOtpDto): Promise<AuthResponseDto> {
     return this.identityService.verifyOtp(body.email, body.code);
+  }
+
+  @Get('otp/dev-last')
+  @ApiOperation({ summary: 'Dev only: read last mock OTP for an email' })
+  async devLastOtp(@Query('email') email: string): Promise<{ code: string }> {
+    const code = this.identityService.getDevMockOtp(email);
+    if (!code) {
+      throw new NotFoundException();
+    }
+    return { code };
   }
 
   @Get('me')

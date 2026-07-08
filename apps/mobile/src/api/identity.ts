@@ -32,6 +32,12 @@ export function createIdentityApi(api: ApiClient) {
       return api.request('/api/identity/me');
     },
 
+    devLastOtp(email: string): Promise<{ code: string }> {
+      return api.request(
+        `/api/identity/otp/dev-last?email=${encodeURIComponent(email)}`,
+      );
+    },
+
     /**
      * Builds the OAuth start URL. Callers open this via AuthSession / browser.
      * Pass platform=mobile when requesting the mobile redirect handoff (T19).

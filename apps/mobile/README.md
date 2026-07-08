@@ -31,6 +31,8 @@ Press `i` / `a` for iOS/Android simulator, or scan QR in Expo Go.
 
 **Dev auth:** API `OAUTH_MOCK=true` enables mock OAuth; email OTP uses `EMAIL_PROVIDER=mock` in test/dev.
 
+In `__DEV__` builds, the login screen shows **Dev: quick sign-in (mock)** — one tap through the same mock OAuth endpoints as e2e (`oauth-test@example.com`). No extra API routes; requires mock mode on the API.
+
 ## Quality gates
 
 ```bash

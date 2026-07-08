@@ -80,3 +80,26 @@ export async function startOAuth(provider: OAuthProvider): Promise<string> {
 
   return body.accessToken;
 }
+
+/**
+ * Dev-only: signs in via the API's existing OAuth mock flow (no browser).
+ * Uses the same endpoints as e2e — requires API mock mode (OAUTH_MOCK=true or no GOOGLE_CLIENT_ID).
+ * Stripped from production builds via __DEV__ guard in UI.
+ */
+export async function devMockSignIn(): Promise<string> {
+  const baseUrl = resolveApiBaseUrl();
+  const response = await fetch(`${baseUrl}/api/identity/oauth/google`);
+
+  if (!response.ok) {
+    throw new OAuthFailedError(
+      'Dev mock login requires API OAuth mock mode (OAUTH_MOCK=true)',
+    );
+  }
+
+  const body = (await response.json()) as AuthResponse;
+  if (!body.accessToken) {
+    throw new OAuthFailedError('Missing accessToken');
+  }
+
+  return body.accessToken;
+}

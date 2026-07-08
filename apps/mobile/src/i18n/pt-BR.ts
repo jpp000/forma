@@ -26,6 +26,10 @@ const ptBR = {
   'auth.oauthFacebook': 'Continuar com Facebook',
   'auth.oauthFailed': 'Não foi possível entrar com este provedor.',
   'auth.oauthCancelled': 'Login cancelado.',
+  'auth.devMockLogin': 'Dev: entrar rápido (mock)',
+  'auth.devMockFailed':
+    'Mock indisponível. API precisa de OAUTH_MOCK=true ou sem GOOGLE_CLIENT_ID.',
+  'auth.devOtpFill': 'Dev: usar código mock',
   'onboarding.profileTitle': 'Seu perfil',
   'onboarding.profileSubtitle':
     'Precisamos de alguns dados para personalizar o Forma.',

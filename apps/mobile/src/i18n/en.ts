@@ -28,6 +28,10 @@ const en: Record<TranslationKey, string> = {
   'auth.oauthFacebook': 'Continue with Facebook',
   'auth.oauthFailed': 'Could not sign in with this provider.',
   'auth.oauthCancelled': 'Sign-in cancelled.',
+  'auth.devMockLogin': 'Dev: quick sign-in (mock)',
+  'auth.devMockFailed':
+    'Mock unavailable. API needs OAUTH_MOCK=true or no GOOGLE_CLIENT_ID.',
+  'auth.devOtpFill': 'Dev: use mock code',
   'onboarding.profileTitle': 'Your profile',
   'onboarding.profileSubtitle': 'We need a few details to personalize Forma.',
   'onboarding.age': 'Age',

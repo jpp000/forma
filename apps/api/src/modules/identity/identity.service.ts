@@ -12,6 +12,7 @@ import type { SupportedLocale } from '../../i18n/i18n.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { EmailProvider } from './email/email-provider.interface';
 import { EMAIL_PROVIDER } from './email/email-provider.interface';
+import { MockEmailProvider } from './email/mock-email.provider';
 
 const OTP_TTL_MS = 10 * 60 * 1000;
 const OTP_RATE_WINDOW_MS = 15 * 60 * 1000;
@@ -24,7 +25,19 @@ export class IdentityService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     @Inject(EMAIL_PROVIDER) private readonly emailProvider: EmailProvider,
+    private readonly mockEmail: MockEmailProvider,
   ) {}
+
+  getDevMockOtp(email: string): string | undefined {
+    if (
+      process.env.NODE_ENV === 'production' ||
+      (process.env.EMAIL_PROVIDER ?? 'mock') !== 'mock'
+    ) {
+      return undefined;
+    }
+
+    return this.mockEmail.getLastCode(email);
+  }
 
   async requestOtp(email: string, locale: SupportedLocale): Promise<void> {
     const normalizedEmail = email.toLowerCase().trim();

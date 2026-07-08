@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+.git
+.turbo
+**/.turbo
+**/.expo
+**/.expo-export-test
+**/dist
+apps/mobile/.env
+.env
+.env.*
+!.env.example
+!apps/mobile/.env.example
+coverage
+**/*.log
+.DS_Store

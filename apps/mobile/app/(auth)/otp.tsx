@@ -83,6 +83,23 @@ export default function OtpScreen() {
     }
   }
 
+  async function handleDevOtpFill() {
+    if (!emailAddress) {
+      return;
+    }
+
+    setFormError(undefined);
+
+    try {
+      const { code: mockCode } =
+        await getWiredIdentityApi().devLastOtp(emailAddress);
+      setCode(mockCode);
+      setCodeError(undefined);
+    } catch {
+      setFormError(t('auth.otpInvalid'));
+    }
+  }
+
   if (!emailAddress) {
     return (
       <Screen style={styles.content}>
@@ -133,6 +150,19 @@ export default function OtpScreen() {
           {isResending ? t('common.loading') : t('auth.otpResend')}
         </Text>
       </Pressable>
+
+      {__DEV__ ? (
+        <Pressable
+          accessibilityRole="button"
+          disabled={isSubmitting || isResending}
+          onPress={() => void handleDevOtpFill()}
+          style={styles.resend}
+        >
+          <Text style={[typography.footnote, { color: colors.labelTertiary }]}>
+            {t('auth.devOtpFill')}
+          </Text>
+        </Pressable>
+      ) : null}
     </Screen>
   );
 }
