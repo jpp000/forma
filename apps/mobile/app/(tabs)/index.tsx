@@ -1,35 +1,60 @@
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTranslation } from '@/src/i18n';
 import { spacing } from '@/src/theme/tokens';
+import { type } from '@/src/theme/typography';
 import { useFormaTheme } from '@/src/theme/useFormaTheme';
 
 export default function IndexScreen() {
   const theme = useFormaTheme();
   const { t, locale } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.bg }]}>
-      <Text style={[styles.title, { color: theme.colors.ink }]}>Forma</Text>
-      <Text style={[styles.subtitle, { color: theme.colors.inkSecondary }]}>
-        {locale === 'pt-BR' ? 'Protótipo de UI — Home' : 'UI prototype — Home'}
-      </Text>
-
-      <Pressable
-        style={{ ...styles.cta, backgroundColor: theme.colors.primary }}
-        accessibilityRole="button"
-        onPress={() => router.push('/prototype/home?variant=A')}
-      >
-        <Text style={styles.ctaText}>
-          {locale === 'pt-BR' ? 'Ver variações da Home' : 'View Home variants'}
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.colors.bg,
+          paddingTop: insets.top + spacing.xxxl,
+          paddingBottom: insets.bottom + spacing.xl,
+        },
+      ]}
+    >
+      <View style={styles.brand}>
+        <View style={[styles.mark, { backgroundColor: theme.colors.primary }]} />
+        <Text style={[type.largeTitle, styles.wordmark, { color: theme.colors.ink }]}>Forma</Text>
+        <Text style={[type.body, styles.tagline, { color: theme.colors.inkSecondary }]}>
+          {locale === 'pt-BR'
+            ? 'Treino, nutrição e progresso em um só lugar.'
+            : 'Training, nutrition and progress in one place.'}
         </Text>
-      </Pressable>
+      </View>
 
-      <Text style={[styles.hint, { color: theme.colors.inkSecondary }]}>
-        A — {t.prototype.variantA} · B — {t.prototype.variantB} · C — {t.prototype.variantC}
-      </Text>
+      <View style={styles.footer}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.cta,
+            {
+              backgroundColor: theme.colors.primary,
+              opacity: pressed ? 0.9 : 1,
+            },
+          ]}
+          accessibilityRole="button"
+          onPress={() => router.push('/prototype/home?variant=A')}
+        >
+          <Text style={styles.ctaText}>
+            {locale === 'pt-BR' ? 'Explorar Home' : 'Explore Home'}
+          </Text>
+        </Pressable>
+
+        <Text style={[type.caption, styles.hint, { color: theme.colors.inkTertiary }]}>
+          A · {t.prototype.variantA}  ·  B · {t.prototype.variantB}  ·  C · {t.prototype.variantC}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -37,21 +62,45 @@ export default function IndexScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xl,
-    gap: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    justifyContent: 'space-between',
   },
-  title: { fontSize: 40, fontWeight: '800', letterSpacing: -0.5 },
-  subtitle: { fontSize: 17, textAlign: 'center' },
+  brand: {
+    gap: spacing.md,
+    paddingTop: spacing.xxxl,
+  },
+  mark: {
+    width: 28,
+    height: 4,
+    borderRadius: 2,
+    marginBottom: spacing.xs,
+  },
+  wordmark: {
+    letterSpacing: -0.5,
+  },
+  tagline: {
+    maxWidth: 280,
+    lineHeight: 24,
+  },
+  footer: {
+    gap: spacing.lg,
+    alignItems: 'stretch',
+  },
   cta: {
     borderRadius: 999,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    minHeight: 50,
+    paddingVertical: 16,
+    minHeight: 52,
+    alignItems: 'center',
     justifyContent: 'center',
-    marginTop: spacing.md,
   },
-  ctaText: { color: '#000000', fontSize: 16, fontWeight: '700' },
-  hint: { fontSize: 13, textAlign: 'center', lineHeight: 20 },
+  ctaText: {
+    color: '#000000',
+    fontSize: 17,
+    fontWeight: '600',
+    letterSpacing: -0.41,
+  },
+  hint: {
+    textAlign: 'center',
+    lineHeight: 18,
+  },
 });

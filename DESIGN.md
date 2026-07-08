@@ -19,7 +19,9 @@
 | `surface` | `#F5F5F7` | `#1C1C1E` | Cards, sheets, tab bar |
 | `surfaceElevated` | `#FFFFFF` | `#2C2C2E` | Cards elevados no escuro |
 | `ink` | `#1D1D1F` | `#F5F5F7` | Texto primário |
-| `inkSecondary` | `rgba(29,29,31,0.6)` | `rgba(245,245,247,0.6)` | Labels, metadados |
+| `inkSecondary` | `rgba(60,60,67,0.6)` | `rgba(235,235,245,0.6)` | Labels, metadados |
+| `inkTertiary` | `rgba(60,60,67,0.3)` | `rgba(235,235,245,0.3)` | Hints, chevrons |
+| `separator` | `rgba(60,60,67,0.12)` | `rgba(84,84,88,0.65)` | Divisores em grouped lists |
 | `primary` | `#30D158` | `#30D158` | Marca, CTAs, tab ativa, guidance, streak |
 | `training` | `#FFD60A` | `#FFD60A` | Treino, energia, anel Move |
 | `nutrition` | `#FF9F0A` | `#FF9F0A` | Nutrição, refeições, macros |
@@ -47,14 +49,16 @@
 ## Component Stylings
 
 ### Buttons
-- **Primary:** fundo `primary`, texto `#000000` (contraste no verde), pill `borderRadius: 999`, min height 50
-- **Secondary:** fundo `surface`, texto `ink`, borda `border`
-- **Domain:** usar `training` / `nutrition` / `progress` apenas em CTAs contextuais
+- **Primary:** fundo `primary`, texto `#000000`, pill, min height 50
+- **Secondary:** fundo `surface` / `surfaceElevated`, borda hairline
+- **Ghost:** texto `primary`, sem fundo — ações secundárias
+- **Domain colors** só em anéis, dots de lista e barras de progresso — nunca em CTAs
 
-### Cards
-- `surface` ou `surfaceElevated`, radius 16, padding 16
-- Sem cards aninhados
-- Guidance: borda esquerda 3px `primary` ou fundo `primary` com opacidade 12%
+### Cards & Lists
+- Preferir **grouped lists** estilo iOS (radius 14, `surface` / `surfaceElevated`)
+- Separadores inset à esquerda do texto
+- Sem cards aninhados, sem bordas laterais coloridas
+- Guidance como row dentro de grouped section, não hero colorido
 
 ### Activity Rings
 - Track: cor do domínio a 22% opacidade

@@ -1,10 +1,15 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActivityRing } from '@/src/components/ActivityRing';
+import { FormaButton } from '@/src/components/ui/FormaButton';
+import { GroupedSection, GroupedSeparator } from '@/src/components/ui/GroupedSection';
+import { ListRow } from '@/src/components/ui/ListRow';
 import type { Translation } from '@/src/i18n';
 import type { HomeMockData } from '@/src/prototype/home/mockData';
-import { radius, spacing } from '@/src/theme/tokens';
+import { ringTrack } from '@/src/theme/color';
+import { spacing } from '@/src/theme/tokens';
+import { type } from '@/src/theme/typography';
 import type { FormaTheme } from '@/src/theme/useFormaTheme';
 
 interface VariantProps {
@@ -13,99 +18,110 @@ interface VariantProps {
   t: Translation;
 }
 
-function trackColor(hex: string) {
-  return `${hex}38`;
-}
-
 export function VariantA({ data, theme, t }: VariantProps) {
   const insets = useSafeAreaInsets();
-  const { colors } = theme;
+  const { colors, isDark } = theme;
 
   return (
     <ScrollView
       style={[styles.screen, { backgroundColor: colors.bg }]}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.xl }]}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+      showsVerticalScrollIndicator={false}
     >
-      <View style={styles.headerRow}>
-        <View>
-          <Text style={[styles.greeting, { color: colors.inkSecondary }]}>
-            {t.home.greeting}, {data.userName}
-          </Text>
-          <Text style={[styles.display, { color: colors.ink }]}>{data.dateLabel}</Text>
-        </View>
-        <View style={[styles.streakBadge, { backgroundColor: `${colors.primary}22` }]}>
-          <Text style={[styles.streakNum, { color: colors.primary }]}>{data.streak}</Text>
-          <Text style={[styles.streakLabel, { color: colors.primary }]}>{t.home.streak}</Text>
-        </View>
-      </View>
-
-      <View style={styles.ringsRow}>
-        <ActivityRing
-          size={100}
-          strokeWidth={12}
-          progress={data.rings.training.value}
-          color={colors.training}
-          trackColor={trackColor(colors.training)}
-          label={data.rings.training.label}
-          detail={data.rings.training.detail}
-          theme={theme}
-        />
-        <ActivityRing
-          size={100}
-          strokeWidth={12}
-          progress={data.rings.nutrition.value}
-          color={colors.nutrition}
-          trackColor={trackColor(colors.nutrition)}
-          label={data.rings.nutrition.label}
-          detail={data.rings.nutrition.detail}
-          theme={theme}
-        />
-        <ActivityRing
-          size={100}
-          strokeWidth={12}
-          progress={data.rings.progress.value}
-          color={colors.progress}
-          trackColor={trackColor(colors.progress)}
-          label={data.rings.progress.label}
-          detail={data.rings.progress.detail}
-          theme={theme}
-        />
+      <View style={styles.header}>
+        <Text style={[type.largeTitle, { color: colors.ink }]}>{data.dateLabel}</Text>
+        <Text style={[type.subhead, { color: colors.inkSecondary }]}>
+          {t.home.greeting}, {data.userName}
+        </Text>
       </View>
 
       <View
         style={[
-          styles.guidanceCard,
+          styles.ringsPlate,
           {
-            backgroundColor: colors.surface,
-            borderLeftColor: colors.primary,
+            backgroundColor: isDark ? colors.surface : colors.surfaceElevated,
+            borderColor: colors.border,
           },
         ]}
       >
-        <Text style={[styles.cardEyebrow, { color: colors.primary }]}>{t.home.guidance}</Text>
-        <Text style={[styles.body, { color: colors.ink }]}>{data.guidanceMessage}</Text>
+        <View style={styles.ringsRow}>
+          <ActivityRing
+            size={108}
+            strokeWidth={11}
+            progress={data.rings.training.value}
+            color={colors.training}
+            trackColor={ringTrack(colors.training, isDark)}
+            label={data.rings.training.label}
+            detail={data.rings.training.detail}
+            theme={theme}
+          />
+          <ActivityRing
+            size={108}
+            strokeWidth={11}
+            progress={data.rings.nutrition.value}
+            color={colors.nutrition}
+            trackColor={ringTrack(colors.nutrition, isDark)}
+            label={data.rings.nutrition.label}
+            detail={data.rings.nutrition.detail}
+            theme={theme}
+          />
+          <ActivityRing
+            size={108}
+            strokeWidth={11}
+            progress={data.rings.progress.value}
+            color={colors.progress}
+            trackColor={ringTrack(colors.progress, isDark)}
+            label={data.rings.progress.label}
+            detail={data.rings.progress.detail}
+            theme={theme}
+          />
+        </View>
+        <View style={[styles.streakRow, { borderTopColor: colors.separator }]}>
+          <Text style={[type.footnote, { color: colors.inkSecondary }]}>{t.home.streak}</Text>
+          <Text style={[type.metric, { color: colors.primary }]}>{data.streak}</Text>
+        </View>
       </View>
 
-      <View style={styles.actionsRow}>
-        <Pressable
-          style={[styles.actionBtn, { backgroundColor: colors.training }]}
-          accessibilityRole="button"
-        >
-          <Text style={styles.actionBtnTextDark}>{t.home.startWorkout}</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.actionBtn, { backgroundColor: colors.nutrition }]}
-          accessibilityRole="button"
-        >
-          <Text style={styles.actionBtnTextDark}>{t.home.logMeal}</Text>
-        </Pressable>
-      </View>
+      <GroupedSection title={t.home.guidance} theme={theme}>
+        <ListRow
+          theme={theme}
+          title={data.guidanceMessage}
+          accentColor={colors.primary}
+        />
+      </GroupedSection>
 
-      <View style={[styles.summaryCard, { backgroundColor: colors.surface }]}>
-        <Text style={[styles.cardTitle, { color: colors.ink }]}>{data.workout.name}</Text>
-        <Text style={[styles.caption, { color: colors.inkSecondary }]}>
-          {data.workout.setsDone}/{data.workout.setsTotal} {t.home.sets} ·{' '}
-          {data.macros.calories.consumed}/{data.macros.calories.target} {t.home.kcal}
-        </Text>
+      <GroupedSection title={t.home.today} theme={theme}>
+        <ListRow
+          theme={theme}
+          title={data.workout.name}
+          subtitle={`${data.workout.setsDone}/${data.workout.setsTotal} ${t.home.sets}`}
+          value={`${Math.round(data.rings.training.value * 100)}%`}
+          accentColor={colors.training}
+          showChevron
+        />
+        <GroupedSeparator theme={theme} />
+        <ListRow
+          theme={theme}
+          title={t.home.nutrition}
+          subtitle={`${data.macros.calories.consumed} / ${data.macros.calories.target} ${t.home.kcal}`}
+          value={`${data.macros.protein.consumed}g`}
+          accentColor={colors.nutrition}
+          showChevron
+        />
+        <GroupedSeparator theme={theme} />
+        <ListRow
+          theme={theme}
+          title={t.home.progress}
+          subtitle={`${data.weight.delta > 0 ? '+' : ''}${data.weight.delta} ${t.home.kg} ${t.home.thisWeek}`}
+          value={`${data.weight.current}`}
+          accentColor={colors.progress}
+          showChevron
+        />
+      </GroupedSection>
+
+      <View style={styles.actions}>
+        <FormaButton theme={theme} label={t.home.startWorkout} variant="primary" />
+        <FormaButton theme={theme} label={t.home.logMeal} variant="ghost" />
       </View>
     </ScrollView>
   );
@@ -113,43 +129,32 @@ export function VariantA({ data, theme, t }: VariantProps) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: { paddingHorizontal: spacing.xl, paddingBottom: 120, gap: spacing.xxl },
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  greeting: { fontSize: 15, marginBottom: 4 },
-  display: { fontSize: 34, fontWeight: '700' },
-  streakBadge: {
-    borderRadius: radius.lg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    alignItems: 'center',
-    minWidth: 72,
+  content: {
+    paddingHorizontal: spacing.xl,
+    paddingBottom: 120,
+    gap: spacing.xxl,
   },
-  streakNum: { fontSize: 28, fontWeight: '700', fontVariant: ['tabular-nums'] },
-  streakLabel: { fontSize: 11, fontWeight: '600', textTransform: 'uppercase' },
+  header: { gap: 4 },
+  ringsPlate: {
+    borderRadius: 20,
+    paddingTop: spacing.xxl,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.md,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
   ringsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.sm,
+    justifyContent: 'space-around',
+    paddingHorizontal: spacing.xs,
   },
-  guidanceCard: {
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    borderLeftWidth: 3,
-    gap: spacing.sm,
-  },
-  cardEyebrow: { fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
-  body: { fontSize: 17, lineHeight: 24 },
-  actionsRow: { flexDirection: 'row', gap: spacing.md },
-  actionBtn: {
-    flex: 1,
-    borderRadius: radius.pill,
-    paddingVertical: 14,
+  streakRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 50,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginTop: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
-  actionBtnTextDark: { color: '#1D1D1F', fontSize: 15, fontWeight: '700' },
-  summaryCard: { borderRadius: radius.lg, padding: spacing.lg, gap: 4 },
-  cardTitle: { fontSize: 17, fontWeight: '600' },
-  caption: { fontSize: 13 },
+  actions: { gap: spacing.sm, marginTop: spacing.xs },
 });

@@ -17,6 +17,7 @@ export const en = {
     sets: 'sets',
     kg: 'kg',
     thisWeek: 'this week',
+    protein: 'protein',
   },
   guidance: {
     training_needed: 'You have not trained recently. Schedule a workout today.',

@@ -24,6 +24,7 @@ export type Translation = {
     sets: string;
     kg: string;
     thisWeek: string;
+    protein: string;
   };
   guidance: {
     training_needed: string;

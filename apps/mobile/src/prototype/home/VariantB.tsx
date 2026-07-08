@@ -1,9 +1,13 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FormaButton } from '@/src/components/ui/FormaButton';
+import { GroupedSection, GroupedSeparator } from '@/src/components/ui/GroupedSection';
+import { ListRow } from '@/src/components/ui/ListRow';
 import type { Translation } from '@/src/i18n';
 import type { HomeMockData } from '@/src/prototype/home/mockData';
-import { radius, spacing } from '@/src/theme/tokens';
+import { spacing } from '@/src/theme/tokens';
+import { type } from '@/src/theme/typography';
 import type { FormaTheme } from '@/src/theme/useFormaTheme';
 
 interface VariantProps {
@@ -12,22 +16,33 @@ interface VariantProps {
   t: Translation;
 }
 
-function StatChip({
-  label,
-  value,
-  color,
+function MacroBar({
   theme,
+  label,
+  consumed,
+  target,
+  color,
+  unit,
 }: {
-  label: string;
-  value: string;
-  color: string;
   theme: FormaTheme;
+  label: string;
+  consumed: number;
+  target: number;
+  color: string;
+  unit: string;
 }) {
+  const pct = Math.min(1, consumed / target);
   return (
-    <View style={[styles.chip, { backgroundColor: theme.colors.surface }]}>
-      <View style={[styles.chipDot, { backgroundColor: color }]} />
-      <Text style={[styles.chipLabel, { color: theme.colors.inkSecondary }]}>{label}</Text>
-      <Text style={[styles.chipValue, { color: theme.colors.ink }]}>{value}</Text>
+    <View style={styles.macroBlock}>
+      <View style={styles.macroHeader}>
+        <Text style={[type.subhead, { color: theme.colors.ink }]}>{label}</Text>
+        <Text style={[type.footnote, { color: theme.colors.inkSecondary, fontVariant: ['tabular-nums'] }]}>
+          {consumed}/{target} {unit}
+        </Text>
+      </View>
+      <View style={[styles.track, { backgroundColor: theme.isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' }]}>
+        <View style={[styles.fill, { backgroundColor: color, width: `${pct * 100}%` }]} />
+      </View>
     </View>
   );
 }
@@ -35,100 +50,81 @@ function StatChip({
 export function VariantB({ data, theme, t }: VariantProps) {
   const insets = useSafeAreaInsets();
   const { colors } = theme;
-  const kcalLeft = data.macros.calories.target - data.macros.calories.consumed;
 
   return (
     <ScrollView
       style={[styles.screen, { backgroundColor: colors.bg }]}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.xl }]}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+      showsVerticalScrollIndicator={false}
     >
+      <View style={styles.hero}>
+        <Text style={[type.footnote, { color: colors.inkSecondary }]}>
+          {t.home.greeting}, {data.userName}
+        </Text>
+        <Text style={[type.title2, styles.guidanceLead, { color: colors.ink }]}>
+          {data.guidanceMessage}
+        </Text>
+        <View style={styles.streakBlock}>
+          <Text style={[type.metricLarge, { color: colors.ink }]}>{data.streak}</Text>
+          <Text style={[type.subhead, { color: colors.inkSecondary }]}>{t.home.streak}</Text>
+        </View>
+      </View>
+
+      <View style={styles.ctaBlock}>
+        <FormaButton theme={theme} label={t.home.startWorkout} variant="primary" />
+        <FormaButton theme={theme} label={t.home.logMeal} variant="secondary" />
+      </View>
+
+      <GroupedSection title={t.home.today} theme={theme}>
+        <ListRow
+          theme={theme}
+          title={data.workout.name}
+          subtitle={data.rings.training.detail}
+          accentColor={colors.training}
+          showChevron
+        />
+        <GroupedSeparator theme={theme} />
+        <ListRow
+          theme={theme}
+          title={t.home.nutrition}
+          subtitle={`${data.macros.protein.consumed}g ${t.home.protein}`}
+          accentColor={colors.nutrition}
+          showChevron
+        />
+        <GroupedSeparator theme={theme} />
+        <ListRow
+          theme={theme}
+          title={t.home.progress}
+          subtitle={`${data.weight.current} ${t.home.kg}`}
+          accentColor={colors.progress}
+          showChevron
+        />
+      </GroupedSection>
+
       <View
         style={[
-          styles.hero,
+          styles.macroCard,
           {
-            backgroundColor: theme.isDark ? '#0A1F12' : '#E8F9EE',
-            borderColor: `${colors.primary}44`,
+            backgroundColor: theme.isDark ? colors.surfaceElevated : colors.surface,
           },
         ]}
       >
-        <View style={styles.heroTop}>
-          <Text style={[styles.heroEyebrow, { color: colors.primary }]}>{t.home.guidance}</Text>
-          <View style={styles.streakInline}>
-            <Text style={[styles.streakBig, { color: colors.primary }]}>{data.streak}</Text>
-            <Text style={[styles.streakSmall, { color: colors.primary }]}>{t.home.streak}</Text>
-          </View>
-        </View>
-        <Text style={[styles.heroMessage, { color: colors.ink }]}>{data.guidanceMessage}</Text>
-        <Text style={[styles.heroMeta, { color: colors.inkSecondary }]}>
-          {t.home.greeting}, {data.userName} · {data.dateLabel}
-        </Text>
-      </View>
-
-      <View style={styles.ctaStack}>
-        <Pressable
-          style={[styles.ctaPrimary, { backgroundColor: colors.primary }]}
-          accessibilityRole="button"
-        >
-          <Text style={styles.ctaPrimaryText}>{t.home.startWorkout}</Text>
-          <Text style={styles.ctaSubtext}>{data.workout.name}</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.ctaSecondary, { backgroundColor: colors.surface, borderColor: colors.border }]}
-          accessibilityRole="button"
-        >
-          <Text style={[styles.ctaSecondaryText, { color: colors.ink }]}>{t.home.logMeal}</Text>
-          <Text style={[styles.ctaSubtextMuted, { color: colors.inkSecondary }]}>
-            {kcalLeft} {t.home.kcal} {t.home.remaining}
-          </Text>
-        </Pressable>
-      </View>
-
-      <Text style={[styles.sectionTitle, { color: colors.inkSecondary }]}>{t.home.today}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRow}>
-        <StatChip
-          label={t.home.training}
-          value={data.rings.training.detail}
-          color={colors.training}
+        <MacroBar
           theme={theme}
-        />
-        <StatChip
-          label={t.home.nutrition}
-          value={`${data.macros.protein.consumed}g`}
-          color={colors.nutrition}
-          theme={theme}
-        />
-        <StatChip
-          label={t.home.progress}
-          value={`${data.weight.current} ${t.home.kg}`}
-          color={colors.progress}
-          theme={theme}
-        />
-        <StatChip
           label={t.home.kcal}
-          value={`${data.macros.calories.consumed}`}
+          consumed={data.macros.calories.consumed}
+          target={data.macros.calories.target}
           color={colors.nutrition}
-          theme={theme}
+          unit={t.home.kcal}
         />
-      </ScrollView>
-
-      <View style={[styles.macroBar, { backgroundColor: colors.surface }]}>
-        <View style={styles.macroHeader}>
-          <Text style={[styles.macroTitle, { color: colors.ink }]}>{t.home.nutrition}</Text>
-          <Text style={[styles.macroNums, { color: colors.inkSecondary }]}>
-            {data.macros.calories.consumed}/{data.macros.calories.target} {t.home.kcal}
-          </Text>
-        </View>
-        <View style={[styles.track, { backgroundColor: `${colors.nutrition}33` }]}>
-          <View
-            style={[
-              styles.fill,
-              {
-                backgroundColor: colors.nutrition,
-                width: `${(data.macros.calories.consumed / data.macros.calories.target) * 100}%`,
-              },
-            ]}
-          />
-        </View>
+        <MacroBar
+          theme={theme}
+          label={t.home.protein}
+          consumed={data.macros.protein.consumed}
+          target={data.macros.protein.target}
+          color={colors.primary}
+          unit="g"
+        />
       </View>
     </ScrollView>
   );
@@ -136,59 +132,33 @@ export function VariantB({ data, theme, t }: VariantProps) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: { paddingHorizontal: spacing.xl, paddingBottom: 120, gap: spacing.xxl },
-  hero: {
-    borderRadius: radius.lg,
-    padding: spacing.xl,
-    borderWidth: 1,
-    gap: spacing.md,
+  content: {
+    paddingHorizontal: spacing.xl,
+    paddingBottom: 120,
+    gap: spacing.xxl,
   },
-  heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  heroEyebrow: { fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.6 },
-  streakInline: { alignItems: 'flex-end' },
-  streakBig: { fontSize: 40, fontWeight: '800', fontVariant: ['tabular-nums'], lineHeight: 42 },
-  streakSmall: { fontSize: 11, fontWeight: '600', textTransform: 'uppercase' },
-  heroMessage: { fontSize: 22, fontWeight: '600', lineHeight: 30 },
-  heroMeta: { fontSize: 13 },
-  ctaStack: { gap: spacing.md },
-  ctaPrimary: {
-    borderRadius: radius.lg,
+  hero: { gap: spacing.md },
+  guidanceLead: { lineHeight: 28 },
+  streakBlock: { gap: 2, marginTop: spacing.sm },
+  ctaBlock: { gap: spacing.md },
+  macroCard: {
+    borderRadius: 16,
     padding: spacing.lg,
-    minHeight: 72,
-    justifyContent: 'center',
+    gap: spacing.lg,
   },
-  ctaPrimaryText: { color: '#000000', fontSize: 17, fontWeight: '700' },
-  ctaSubtext: { color: 'rgba(0,0,0,0.55)', fontSize: 13, marginTop: 2 },
-  ctaSecondary: {
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
-    minHeight: 72,
-    justifyContent: 'center',
+  macroBlock: { gap: spacing.sm },
+  macroHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  ctaSecondaryText: { fontSize: 17, fontWeight: '600' },
-  ctaSubtextMuted: { fontSize: 13, marginTop: 2 },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: -8,
+  track: {
+    height: 6,
+    borderRadius: 999,
+    overflow: 'hidden',
   },
-  chipRow: { gap: spacing.md, paddingRight: spacing.xl },
-  chip: {
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    minWidth: 120,
-    gap: 6,
+  fill: {
+    height: '100%',
+    borderRadius: 999,
   },
-  chipDot: { width: 8, height: 8, borderRadius: 4 },
-  chipLabel: { fontSize: 12, fontWeight: '500' },
-  chipValue: { fontSize: 20, fontWeight: '700', fontVariant: ['tabular-nums'] },
-  macroBar: { borderRadius: radius.lg, padding: spacing.lg, gap: spacing.md },
-  macroHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  macroTitle: { fontSize: 17, fontWeight: '600' },
-  macroNums: { fontSize: 13, fontVariant: ['tabular-nums'] },
-  track: { height: 8, borderRadius: radius.pill, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: radius.pill },
 });

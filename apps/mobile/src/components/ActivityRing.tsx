@@ -1,6 +1,7 @@
 import Svg, { Circle } from 'react-native-svg';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { type } from '@/src/theme/typography';
 import type { FormaTheme } from '@/src/theme/useFormaTheme';
 
 interface ActivityRingProps {
@@ -12,6 +13,7 @@ interface ActivityRingProps {
   label: string;
   detail: string;
   theme: FormaTheme;
+  compact?: boolean;
 }
 
 export function ActivityRing({
@@ -23,9 +25,10 @@ export function ActivityRing({
   label,
   detail,
   theme,
+  compact = false,
 }: ActivityRingProps) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
+  const radiusPx = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radiusPx;
   const clamped = Math.min(1, Math.max(0, progress));
   const strokeDashoffset = circumference * (1 - clamped);
 
@@ -36,7 +39,7 @@ export function ActivityRing({
           <Circle
             cx={size / 2}
             cy={size / 2}
-            r={radius}
+            r={radiusPx}
             stroke={trackColor}
             strokeWidth={strokeWidth}
             fill="none"
@@ -44,7 +47,7 @@ export function ActivityRing({
           <Circle
             cx={size / 2}
             cy={size / 2}
-            r={radius}
+            r={radiusPx}
             stroke={color}
             strokeWidth={strokeWidth}
             fill="none"
@@ -56,8 +59,14 @@ export function ActivityRing({
           />
         </Svg>
       </View>
-      <Text style={[styles.label, { color: theme.colors.inkSecondary }]}>{label}</Text>
-      <Text style={[styles.detail, { color: theme.colors.ink }]}>{detail}</Text>
+      {!compact ? (
+        <>
+          <Text style={[type.caption, styles.label, { color: theme.colors.inkSecondary }]}>
+            {label}
+          </Text>
+          <Text style={[type.subhead, styles.detail, { color: theme.colors.ink }]}>{detail}</Text>
+        </>
+      ) : null}
     </View>
   );
 }
@@ -65,15 +74,13 @@ export function ActivityRing({
 const styles = StyleSheet.create({
   ringWrap: {
     alignItems: 'center',
-    gap: 4,
+    gap: 2,
   },
   label: {
-    fontSize: 13,
+    marginTop: 10,
     fontWeight: '500',
-    marginTop: 8,
   },
   detail: {
-    fontSize: 15,
     fontWeight: '600',
     fontVariant: ['tabular-nums'],
   },

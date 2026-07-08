@@ -17,6 +17,7 @@ export const ptBR = {
     sets: 'séries',
     kg: 'kg',
     thisWeek: 'esta semana',
+    protein: 'proteína',
   },
   guidance: {
     training_needed: 'Você não treinou recentemente. Programe um treino hoje.',
