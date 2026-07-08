@@ -268,6 +268,32 @@ describe('Identity OAuth (e2e)', () => {
     expect(account).not.toBeNull();
   });
 
+  it('OAuth callback with platform=mobile redirects to configured success URL', async () => {
+    process.env.OAUTH_MOBILE_SUCCESS_URL = 'forma://oauth';
+
+    const start = await request(app.getHttpServer())
+      .get('/api/identity/oauth/google?platform=mobile')
+      .redirects(0);
+
+    expect(start.status).toBe(302);
+    expect(start.headers.location).toContain('platform=mobile');
+
+    const callbackPath =
+      new URL(start.headers.location as string, 'http://localhost').pathname +
+      new URL(start.headers.location as string, 'http://localhost').search;
+
+    const response = await request(app.getHttpServer())
+      .get(callbackPath)
+      .redirects(0);
+
+    expect(response.status).toBe(302);
+    const location = response.headers.location as string;
+    expect(location).toMatch(/^forma:\/\/oauth\?accessToken=/);
+
+    const token = new URL(location).searchParams.get('accessToken');
+    expect(token).toEqual(expect.any(String));
+  });
+
   it('OAuth callback with invalid token returns 401 with localized error', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/identity/oauth/google/callback?mockToken=invalid')

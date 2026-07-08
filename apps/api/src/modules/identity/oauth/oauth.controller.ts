@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   Param,
@@ -14,6 +15,8 @@ import { isOAuthProvider } from './oauth.types';
 type OAuthRequest = { protocol: string; headers: { host?: string } };
 type OAuthReply = {
   redirect: (url: string, statusCode: number) => Promise<void>;
+  status: (statusCode: number) => OAuthReply;
+  send: (payload: unknown) => Promise<void>;
 };
 
 @ApiTags('identity')
@@ -25,6 +28,7 @@ export class OAuthController {
   @ApiOperation({ summary: 'Start OAuth flow' })
   async start(
     @Param('provider') providerParam: string,
+    @Query('platform') platform: string | undefined,
     @Req() request: OAuthRequest,
     @Res() reply: OAuthReply,
   ): Promise<void> {
@@ -38,6 +42,7 @@ export class OAuthController {
     const redirectUrl = this.oauthService.getRedirectUrl(
       providerParam,
       baseUrl,
+      { platform },
     );
 
     await reply.redirect(redirectUrl, 302);
@@ -49,11 +54,30 @@ export class OAuthController {
     @Param('provider') providerParam: string,
     @Query('mockToken') mockToken: string | undefined,
     @Query('code') code: string | undefined,
-  ): Promise<{ accessToken: string }> {
+    @Query('platform') platform: string | undefined,
+    @Res() reply: OAuthReply,
+  ): Promise<void> {
     if (!isOAuthProvider(providerParam)) {
       throw new UnauthorizedException('errors.oauth_invalid');
     }
 
-    return this.oauthService.handleCallback(providerParam, { mockToken, code });
+    const result = await this.oauthService.handleCallback(providerParam, {
+      mockToken,
+      code,
+    });
+
+    if (platform === 'mobile') {
+      const successUrl = process.env.OAUTH_MOBILE_SUCCESS_URL;
+      if (!successUrl) {
+        throw new BadRequestException('errors.oauth_mobile_redirect_missing');
+      }
+
+      const redirectTarget = new URL(successUrl);
+      redirectTarget.searchParams.set('accessToken', result.accessToken);
+      await reply.redirect(redirectTarget.toString(), 302);
+      return;
+    }
+
+    await reply.status(200).send(result);
   }
 }

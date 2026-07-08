@@ -21,14 +21,22 @@ export class OAuthService {
     );
   }
 
-  getRedirectUrl(provider: OAuthProvider, baseUrl: string): string {
+  getRedirectUrl(
+    provider: OAuthProvider,
+    baseUrl: string,
+    options?: { platform?: string },
+  ): string {
     if (this.isMockMode()) {
       const token = this.signMockToken(
         provider,
         'oauth-test@example.com',
         'mock-account-1',
       );
-      return `${baseUrl}/api/identity/oauth/${provider}/callback?mockToken=${token}`;
+      const params = new URLSearchParams({ mockToken: token });
+      if (options?.platform === 'mobile') {
+        params.set('platform', 'mobile');
+      }
+      return `${baseUrl}/api/identity/oauth/${provider}/callback?${params.toString()}`;
     }
 
     const callbackUrl = `${baseUrl}/api/identity/oauth/${provider}/callback`;

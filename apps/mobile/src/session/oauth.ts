@@ -1,3 +1,4 @@
+import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import { createApiClient } from '../api/client';
 import { createIdentityApi, type OAuthProvider } from '../api/identity';
@@ -25,26 +26,29 @@ function resolveApiBaseUrl(): string {
   );
 }
 
+function resolveOAuthSuccessUrl(): string {
+  return process.env.EXPO_PUBLIC_OAUTH_SUCCESS_URL ?? Linking.createURL('oauth');
+}
+
 type AuthResponse = { accessToken: string };
 
 /**
  * Opens the API OAuth start URL in an auth session.
  *
- * **Dev/mock path:** when the API runs with `OAUTH_MOCK=true` (or without
- * provider client IDs), the start endpoint redirects to the callback URL which
- * returns JSON `{ accessToken }`. We fetch that URL after the session completes.
- *
- * Production mobile redirect (`platform=mobile`) is handled in T19.
+ * Requests `platform=mobile` so the API callback redirects to
+ * `EXPO_PUBLIC_OAUTH_SUCCESS_URL` with `accessToken` when configured.
+ * Falls back to parsing JSON from the callback URL in mock/dev without redirect.
  */
 export async function startOAuth(provider: OAuthProvider): Promise<string> {
   const baseUrl = resolveApiBaseUrl();
+  const successUrl = resolveOAuthSuccessUrl();
   const identity = createIdentityApi(createApiClient({ baseUrl }));
-  const startUrl = identity.startOAuthUrl(provider);
+  const startUrl = identity.startOAuthUrl(provider, { platform: 'mobile' });
   const callbackPrefix = `${baseUrl}/api/identity/oauth/${provider}/callback`;
 
   const result = await WebBrowser.openAuthSessionAsync(
     startUrl,
-    callbackPrefix,
+    successUrl,
   );
 
   if (result.type === 'cancel' || result.type === 'dismiss') {
@@ -53,6 +57,16 @@ export async function startOAuth(provider: OAuthProvider): Promise<string> {
 
   if (result.type !== 'success' || !result.url) {
     throw new OAuthFailedError();
+  }
+
+  const redirected = new URL(result.url);
+  const tokenFromRedirect = redirected.searchParams.get('accessToken');
+  if (tokenFromRedirect) {
+    return tokenFromRedirect;
+  }
+
+  if (!result.url.startsWith(callbackPrefix)) {
+    throw new OAuthFailedError('Unexpected OAuth redirect');
   }
 
   const response = await fetch(result.url);
