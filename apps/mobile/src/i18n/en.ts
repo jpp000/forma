@@ -31,8 +31,8 @@ export const en = {
     progress: 'Progress',
   },
   prototype: {
-    variantA: 'Rings first',
-    variantB: 'Coach first',
-    variantC: 'Timeline',
+    variantA: 'Apple Fitness',
+    variantB: 'Wise',
+    variantC: 'Shopify',
   },
 } as const;

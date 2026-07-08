@@ -31,8 +31,8 @@ export const ptBR = {
     progress: 'Progresso',
   },
   prototype: {
-    variantA: 'Anéis primeiro',
-    variantB: 'Coach primeiro',
-    variantC: 'Linha do tempo',
+    variantA: 'Apple Fitness',
+    variantB: 'Wise',
+    variantC: 'Shopify',
   },
 } as const;

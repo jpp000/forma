@@ -1,15 +1,16 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActivityRing } from '@/src/components/ActivityRing';
-import { FormaButton } from '@/src/components/ui/FormaButton';
-import { GroupedSection, GroupedSeparator } from '@/src/components/ui/GroupedSection';
-import { ListRow } from '@/src/components/ui/ListRow';
+import { ActivityRingsRow } from '@/src/components/home/ActivityRingsRow';
+import { DesignButton } from '@/src/components/home/DesignButton';
+import {
+  DesignGroupedList,
+  DesignListRow,
+  DesignSeparator,
+} from '@/src/components/home/DesignGroupedList';
+import { appleFitnessSystem } from '@/src/design-systems/appleFitness';
 import type { Translation } from '@/src/i18n';
 import type { HomeMockData } from '@/src/prototype/home/mockData';
-import { ringTrack } from '@/src/theme/color';
-import { spacing } from '@/src/theme/tokens';
-import { type } from '@/src/theme/typography';
 import type { FormaTheme } from '@/src/theme/useFormaTheme';
 
 interface VariantProps {
@@ -18,110 +19,67 @@ interface VariantProps {
   t: Translation;
 }
 
+/** A — Apple Fitness Summary (apps/mobile/apple) */
 export function VariantA({ data, theme, t }: VariantProps) {
   const insets = useSafeAreaInsets();
-  const { colors, isDark } = theme;
+  const ds = appleFitnessSystem;
+  const p = ds.palette(theme);
 
   return (
     <ScrollView
-      style={[styles.screen, { backgroundColor: colors.bg }]}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.lg }]}
+      style={[styles.screen, { backgroundColor: p.bg }]}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: 120 }]}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.header}>
-        <Text style={[type.largeTitle, { color: colors.ink }]}>{data.dateLabel}</Text>
-        <Text style={[type.subhead, { color: colors.inkSecondary }]}>
-          {t.home.greeting}, {data.userName}
-        </Text>
-      </View>
+      <Text style={[ds.type.hero, { color: p.ink }]}>{data.dateLabel}</Text>
+      <Text style={[ds.type.caption, { color: p.inkSecondary, marginTop: 2 }]}>
+        {t.home.greeting}, {data.userName}
+      </Text>
 
-      <View
-        style={[
-          styles.ringsPlate,
-          {
-            backgroundColor: isDark ? colors.surface : colors.surfaceElevated,
-            borderColor: colors.border,
-          },
-        ]}
-      >
-        <View style={styles.ringsRow}>
-          <ActivityRing
-            size={108}
-            strokeWidth={11}
-            progress={data.rings.training.value}
-            color={colors.training}
-            trackColor={ringTrack(colors.training, isDark)}
-            label={data.rings.training.label}
-            detail={data.rings.training.detail}
-            theme={theme}
-          />
-          <ActivityRing
-            size={108}
-            strokeWidth={11}
-            progress={data.rings.nutrition.value}
-            color={colors.nutrition}
-            trackColor={ringTrack(colors.nutrition, isDark)}
-            label={data.rings.nutrition.label}
-            detail={data.rings.nutrition.detail}
-            theme={theme}
-          />
-          <ActivityRing
-            size={108}
-            strokeWidth={11}
-            progress={data.rings.progress.value}
-            color={colors.progress}
-            trackColor={ringTrack(colors.progress, isDark)}
-            label={data.rings.progress.label}
-            detail={data.rings.progress.detail}
-            theme={theme}
-          />
-        </View>
-        <View style={[styles.streakRow, { borderTopColor: colors.separator }]}>
-          <Text style={[type.footnote, { color: colors.inkSecondary }]}>{t.home.streak}</Text>
-          <Text style={[type.metric, { color: colors.primary }]}>{data.streak}</Text>
+      <View style={styles.ringsBlock}>
+        <ActivityRingsRow data={data} palette={p} isDark={theme.isDark} size={116} strokeWidth={13} />
+        <View style={styles.streakLine}>
+          <Text style={[ds.type.caption, { color: p.inkSecondary }]}>{t.home.streak}</Text>
+          <Text style={[ds.type.metric, { color: p.primary }]}>{data.streak}</Text>
         </View>
       </View>
 
-      <GroupedSection title={t.home.guidance} theme={theme}>
-        <ListRow
-          theme={theme}
-          title={data.guidanceMessage}
-          accentColor={colors.primary}
-        />
-      </GroupedSection>
+      <DesignGroupedList ds={ds} palette={p} title={t.home.guidance}>
+        <DesignListRow ds={ds} palette={p} title={data.guidanceMessage} dotColor={p.primary} />
+      </DesignGroupedList>
 
-      <GroupedSection title={t.home.today} theme={theme}>
-        <ListRow
-          theme={theme}
+      <DesignGroupedList ds={ds} palette={p} title={t.home.today}>
+        <DesignListRow
+          ds={ds}
+          palette={p}
           title={data.workout.name}
           subtitle={`${data.workout.setsDone}/${data.workout.setsTotal} ${t.home.sets}`}
           value={`${Math.round(data.rings.training.value * 100)}%`}
-          accentColor={colors.training}
-          showChevron
+          dotColor={p.training}
         />
-        <GroupedSeparator theme={theme} />
-        <ListRow
-          theme={theme}
+        <DesignSeparator palette={p} />
+        <DesignListRow
+          ds={ds}
+          palette={p}
           title={t.home.nutrition}
           subtitle={`${data.macros.calories.consumed} / ${data.macros.calories.target} ${t.home.kcal}`}
           value={`${data.macros.protein.consumed}g`}
-          accentColor={colors.nutrition}
-          showChevron
+          dotColor={p.nutrition}
         />
-        <GroupedSeparator theme={theme} />
-        <ListRow
-          theme={theme}
+        <DesignSeparator palette={p} />
+        <DesignListRow
+          ds={ds}
+          palette={p}
           title={t.home.progress}
-          subtitle={`${data.weight.delta > 0 ? '+' : ''}${data.weight.delta} ${t.home.kg} ${t.home.thisWeek}`}
-          value={`${data.weight.current}`}
-          accentColor={colors.progress}
-          showChevron
+          subtitle={`${data.weight.current} ${t.home.kg}`}
+          value={`${data.weight.delta > 0 ? '+' : ''}${data.weight.delta}`}
+          dotColor={p.progress}
         />
-      </GroupedSection>
+      </DesignGroupedList>
 
       <View style={styles.actions}>
-        <FormaButton theme={theme} label={t.home.startWorkout} variant="primary" />
-        <FormaButton theme={theme} label={t.home.logMeal} variant="ghost" />
+        <DesignButton ds={ds} palette={p} theme={theme} label={t.home.startWorkout} variant="primary" />
+        <DesignButton ds={ds} palette={p} theme={theme} label={t.home.logMeal} variant="secondary" />
       </View>
     </ScrollView>
   );
@@ -129,32 +87,13 @@ export function VariantA({ data, theme, t }: VariantProps) {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: {
-    paddingHorizontal: spacing.xl,
-    paddingBottom: 120,
-    gap: spacing.xxl,
-  },
-  header: { gap: 4 },
-  ringsPlate: {
-    borderRadius: 20,
-    paddingTop: spacing.xxl,
-    paddingBottom: spacing.lg,
-    paddingHorizontal: spacing.md,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  ringsRow: {
+  content: { paddingHorizontal: 20, gap: 28 },
+  ringsBlock: { gap: 16, paddingVertical: 8 },
+  streakLine: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: spacing.xs,
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    gap: 8,
   },
-  streakRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  actions: { gap: spacing.sm, marginTop: spacing.xs },
+  actions: { gap: 8, marginTop: 4 },
 });

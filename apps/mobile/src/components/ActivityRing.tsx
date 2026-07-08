@@ -2,7 +2,6 @@ import Svg, { Circle } from 'react-native-svg';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { type } from '@/src/theme/typography';
-import type { FormaTheme } from '@/src/theme/useFormaTheme';
 
 interface ActivityRingProps {
   size: number;
@@ -12,7 +11,8 @@ interface ActivityRingProps {
   trackColor: string;
   label: string;
   detail: string;
-  theme: FormaTheme;
+  ink: string;
+  inkSecondary: string;
   compact?: boolean;
 }
 
@@ -24,7 +24,8 @@ export function ActivityRing({
   trackColor,
   label,
   detail,
-  theme,
+  ink,
+  inkSecondary,
   compact = false,
 }: ActivityRingProps) {
   const radiusPx = (size - strokeWidth) / 2;
@@ -61,10 +62,10 @@ export function ActivityRing({
       </View>
       {!compact ? (
         <>
-          <Text style={[type.caption, styles.label, { color: theme.colors.inkSecondary }]}>
+          <Text style={[type.caption, styles.label, { color: inkSecondary }]}>
             {label}
           </Text>
-          <Text style={[type.subhead, styles.detail, { color: theme.colors.ink }]}>{detail}</Text>
+          <Text style={[type.subhead, styles.detail, { color: ink }]}>{detail}</Text>
         </>
       ) : null}
     </View>

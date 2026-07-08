@@ -1,17 +1,13 @@
 # Home Prototype — NOTAS
 
-**Pergunta:** qual estrutura de Home combina com Forma × Apple Fitness (verde `#30D158`)?
+**Pergunta:** qual design system combina com Forma?
 
-**Como ver:** `pnpm --filter mobile web` → abrir `/prototype/home?variant=A`
+**Referências:** `apps/mobile/apple/DESIGN.md` · `wise/DESIGN.md` · `shopify/DESIGN.md`
 
-| Variant | Nome | Estrutura |
-|---------|------|-----------|
-| **A** | Anéis primeiro | 3 activity rings + guidance card + dual CTAs — referência Apple Fitness |
-| **B** | Coach primeiro | Hero de guidance + CTAs grandes + chips horizontais + barra de macros |
-| **C** | Linha do tempo | Feed vertical do dia + footer fixo com stats e ações |
+| Variant | Sistema | Estrutura |
+|---------|---------|-----------|
+| **A** | Apple Fitness | Summary tab — large title, activity rings, grouped lists, green CTA |
+| **B** | Wise | Sage canvas, white hero card, lime CTA, metric tiles |
+| **C** | Shopify | Cinematic black (dark) / cream (light), thin display, outline pills |
 
-**Teclas (web):** ← → para alternar variantes.
-
-**Veredito:** _(preencher após feedback do usuário)_
-
-**Próximo passo:** implementar Home real (opção B do usuário) com a variante escolhida ou blend.
+**Veredito:** _(preencher após feedback)_
