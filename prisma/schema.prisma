@@ -212,3 +212,29 @@ model NutritionPlan {
   @@index([studentUserId])
   @@map("nutrition_plans")
 }
+
+model ProgressWeightEntry {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  weightKg  Float    @map("weight_kg")
+  logDate   DateTime @map("log_date") @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, logDate])
+  @@index([userId, logDate])
+  @@map("progress_weight_entries")
+}
+
+model ProgressStreak {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  streakType    String   @map("streak_type")
+  currentStreak Int      @default(0) @map("current_streak")
+  longestStreak Int      @default(0) @map("longest_streak")
+  lastActiveDate DateTime? @map("last_active_date") @db.Date
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, streakType])
+  @@map("progress_streaks")
+}
