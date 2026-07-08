@@ -9,7 +9,16 @@
     "oauth_invalid": "Falha na autenticação OAuth",
     "forbidden": "Acesso negado",
     "student_profile_required": "Perfil de aluno necessário",
-    "invalid_exercise_reference": "Referência de exercício inválida"
+    "invalid_exercise_reference": "Referência de exercício inválida",
+    "invite_not_found": "Convite não encontrado",
+    "invite_expired": "Convite expirado",
+    "invite_already_accepted": "Convite já aceito",
+    "invite_email_mismatch": "E-mail não corresponde ao convite",
+    "coaching_link_exists": "Vínculo de coaching já existe",
+    "coaching_link_required": "Vínculo de coaching necessário"
+  },
+  "billing": {
+    "upgrade_required": "Upgrade necessário para acessar este recurso"
   },
   "validation": {
     "email": "Informe um e-mail válido"

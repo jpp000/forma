@@ -9,7 +9,16 @@
     "oauth_invalid": "OAuth authentication failed",
     "forbidden": "Access denied",
     "student_profile_required": "Student profile required",
-    "invalid_exercise_reference": "Invalid exercise reference"
+    "invalid_exercise_reference": "Invalid exercise reference",
+    "invite_not_found": "Invite not found",
+    "invite_expired": "Invite expired",
+    "invite_already_accepted": "Invite already accepted",
+    "invite_email_mismatch": "Invite email does not match",
+    "coaching_link_exists": "Coaching link already exists",
+    "coaching_link_required": "Coaching link required"
+  },
+  "billing": {
+    "upgrade_required": "Upgrade required to access this feature"
   },
   "validation": {
     "email": "Must be a valid email address"
