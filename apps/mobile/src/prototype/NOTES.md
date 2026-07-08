@@ -2,12 +2,17 @@
 
 **Pergunta:** qual design system combina com Forma?
 
-**Referências:** `apps/mobile/apple/DESIGN.md` · `wise/DESIGN.md` · `shopify/DESIGN.md`
+**Referência primária (Variant A):** Apple Fitness iOS — pack oficial Spectr / awesome-ios-design-md
+- Spec: `apps/mobile/apple/DESIGN.md`
+- Expo guide: `apps/mobile/apple/DESIGN-expo.md`
+- Gallery: https://www.spectr.to/gallery/apple-fitness
 
 | Variant | Sistema | Estrutura |
 |---------|---------|-----------|
-| **A** | Apple Fitness | Summary tab — large title, activity rings, grouped lists, green CTA |
-| **B** | Wise | Sage canvas, white hero card, lime CTA, metric tiles |
-| **C** | Shopify | Cinematic black (dark) / cream (light), thin display, outline pills |
+| **A** | Apple Fitness (Summary) | Day eyebrow · date · large title · concentric rings hero · 2×2 metric tiles · guidance card · Fitness+ shelf · Move CTA |
+| **B** | Wise | Sage canvas, lime CTA, heavy metrics |
+| **C** | Shopify | Cinematic black / cream, thin display |
+
+**Ring brand (immutable):** Move `#FA114F` · Exercise `#92E82A` · Stand `#1EE4E1` · chrome `#FF375F`
 
 **Veredito:** _(preencher após feedback)_

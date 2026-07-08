@@ -41,6 +41,20 @@ export type Translation = {
     variantA: string;
     variantB: string;
     variantC: string;
+    summaryTitle: string;
+    move: string;
+    exercise: string;
+    stand: string;
+    kcal: string;
+    min: string;
+    hr: string;
+    steps: string;
+    distance: string;
+    km: string;
+    workouts: string;
+    daysInARow: string;
+    fitnessPlus: string;
+    seeAll: string;
   };
 };
 

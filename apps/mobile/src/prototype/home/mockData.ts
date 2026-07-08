@@ -1,10 +1,24 @@
+import type { FitnessPlusItem } from '@/src/components/apple-fitness/FitnessPlusShelf';
 import type { Translation } from '@/src/i18n';
 
 export interface HomeMockData {
   userName: string;
   dateLabel: string;
+  dayEyebrow?: string;
+  dateFull?: string;
   streak: number;
   guidanceMessage: string;
+  activity: {
+    move: { progress: number; value: number; goal: number };
+    exercise: { progress: number; value: number; goal: number };
+    stand: { progress: number; value: number; goal: number };
+  };
+  metrics: {
+    steps: { value: string; sub: string };
+    distance: { value: string; sub: string };
+    workouts: { value: number; sub: string };
+  };
+  fitnessPlus: FitnessPlusItem[];
   rings: {
     training: { value: number; label: string; detail: string };
     nutrition: { value: number; label: string; detail: string };
@@ -37,8 +51,46 @@ export function getHomeMockData(t: Translation): HomeMockData {
   return {
     userName: 'João',
     dateLabel: t.home.today,
+    dayEyebrow: 'QUARTA',
+    dateFull: '8 de jul',
     streak: 12,
     guidanceMessage: t.guidance.training_needed,
+    activity: {
+      move: { progress: 0.78, value: 486, goal: 620 },
+      exercise: { progress: 1.27, value: 38, goal: 30 },
+      stand: { progress: 0.75, value: 9, goal: 12 },
+    },
+    metrics: {
+      steps: { value: '8.214', sub: 'Média 7.540' },
+      distance: { value: '5,2', sub: 'Média 4,8' },
+      workouts: { value: 1, sub: 'Upper A · hoje' },
+    },
+    fitnessPlus: [
+      {
+        id: '1',
+        badge: 'NOVO',
+        type: 'FORÇA',
+        title: '20 min Upper Body',
+        meta: 'Bakari · Pop Anthems',
+        gradient: ['#FA114F', '#C969E0', '#1C1C1E'],
+      },
+      {
+        id: '2',
+        badge: 'TRENDING',
+        type: 'HIIT',
+        title: '30 min HIIT',
+        meta: 'Anitia · Energy',
+        gradient: ['#92E82A', '#1EE4E1', '#1C1C1E'],
+      },
+      {
+        id: '3',
+        badge: 'YOGA',
+        type: 'YOGA',
+        title: '15 min Mindful Flow',
+        meta: 'Jessica · Ambient',
+        gradient: ['#1EE4E1', '#C969E0', '#0A0A0A'],
+      },
+    ],
     rings: {
       training: {
         value: 0.65,

@@ -1,128 +1,261 @@
 /**
- * Forma × Apple Fitness — from apps/mobile/apple/DESIGN.md + iOS Fitness Summary patterns.
- * True-black dark, parchment light, SF scale, grouped lists, domain rings.
+ * Apple Fitness — tokens from apps/mobile/apple/DESIGN.md + DESIGN-expo.md
+ * Source: https://github.com/Meliwat/awesome-ios-design-md/tree/main/design-md/fitness/apple-fitness
+ *
+ * Ring colors are sacred / theme-invariant. Surfaces adapt to light (iPad) vs dark (iPhone).
  */
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, type TextStyle } from 'react-native';
 
-import type { DesignSystem } from './types';
 import type { FormaTheme } from '@/src/theme/useFormaTheme';
 
-const font = Platform.select({ ios: 'System', default: 'System' });
+import type { DesignPalette, DesignSystem } from './types';
 
+export const afColors = {
+  move: '#FA114F',
+  moveLabel: '#FF375F',
+  exercise: '#92E82A',
+  exerciseHi: '#66FF00',
+  stand: '#1EE4E1',
+  standHi: '#00F0FF',
+
+  moveTrack: 'rgba(250,17,79,0.22)',
+  exerciseTrack: 'rgba(146,232,42,0.22)',
+  standTrack: 'rgba(30,228,225,0.22)',
+
+  accent: '#FF375F',
+  accentPressed: '#D80E45',
+  fitnessPlus: '#C969E0',
+
+  canvas: '#000000',
+  grouped1: '#1C1C1E',
+  grouped2: '#2C2C2E',
+  grouped3: '#3A3A3C',
+  separator: '#38383A',
+  fill: 'rgba(118,118,128,0.24)',
+
+  labelPrimary: '#FFFFFF',
+  labelSecondary: 'rgba(235,235,245,0.60)',
+  labelTertiary: 'rgba(235,235,245,0.30)',
+
+  lightCanvas: '#F2F2F7',
+  lightSurface: '#FFFFFF',
+  lightSeparator: '#C6C6C8',
+  lightLabel: '#000000',
+  lightLabelSecondary: 'rgba(60,60,67,0.60)',
+  lightLabelTertiary: 'rgba(60,60,67,0.30)',
+
+  success: '#30D158',
+  error: '#FF453A',
+  awardGold: '#FFD60A',
+} as const;
+
+export const ringConfig = [
+  {
+    key: 'move' as const,
+    color: afColors.move,
+    track: afColors.moveTrack,
+    label: afColors.moveLabel,
+  },
+  {
+    key: 'exercise' as const,
+    color: afColors.exercise,
+    track: afColors.exerciseTrack,
+    label: afColors.exercise,
+  },
+  {
+    key: 'stand' as const,
+    color: afColors.stand,
+    track: afColors.standTrack,
+    label: afColors.stand,
+  },
+] as const;
+
+const f = (
+  ios: TextStyle['fontWeight'],
+  _fallback: string,
+): Pick<TextStyle, 'fontFamily' | 'fontWeight'> =>
+  Platform.OS === 'ios'
+    ? { fontWeight: ios }
+    : { fontFamily: 'System', fontWeight: ios };
+
+const TABULAR: TextStyle = { fontVariant: ['tabular-nums'] };
+
+export const afTypography = {
+  largeTitle: {
+    color: afColors.labelPrimary,
+    ...f('800', 'System'),
+    fontSize: 40,
+    lineHeight: 44,
+    letterSpacing: -1,
+  },
+  date: {
+    color: afColors.labelPrimary,
+    ...f('800', 'System'),
+    fontSize: 32,
+    lineHeight: 35,
+    letterSpacing: -0.6,
+  },
+  header: {
+    color: afColors.labelPrimary,
+    ...f('800', 'System'),
+    fontSize: 26,
+    lineHeight: 30,
+    letterSpacing: -0.5,
+  },
+  section: {
+    color: afColors.labelPrimary,
+    ...f('800', 'System'),
+    fontSize: 22,
+    lineHeight: 26,
+    letterSpacing: -0.4,
+  },
+  title3: {
+    color: afColors.labelPrimary,
+    ...f('700', 'System'),
+    fontSize: 20,
+    lineHeight: 25,
+    letterSpacing: -0.3,
+  },
+  body: {
+    color: afColors.labelPrimary,
+    ...f('600', 'System'),
+    fontSize: 17,
+    lineHeight: 24,
+    letterSpacing: -0.2,
+  },
+  bodyReg: {
+    color: afColors.labelPrimary,
+    ...f('400', 'System'),
+    fontSize: 17,
+    lineHeight: 26,
+    letterSpacing: -0.2,
+  },
+  ringValue: {
+    ...TABULAR,
+    color: afColors.labelPrimary,
+    ...f('800', 'System'),
+    fontSize: 19,
+    lineHeight: 21,
+  },
+  tileValue: {
+    ...TABULAR,
+    color: afColors.labelPrimary,
+    ...f('800', 'System'),
+    fontSize: 22,
+    lineHeight: 24,
+  },
+  cardTitle: {
+    color: afColors.labelPrimary,
+    ...f('600', 'System'),
+    fontSize: 15,
+    lineHeight: 20,
+    letterSpacing: -0.2,
+  },
+  footnote: {
+    color: afColors.labelSecondary,
+    ...f('400', 'System'),
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  eyebrow: {
+    ...f('700', 'System'),
+    fontSize: 12,
+    lineHeight: 15,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase' as const,
+  },
+  button: {
+    color: afColors.labelPrimary,
+    ...f('600', 'System'),
+    fontSize: 17,
+    lineHeight: 17,
+    letterSpacing: -0.2,
+  },
+  badge: {
+    color: afColors.labelPrimary,
+    ...f('700', 'System'),
+    fontSize: 10,
+    lineHeight: 10,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase' as const,
+  },
+} satisfies Record<string, TextStyle>;
+
+export function afSurface(theme: FormaTheme) {
+  if (theme.isDark) {
+    return {
+      canvas: afColors.canvas,
+      grouped: afColors.grouped1,
+      raised: afColors.grouped2,
+      separator: afColors.separator,
+      ink: afColors.labelPrimary,
+      inkSecondary: afColors.labelSecondary,
+      inkTertiary: afColors.labelTertiary,
+    };
+  }
+  return {
+    canvas: afColors.lightCanvas,
+    grouped: afColors.lightSurface,
+    raised: afColors.lightSurface,
+    separator: afColors.lightSeparator,
+    ink: afColors.lightLabel,
+    inkSecondary: afColors.lightLabelSecondary,
+    inkTertiary: afColors.lightLabelTertiary,
+  };
+}
+
+/** DesignSystem adapter used by shared prototype switcher (Variant A only). */
 export const appleFitnessSystem: DesignSystem = {
   id: 'apple-fitness',
   label: 'Apple Fitness',
   palette: (theme) => {
-    const d = theme.isDark;
+    const s = afSurface(theme);
     return {
-      bg: d ? '#000000' : '#FFFFFF',
-      surface: d ? '#1C1C1E' : '#F2F2F7',
-      surfaceElevated: d ? '#2C2C2E' : '#FFFFFF',
-      ink: d ? '#FFFFFF' : '#1D1D1F',
-      inkSecondary: d ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)',
-      inkTertiary: d ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)',
-      separator: d ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)',
-      border: d ? 'rgba(84,84,88,0.45)' : 'rgba(60,60,67,0.16)',
-      primary: '#30D158',
-      primaryOn: '#000000',
-      training: '#FFD60A',
-      nutrition: '#FF9F0A',
-      progress: '#64D2FF',
-    };
+      bg: s.canvas,
+      surface: s.grouped,
+      surfaceElevated: s.raised,
+      ink: s.ink,
+      inkSecondary: s.inkSecondary,
+      inkTertiary: s.inkTertiary,
+      separator: s.separator,
+      border: s.separator,
+      primary: afColors.accent,
+      primaryOn: afColors.labelPrimary,
+      training: afColors.exercise,
+      nutrition: afColors.move,
+      progress: afColors.stand,
+    } satisfies DesignPalette;
   },
   type: {
-    hero: {
-      fontFamily: font,
-      fontSize: 34,
-      fontWeight: '700',
-      letterSpacing: 0.37,
-    },
-    title: {
-      fontFamily: font,
-      fontSize: 22,
-      fontWeight: '600',
-      letterSpacing: 0.35,
-    },
-    body: {
-      fontFamily: font,
-      fontSize: 17,
-      fontWeight: '400',
-      letterSpacing: -0.41,
-      lineHeight: 24,
-    },
-    bodyStrong: {
-      fontFamily: font,
-      fontSize: 17,
-      fontWeight: '600',
-      letterSpacing: -0.41,
-      lineHeight: 22,
-    },
-    caption: {
-      fontFamily: font,
-      fontSize: 13,
-      fontWeight: '400',
-      letterSpacing: -0.08,
-      lineHeight: 18,
-    },
-    metric: {
-      fontFamily: font,
-      fontSize: 28,
-      fontWeight: '700',
-      fontVariant: ['tabular-nums'],
-      letterSpacing: 0.36,
-    },
-    metricHero: {
-      fontFamily: font,
-      fontSize: 40,
-      fontWeight: '700',
-      fontVariant: ['tabular-nums'],
-      letterSpacing: 0.4,
-    },
+    hero: afTypography.date,
+    title: afTypography.section,
+    body: afTypography.bodyReg,
+    bodyStrong: afTypography.body,
+    caption: afTypography.footnote,
+    metric: afTypography.tileValue,
+    metricHero: afTypography.largeTitle,
   },
-  radius: { card: 14, button: 999, group: 14 },
-  buttonPrimary: (p) => ({
-    backgroundColor: p.primary,
-    borderRadius: 999,
+  radius: { card: 14, button: 14, group: 18 },
+  buttonPrimary: () => ({
+    backgroundColor: afColors.move,
+    borderRadius: 14,
     paddingVertical: 15,
-    paddingHorizontal: 22,
     minHeight: 50,
     alignItems: 'center',
     justifyContent: 'center',
   }),
-  buttonPrimaryText: () => ({
-    color: '#000000',
-    fontSize: 17,
-    fontWeight: '600',
-    letterSpacing: -0.41,
-  }),
-  buttonSecondary: (p) => ({
-    backgroundColor: 'transparent',
-    borderRadius: 999,
-    paddingVertical: 15,
-    paddingHorizontal: 22,
-    minHeight: 50,
+  buttonPrimaryText: () => afTypography.button,
+  buttonSecondary: () => ({
+    backgroundColor: 'rgba(250,17,79,0.18)',
+    borderRadius: 12,
+    paddingVertical: 12,
+    minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
   }),
-  buttonSecondaryText: (p) => ({
-    color: p.primary,
-    fontSize: 17,
-    fontWeight: '600',
-    letterSpacing: -0.41,
+  buttonSecondaryText: () => ({
+    ...afTypography.button,
+    fontSize: 15,
+    color: afColors.accent,
   }),
 };
-
-export const appleFitnessStyles = StyleSheet.create({
-  screen: { flex: 1 },
-  content: { paddingHorizontal: 20, gap: 28 },
-  ringsHero: {
-    alignItems: 'center',
-    paddingVertical: 8,
-    gap: 20,
-  },
-  ringsRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 28,
-  },
-});

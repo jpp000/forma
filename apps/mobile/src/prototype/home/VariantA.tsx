@@ -1,14 +1,11 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActivityRingsRow } from '@/src/components/home/ActivityRingsRow';
-import { DesignButton } from '@/src/components/home/DesignButton';
-import {
-  DesignGroupedList,
-  DesignListRow,
-  DesignSeparator,
-} from '@/src/components/home/DesignGroupedList';
-import { appleFitnessSystem } from '@/src/design-systems/appleFitness';
+import { AFPrimaryButton } from '@/src/components/apple-fitness/AFPrimaryButton';
+import { FitnessPlusShelf } from '@/src/components/apple-fitness/FitnessPlusShelf';
+import { MetricTile } from '@/src/components/apple-fitness/MetricTile';
+import { RingHeroCard } from '@/src/components/apple-fitness/RingHeroCard';
+import { afColors, afSurface, afTypography } from '@/src/design-systems/appleFitness';
 import type { Translation } from '@/src/i18n';
 import type { HomeMockData } from '@/src/prototype/home/mockData';
 import type { FormaTheme } from '@/src/theme/useFormaTheme';
@@ -19,81 +16,153 @@ interface VariantProps {
   t: Translation;
 }
 
-/** A — Apple Fitness Summary (apps/mobile/apple) */
+/**
+ * A — Apple Fitness Summary tab (full parity with Spectr / DESIGN.md)
+ * https://www.spectr.to/gallery/apple-fitness
+ */
 export function VariantA({ data, theme, t }: VariantProps) {
   const insets = useSafeAreaInsets();
-  const ds = appleFitnessSystem;
-  const p = ds.palette(theme);
+  const s = afSurface(theme);
+
+  const dayEyebrow = data.dayEyebrow ?? 'QUARTA';
+  const dateLabel = data.dateFull ?? '8 de jul';
 
   return (
     <ScrollView
-      style={[styles.screen, { backgroundColor: p.bg }]}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: 120 }]}
+      style={[styles.screen, { backgroundColor: s.canvas }]}
+      contentContainerStyle={[
+        styles.content,
+        { paddingTop: insets.top + 8, paddingBottom: 132 },
+      ]}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={[ds.type.hero, { color: p.ink }]}>{data.dateLabel}</Text>
-      <Text style={[ds.type.caption, { color: p.inkSecondary, marginTop: 2 }]}>
-        {t.home.greeting}, {data.userName}
-      </Text>
-
-      <View style={styles.ringsBlock}>
-        <ActivityRingsRow data={data} palette={p} isDark={theme.isDark} size={116} strokeWidth={13} />
-        <View style={styles.streakLine}>
-          <Text style={[ds.type.caption, { color: p.inkSecondary }]}>{t.home.streak}</Text>
-          <Text style={[ds.type.metric, { color: p.primary }]}>{data.streak}</Text>
+      {/* Header: day eyebrow + date + profile */}
+      <View style={styles.header}>
+        <View style={styles.headerText}>
+          <Text style={[afTypography.eyebrow, { color: afColors.moveLabel }]}>{dayEyebrow}</Text>
+          <Text style={[afTypography.date, { color: s.ink }]}>{dateLabel}</Text>
+        </View>
+        <View style={[styles.avatar, { backgroundColor: afColors.fill }]}>
+          <Text style={[afTypography.body, { color: s.ink }]}>
+            {data.userName.slice(0, 1).toUpperCase()}
+          </Text>
         </View>
       </View>
 
-      <DesignGroupedList ds={ds} palette={p} title={t.home.guidance}>
-        <DesignListRow ds={ds} palette={p} title={data.guidanceMessage} dotColor={p.primary} />
-      </DesignGroupedList>
+      <Text style={[afTypography.largeTitle, styles.largeTitle, { color: s.ink }]}>
+        {t.prototype.summaryTitle}
+      </Text>
 
-      <DesignGroupedList ds={ds} palette={p} title={t.home.today}>
-        <DesignListRow
-          ds={ds}
-          palette={p}
-          title={data.workout.name}
-          subtitle={`${data.workout.setsDone}/${data.workout.setsTotal} ${t.home.sets}`}
-          value={`${Math.round(data.rings.training.value * 100)}%`}
-          dotColor={p.training}
-        />
-        <DesignSeparator palette={p} />
-        <DesignListRow
-          ds={ds}
-          palette={p}
-          title={t.home.nutrition}
-          subtitle={`${data.macros.calories.consumed} / ${data.macros.calories.target} ${t.home.kcal}`}
-          value={`${data.macros.protein.consumed}g`}
-          dotColor={p.nutrition}
-        />
-        <DesignSeparator palette={p} />
-        <DesignListRow
-          ds={ds}
-          palette={p}
-          title={t.home.progress}
-          subtitle={`${data.weight.current} ${t.home.kg}`}
-          value={`${data.weight.delta > 0 ? '+' : ''}${data.weight.delta}`}
-          dotColor={p.progress}
-        />
-      </DesignGroupedList>
+      {/* Activity rings hero */}
+      <RingHeroCard
+        theme={theme}
+        move={data.activity.move.progress}
+        exercise={data.activity.exercise.progress}
+        stand={data.activity.stand.progress}
+        legend={[
+          {
+            name: t.prototype.move,
+            value: String(data.activity.move.value),
+            goal: `/${data.activity.move.goal} ${t.prototype.kcal}`,
+          },
+          {
+            name: t.prototype.exercise,
+            value: String(data.activity.exercise.value),
+            goal: `/${data.activity.exercise.goal} ${t.prototype.min}`,
+          },
+          {
+            name: t.prototype.stand,
+            value: String(data.activity.stand.value),
+            goal: `/${data.activity.stand.goal} ${t.prototype.hr}`,
+          },
+        ]}
+      />
 
-      <View style={styles.actions}>
-        <DesignButton ds={ds} palette={p} theme={theme} label={t.home.startWorkout} variant="primary" />
-        <DesignButton ds={ds} palette={p} theme={theme} label={t.home.logMeal} variant="secondary" />
+      {/* Metric tile grid 2-up */}
+      <View style={styles.tileGrid}>
+        <View style={styles.tileRow}>
+          <MetricTile
+            theme={theme}
+            name={t.prototype.steps}
+            value={data.metrics.steps.value}
+            sub={data.metrics.steps.sub}
+            tint={afColors.moveLabel}
+            icon="walk"
+          />
+          <MetricTile
+            theme={theme}
+            name={t.prototype.distance}
+            value={data.metrics.distance.value}
+            unit={t.prototype.km}
+            sub={data.metrics.distance.sub}
+            tint={afColors.exercise}
+            icon="map-outline"
+          />
+        </View>
+        <View style={styles.tileRow}>
+          <MetricTile
+            theme={theme}
+            name={t.prototype.workouts}
+            value={String(data.metrics.workouts.value)}
+            sub={data.metrics.workouts.sub}
+            tint={afColors.stand}
+            icon="fitness"
+          />
+          <MetricTile
+            theme={theme}
+            name={t.home.streak}
+            value={String(data.streak)}
+            sub={t.prototype.daysInARow}
+            tint={afColors.awardGold}
+            icon="flame"
+          />
+        </View>
       </View>
+
+      {/* Guidance as a quiet grouped card */}
+      <View style={[styles.guidance, { backgroundColor: s.grouped }]}>
+        <Text style={[afTypography.eyebrow, { color: afColors.accent }]}>{t.home.guidance}</Text>
+        <Text style={[afTypography.bodyReg, { color: s.ink, marginTop: 6 }]}>
+          {data.guidanceMessage}
+        </Text>
+      </View>
+
+      {/* Fitness+ cinematic shelf */}
+      <FitnessPlusShelf
+        theme={theme}
+        title={t.prototype.fitnessPlus}
+        seeAllLabel={t.prototype.seeAll}
+        items={data.fitnessPlus}
+      />
+
+      <AFPrimaryButton title={t.home.startWorkout} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  content: { paddingHorizontal: 20, gap: 28 },
-  ringsBlock: { gap: 16, paddingVertical: 8 },
-  streakLine: {
+  content: { gap: 16 },
+  header: {
     flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
   },
-  actions: { gap: 8, marginTop: 4 },
+  headerText: { gap: 2 },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  largeTitle: { paddingHorizontal: 16, marginTop: 4, marginBottom: 4 },
+  tileGrid: { paddingHorizontal: 16, gap: 10 },
+  tileRow: { flexDirection: 'row', gap: 10 },
+  guidance: {
+    marginHorizontal: 16,
+    borderRadius: 14,
+    padding: 16,
+  },
 });

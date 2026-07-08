@@ -1,562 +1,399 @@
----
-version: alpha
-name: Apple-design-analysis
-description: A photography-first interface that turns marketing into a museum gallery. Edge-to-edge product tiles alternate light and dark canvases, framed by SF Pro Display headlines with negative letter-spacing and a single Action Blue (#0066cc) interactive color. UI chrome recedes so the product can speak — no decorative gradients, no shadows on chrome, only the one signature drop-shadow under product imagery resting on a surface.
+# Design System Inspiration of Apple Fitness (iOS)
 
-colors:
-  primary: "#0066cc"
-  primary-focus: "#0071e3"
-  primary-on-dark: "#2997ff"
-  ink: "#1d1d1f"
-  body: "#1d1d1f"
-  body-on-dark: "#ffffff"
-  body-muted: "#cccccc"
-  ink-muted-80: "#333333"
-  ink-muted-48: "#7a7a7a"
-  divider-soft: "#f0f0f0"
-  hairline: "#e0e0e0"
-  canvas: "#ffffff"
-  canvas-parchment: "#f5f5f7"
-  surface-pearl: "#fafafc"
-  surface-tile-1: "#272729"
-  surface-tile-2: "#2a2a2c"
-  surface-tile-3: "#252527"
-  surface-black: "#000000"
-  surface-chip-translucent: "#d2d2d7"
-  on-primary: "#ffffff"
-  on-dark: "#ffffff"
+## 1. Visual Theme & Atmosphere
 
-typography:
-  hero-display:
-    fontFamily: "SF Pro Display, system-ui, -apple-system, sans-serif"
-    fontSize: 56px
-    fontWeight: 600
-    lineHeight: 1.07
-    letterSpacing: -0.28px
-  display-lg:
-    fontFamily: "SF Pro Display, system-ui, -apple-system, sans-serif"
-    fontSize: 40px
-    fontWeight: 600
-    lineHeight: 1.1
-    letterSpacing: 0
-  display-md:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 34px
-    fontWeight: 600
-    lineHeight: 1.47
-    letterSpacing: -0.374px
-  lead:
-    fontFamily: "SF Pro Display, system-ui, -apple-system, sans-serif"
-    fontSize: 28px
-    fontWeight: 400
-    lineHeight: 1.14
-    letterSpacing: 0.196px
-  lead-airy:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 24px
-    fontWeight: 300
-    lineHeight: 1.5
-    letterSpacing: 0
-  tagline:
-    fontFamily: "SF Pro Display, system-ui, -apple-system, sans-serif"
-    fontSize: 21px
-    fontWeight: 600
-    lineHeight: 1.19
-    letterSpacing: 0.231px
-  body-strong:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 17px
-    fontWeight: 600
-    lineHeight: 1.24
-    letterSpacing: -0.374px
-  body:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 17px
-    fontWeight: 400
-    lineHeight: 1.47
-    letterSpacing: -0.374px
-  dense-link:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 17px
-    fontWeight: 400
-    lineHeight: 2.41
-    letterSpacing: 0
-  caption:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.43
-    letterSpacing: -0.224px
-  caption-strong:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 14px
-    fontWeight: 600
-    lineHeight: 1.29
-    letterSpacing: -0.224px
-  button-large:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 18px
-    fontWeight: 300
-    lineHeight: 1.0
-    letterSpacing: 0
-  button-utility:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.29
-    letterSpacing: -0.224px
-  fine-print:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 12px
-    fontWeight: 400
-    lineHeight: 1.0
-    letterSpacing: -0.12px
-  micro-legal:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 10px
-    fontWeight: 400
-    lineHeight: 1.3
-    letterSpacing: -0.08px
-  nav-link:
-    fontFamily: "SF Pro Text, system-ui, -apple-system, sans-serif"
-    fontSize: 12px
-    fontWeight: 400
-    lineHeight: 1.0
-    letterSpacing: -0.12px
+Apple Fitness is the purest expression of "the data *is* the brand" in Apple's app catalog. The entire identity rests on **three concentric Activity rings** — **Move** (`#FA114F`, a hot pink-red), **Exercise** (`#92E82A`, electric lime-green), and **Stand** (`#1EE4E1`, bright cyan) — rendered as thick, rounded, glowing arcs on a **true-black canvas** (`#000000`). There is no logo wordmark doing the work here; the rings *are* the logo, and the whole app is engineered to make those three colors the brightest, most saturated thing on a pure-black screen. Everything else — typography, surfaces, chrome — is restrained Apple system styling so the rings and the Fitness+ artwork carry all the energy.
 
-rounded:
-  none: 0px
-  xs: 5px
-  sm: 8px
-  md: 11px
-  lg: 18px
-  pill: 9999px
-  full: 9999px
+The signature surface is the **Summary tab**. It opens with a day eyebrow + large date, a "Summary" large title, then the hero **Activity rings card**: the three rings drawn large on a grouped `#1C1C1E` card with a legend listing Move/Exercise/Stand values against goals in tabular numerals (each label in its ring's color). Below that flows a grid of metric tiles (Steps, Distance, Heart Rate, Workouts) — small grouped cards with a tinted SF Symbol, a label, and a big value — and then the **Fitness+ shelf**: a horizontally scrolling row of cinematic 200pt workout thumbnails (HIIT, Yoga, Strength, Cycling), each with a frosted-glass badge and play button, an uppercase type label, a title, and the trainer + playlist meta. The second pillar is **Fitness+ itself** — a full streaming catalog browsed as artwork-forward shelves, and the in-workout screen where your rings overlay the trainer video and update live.
 
-spacing:
-  xxs: 4px
-  xs: 8px
-  sm: 12px
-  md: 17px
-  lg: 24px
-  xl: 32px
-  xxl: 48px
-  section: 80px
+Typography is **SF Pro** (San Francisco) — Apple's system face — set the way Apple sets it everywhere: large titles bold and tight, section headers heavy, body at 17pt regular-to-semibold, and Apple's signature **label-opacity ramp on dark** (primary white 100%, secondary white 60%, tertiary white 30%) rather than distinct gray hexes. Numbers are tabular so the ring legend and metric tiles never jitter. The voice is encouraging but never loud — Apple lets the rings emote; the type stays calm and legible.
 
-components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: 11px 22px
-  button-primary-focus:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.pill}"
-  button-primary-active:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.pill}"
-  button-secondary-pill:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.primary}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: 11px 22px
-  button-dark-utility:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.button-utility}"
-    rounded: "{rounded.sm}"
-    padding: 8px 15px
-  button-pearl-capsule:
-    backgroundColor: "{colors.surface-pearl}"
-    textColor: "{colors.ink-muted-80}"
-    typography: "{typography.caption}"
-    rounded: "{rounded.md}"
-    padding: 8px 14px
-  button-store-hero:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.button-large}"
-    rounded: "{rounded.pill}"
-    padding: 14px 28px
-  button-icon-circular:
-    backgroundColor: "{colors.surface-chip-translucent}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.full}"
-    size: 44px
-  text-link:
-    backgroundColor: transparent
-    textColor: "{colors.primary}"
-    typography: "{typography.body}"
-  text-link-on-dark:
-    backgroundColor: transparent
-    textColor: "{colors.primary-on-dark}"
-    typography: "{typography.body}"
-  global-nav:
-    backgroundColor: "{colors.surface-black}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.nav-link}"
-    height: 44px
-  sub-nav-frosted:
-    backgroundColor: "{colors.canvas-parchment}"
-    textColor: "{colors.ink}"
-    typography: "{typography.tagline}"
-    height: 52px
-  product-tile-light:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.display-lg}"
-    rounded: "{rounded.none}"
-    padding: 80px
-  product-tile-parchment:
-    backgroundColor: "{colors.canvas-parchment}"
-    textColor: "{colors.ink}"
-    typography: "{typography.display-lg}"
-    rounded: "{rounded.none}"
-    padding: 80px
-  product-tile-dark:
-    backgroundColor: "{colors.surface-tile-1}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.display-lg}"
-    rounded: "{rounded.none}"
-    padding: 80px
-  product-tile-dark-2:
-    backgroundColor: "{colors.surface-tile-2}"
-    textColor: "{colors.on-dark}"
-    rounded: "{rounded.none}"
-  product-tile-dark-3:
-    backgroundColor: "{colors.surface-tile-3}"
-    textColor: "{colors.on-dark}"
-    rounded: "{rounded.none}"
-  store-utility-card:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-strong}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  configurator-option-chip:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.caption}"
-    rounded: "{rounded.pill}"
-    padding: 12px 16px
-  configurator-option-chip-selected:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.pill}"
-  search-input:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: 12px 20px
-    height: 44px
-  floating-sticky-bar:
-    backgroundColor: "{colors.canvas-parchment}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    height: 64px
-    padding: 12px 32px
-  environment-quote-card:
-    backgroundColor: "{colors.surface-tile-1}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.display-lg}"
-    rounded: "{rounded.none}"
-    padding: 80px
-  footer:
-    backgroundColor: "{colors.canvas-parchment}"
-    textColor: "{colors.ink-muted-80}"
-    typography: "{typography.fine-print}"
-    padding: 64px
----
-
-## Overview
-
-Apple's web presence is a masterclass in **reverent product photography framed by near-invisible UI**. Every page is a stack of edge-to-edge product "tiles" — alternating light and dark canvases, each centered on a hero headline, a one-line tagline, two tiny blue pill CTAs, and an impossibly crisp product render. Nothing competes with the product. Typography is confident but quiet; color is either pure white, an off-white parchment, or a near-black tile; interactive elements are a single, quiet blue.
-
-Density is unusually low even by contemporary SaaS standards. Each tile occupies roughly one viewport, and there is no decorative chrome — no borders, no gradients, no decorative frames, no shadows on headlines. Elevation appears only when a product image rests on a surface (a single soft `rgba(0, 0, 0, 0.22) 3px 5px 30px` drop for visual weight). The result is a catalog that feels more like a museum gallery: the wall disappears and the artifact takes over.
-
-Store and shop surfaces retain the same chassis but switch modes. The product configurator (iPhone 17 Pro, accessories grid) introduces a tight grid of white utility cards at `{rounded.lg}` (18px) radius with a thin border, paired with a persistent thin sub-nav strip. The environment page leans darker and more editorial. Across all five surfaces the typographic system, spacing rhythm, and the single blue accent are consistent — this is one design language expressed at different volumes.
+Chrome is minimal and is pure Apple HIG. Cards are grouped, rounded (14–18pt), and sit on true black with subtle elevation from surface lightness rather than drop shadows. The bottom tab bar (Summary, Fitness+, Sharing) uses the system blurred material and tints the active tab Move-pink (`#FF375F`) — the one place an accent appears in chrome. There is genuine restraint: the design system's job is to be an invisible, premium frame around three glowing rings and a wall of beautiful workout artwork.
 
 **Key Characteristics:**
-- Photography-first presentation; UI recedes so the product can speak.
-- Alternating full-bleed tile sections: white/parchment ↔ near-black, with the color change itself acting as the section divider.
-- Single blue accent (`{colors.primary}` — #0066cc) carries every interactive element. No second brand color exists.
-- Two button grammars: tiny blue pill CTAs (`{rounded.pill}`) and compact utility rects (`{rounded.sm}`).
-- SF Pro Display + SF Pro Text — negative letter-spacing at display sizes for the signature "Apple tight" headline feel.
-- Whisper-soft elevation used only when a product image needs to breathe — exactly one drop-shadow in the entire system.
-- Tight two-row nav: slim `{component.global-nav}` + product-specific `{component.sub-nav-frosted}` with persistent right-aligned primary CTA.
-- Section rhythm across multiple pages: light hero → dark product tile → light utility tile → dark tile → parchment footer — a predictable pulse.
+- True-black canvas (`#000000`) — the three rings are the brightest thing on screen
+- The brand *is* the three rings: Move `#FA114F`, Exercise `#92E82A`, Stand `#1EE4E1`
+- Each ring sits on a 22%-opacity track of its own color; arcs are thick, round-capped, glowing
+- Grouped rounded system cards (`#1C1C1E`, 14–18pt radius) — depth from lightness, not shadow
+- SF Pro typography with Apple's label-opacity ramp (100% / 60% / 30% on dark)
+- Tabular numerals so the ring legend and metric tiles never jitter
+- Summary tab = ring hero card + metric tile grid + Fitness+ artwork shelf
+- Fitness+ = cinematic full-color workout thumbnails with frosted-glass overlays
+- Move-pink (`#FF375F`) as the single chrome accent (active tab, links, primary CTA)
+- Fitness+ purple (`#C969E0`) for Fitness+ surfaces; ring colors never restyle
+- In-workout: your three rings overlay the trainer video and animate live
+- Restrained, premium, Apple-HIG chrome — the system is an invisible frame
 
-## Colors
+## 2. Color Palette & Roles
 
-> **Source pages analyzed:** homepage, environment, store, iPhone 17 Pro buy page, accessories index. The color system is identical across all five surfaces; only the surface-mode mix differs.
+### Primary — The Three Activity Rings (the brand)
+These are the identity. They are fixed, semantic, and **never restyle across themes or contexts**.
+- **Move** (`#FA114F`): Move ring (active energy / kcal). Label/accent on dark brightens to **`#FF375F`**.
+- **Exercise** (`#92E82A`): Exercise ring (brisk-activity minutes). Bright variant **`#66FF00`**.
+- **Stand** (`#1EE4E1`): Stand ring (hours stood). Bright variant **`#00F0FF`**.
+- **Ring Track**: each ring's own color at **22% opacity** (`rgba(250,17,79,0.22)` / `rgba(146,232,42,0.22)` / `rgba(30,228,225,0.22)`) — the unfilled groove.
 
-### Brand & Accent
-- **Action Blue** (`{colors.primary}` — #0066cc): The single brand-level interactive color. All text links, all blue pill CTAs ("Learn more", "Buy"), and the focus ring root. This is Apple's quiet but universal "click me" signal. Press state shifts to a slightly darker variant via the active scale transform rather than a hex change.
-- **Focus Blue** (`{colors.primary-focus}` — #0071e3): A marginally brighter sibling of Action Blue, reserved for the keyboard focus ring on buttons (`outline: 2px solid`).
-- **Sky Link Blue** (`{colors.primary-on-dark}` — #2997ff): A brighter blue used on dark surfaces for in-copy links and inline callouts, where Action Blue would disappear against the tile background.
+### Interactive / Chrome Accent
+- **Move-Pink Accent** (`#FF375F`): The single chrome accent — active tab tint, links, "See All", primary CTA. (Move ring color, label-brightened.)
+- **Accent Pressed** (`#D80E45`): Pressed state for the primary button.
+- **Fitness+ Purple** (`#C969E0`): Fitness+ brand surfaces, badges, and program artwork tinting.
 
-### Surface
-- **Pure White** (`{colors.canvas}` — #ffffff): The dominant canvas. Content, utility cards, store tiles, configurator grids.
-- **Parchment** (`{colors.canvas-parchment}` — #f5f5f7): The signature Apple off-white. Used for alternating light tiles, footer region, and the default page canvas in store utility sections. Just different enough from white to create rhythm.
-- **Pearl Button** (`{colors.surface-pearl}` — #fafafc): A near-white used as the fill for secondary "ghost" buttons — lighter than the parchment canvas so the button still reads as a button against `{colors.canvas-parchment}`.
-- **Near-Black Tile 1** (`{colors.surface-tile-1}` — #272729): The primary dark-tile surface on the homepage product grid.
-- **Near-Black Tile 2** (`{colors.surface-tile-2}` — #2a2a2c): A micro-step lighter — used where a dark tile sits directly above or below Tile 1 to create the faintest separation.
-- **Near-Black Tile 3** (`{colors.surface-tile-3}` — #252527): A micro-step darker — used at the bottom of the stack and in embedded video/player frames.
-- **Pure Black** (`{colors.surface-black}` — #000000): Reserved for true void — video player backgrounds, edge-to-edge photographic overlays, the global nav bar background.
-- **Translucent Chip Gray** (`{colors.surface-chip-translucent}` — #d2d2d7): The base hex of the translucent gray chip used over photography for circular control buttons. In production, applied at ~64% alpha as `rgba(210, 210, 215, 0.64)`.
+### Canvas & Surfaces (Dark — primary on iPhone)
+- **True Black Canvas** (`#000000`): App background. Pure black, always (iPhone).
+- **Grouped Surface 1** (`#1C1C1E`): System grouped cards (ring card, tiles) — `systemGray6` dark.
+- **Surface 2** (`#2C2C2E`): Nested cells, secondary grouped background.
+- **Surface 3** (`#3A3A3C`): Pressed surfaces, control fills.
+- **Separator** (`#38383A`): Hairline separators inside grouped lists.
+- **Fill (Quaternary)** (`rgba(118,118,128,0.24)`): Neutral button fill, segmented track.
 
-### Text
-- **Near-Black Ink** (`{colors.ink}` — #1d1d1f): The voice of every headline, every body paragraph, and the dark utility button's fill. Chosen instead of pure black to keep the page feeling photographic rather than printed.
-- **Body** (`{colors.body}` — #1d1d1f): Same hex as ink — Apple uses one near-black tone for all text on light surfaces.
-- **Body On Dark** (`{colors.body-on-dark}` — #ffffff): All text on dark tiles and on the global nav bar.
-- **Body Muted** (`{colors.body-muted}` — #cccccc): Secondary copy on dark tiles where pure white would be too loud.
-- **Ink Muted 80** (`{colors.ink-muted-80}` — #333333): Body text on the white Pearl Button surface — slightly softer than pure black.
-- **Ink Muted 48** (`{colors.ink-muted-48}` — #7a7a7a): Disabled button text and legal fine-print.
+### Canvas & Surfaces (Light — iPad / system light)
+- **Light Canvas** (`#F2F2F7`): `systemGroupedBackground` light.
+- **Light Surface** (`#FFFFFF`): Grouped cards on light.
+- **Light Separator** (`#C6C6C8`): Hairline separators.
 
-### Hairlines & Borders
-- **Divider Soft** (`{colors.divider-soft}` — #f0f0f0): The "border" tone on secondary buttons — functions as a ring shadow rather than a hard line. In production, often applied as `rgba(0, 0, 0, 0.04)`.
-- **Hairline** (`{colors.hairline}` — #e0e0e0): The 1px hairline border on store utility cards and configurator chips.
+### Text (Apple label-opacity ramp, not fixed grays)
+- **Label Primary** (`#FFFFFF`, 100%): Titles, values on dark.
+- **Label Secondary** (`#EBEBF5` @ 60% → `#EBEBF599`): Subtitles, meta.
+- **Label Tertiary** (`#EBEBF5` @ 30% → `#EBEBF54D`): Captions, disabled, low-emphasis.
+- **Label (light)** (`#000000` / `#3C3C4399` / `#3C3C434D`): Same ramp inverted for light mode.
 
-### Brand Gradient
-**No decorative gradients.** Atmospheric depth on product photography (the iPhone 17 Pro camera plate, the Apple Watch bands, AirPods reflections) is inherent to the imagery, not a CSS gradient overlay. The environment page's hero uses photographic atmosphere (mountain vista at dawn) but no gradient tokens are defined. Apple is the rare luxury-brand site with zero gradient-based design tokens.
+### Semantic
+- **Success / Closed** (`#30D158`): Goal-met confirmation (distinct from Exercise green).
+- **Error** (`#FF453A`): Errors, destructive actions.
+- **Warning** (`#FF9F0A`): Low-data, caution.
+- **Award Gold** (`#FFD60A`): Achievement / award badges, streak.
 
-## Typography
+## 3. Typography Rules
 
 ### Font Family
-- **Display**: `SF Pro Display, system-ui, -apple-system, sans-serif` — Apple's proprietary display face, optimized for sizes ≥ 19px. Defines the voice of every headline.
-- **Body / UI**: `SF Pro Text, system-ui, -apple-system, sans-serif` — the text-optimized variant used for body copy, captions, buttons, and links below 20px.
-- **OpenType features**: `font-variant-numeric: numerator` is enabled on numeric links (pricing tables, spec sheets). Display sizes rely on tight tracking rather than contextual ligatures.
+- **All text**: `SF Pro` (San Francisco — `SF Pro Display` ≥ 20pt, `SF Pro Text` < 20pt), Apple's system typeface, accessed via the system font (no bundling needed on iOS).
+- **Cross-platform fallback**: `Inter` (SIL OFL) — the closest geometric-humanist substitute when SF Pro is unavailable (web/Android).
+- **Numerals**: SF Pro with **tabular figures** (`.monospacedDigit()` / `font-variant-numeric: tabular-nums`) — ring legend, metric tiles, and live workout values must not jitter.
+- **Fallback Stack**: `-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
 
 ### Hierarchy
 
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| `{typography.hero-display}` | 56px | 600 | 1.07 | -0.28px | Hero headline; the signature "Apple tight" tracking |
-| `{typography.display-lg}` | 40px | 600 | 1.10 | 0 | Tile headlines atop every product tile |
-| `{typography.display-md}` | 34px | 600 | 1.47 | -0.374px | Section heads (SF Pro Text at display proportions) |
-| `{typography.lead}` | 28px | 400 | 1.14 | 0.196px | Product tile subcopy |
-| `{typography.lead-airy}` | 24px | 300 | 1.5 | 0 | Environment-page lead paragraphs (the rare weight 300) |
-| `{typography.tagline}` | 21px | 600 | 1.19 | 0.231px | Sub-tile tagline; sub-nav category name |
-| `{typography.body-strong}` | 17px | 600 | 1.24 | -0.374px | Inline strong emphasis |
-| `{typography.body}` | 17px | 400 | 1.47 | -0.374px | Default paragraph |
-| `{typography.dense-link}` | 17px | 400 | 2.41 | 0 | Footer / store utility link lists (relaxed leading) |
-| `{typography.caption}` | 14px | 400 | 1.43 | -0.224px | Secondary captions, button text |
-| `{typography.caption-strong}` | 14px | 600 | 1.29 | -0.224px | Emphasized captions |
-| `{typography.button-large}` | 18px | 300 | 1.0 | 0 | Store hero CTAs (the rare weight 300) |
-| `{typography.button-utility}` | 14px | 400 | 1.29 | -0.224px | Utility/nav button labels |
-| `{typography.fine-print}` | 12px | 400 | 1.0 | -0.12px | Fine-print, footer body |
-| `{typography.micro-legal}` | 10px | 400 | 1.3 | -0.08px | Micro legal disclaimers |
-| `{typography.nav-link}` | 12px | 400 | 1.0 | -0.12px | Global nav menu items |
+| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
+|------|------|------|--------|-------------|----------------|-------|
+| Large Title | SF Pro Display | 40pt | 800 | 1.1 | -1.0pt | "Summary" screen large title |
+| Date | SF Pro Display | 32pt | 800 | 1.1 | -0.6pt | The big date under the day eyebrow |
+| Header | SF Pro Display | 26pt | 800 | 1.15 | -0.5pt | Ring detail header ("Move") |
+| Section | SF Pro Display | 22pt | 800 | 1.2 | -0.4pt | "Fitness+", "Awards" |
+| Title 3 | SF Pro Display | 20pt | 700 | 1.25 | -0.3pt | Sub-section title |
+| Body | SF Pro Text | 17pt | 600 | 1.4 | -0.2pt | Primary body / emphasized list |
+| Body (regular) | SF Pro Text | 17pt | 400 | 1.5 | -0.2pt | Descriptive copy |
+| Ring Value | SF Pro Display | 19pt | 800 | 1.1 | 0pt | Legend value (tabular) |
+| Tile Value | SF Pro Display | 22pt | 800 | 1.1 | 0pt | Metric tile value (tabular) |
+| Callout / Card Title | SF Pro Text | 15pt | 600 | 1.3 | -0.2pt | Fitness+ card title |
+| Footnote | SF Pro Text | 13pt | 400 | 1.35 | 0pt | Trainer · playlist, sub-meta |
+| Ring Label / Eyebrow | SF Pro Text | 12pt | 700 | 1.2 | 0.4pt (UPPERCASE) | "MOVE" / "THURSDAY" — in ring color |
+| Button | SF Pro Text | 17pt | 600 | 1.0 | -0.2pt | Primary / tinted buttons |
+| Tab Label | SF Pro Text | 10pt | 500 | 1.0 | 0pt | Bottom tab labels |
+| Badge | SF Pro Text | 10pt | 700 | 1.0 | 0.5pt (UPPERCASE) | "NEW" / "TRENDING" frosted badge |
 
 ### Principles
+- **Apple HIG type, not custom**: Sizes, weights, and the Dynamic Type ramp follow Apple's text styles (Large Title, Title, Body, Footnote, Caption) — don't invent a bespoke scale.
+- **Label-opacity, not gray hexes**: Secondary/tertiary text is white at 60% / 30% opacity (Apple's `secondaryLabel` / `tertiaryLabel`), so it adapts to any background.
+- **Rings emote, type stays calm**: Headlines are bold but the system never shouts — the three glowing rings carry the energy.
+- **Ring labels wear ring colors**: The one place text is brand-colored is the Move/Exercise/Stand eyebrow labels (in their ring color, label-brightened on dark).
+- **Tabular everywhere numeric**: Ring legend, metric tiles, live workout HUD — always tabular figures.
+- **Full Dynamic Type**: Titles, body, footnotes scale through Apple's accessibility sizes; only the ring HUD and tab labels are layout-pinned.
 
-- **Negative letter-spacing at display sizes.** Every headline at 17px and up carries a slight tracking tighten (`-0.12 → -0.374px`). This produces the iconic "Apple tight" headline cadence. Never used at 12px or below.
-- **Body copy at 17px, not 16px.** Apple breaks the SaaS convention and runs paragraph text at 17px. The extra pixel gives the page an unmistakable "reading, not scanning" pace.
-- **Weight 300 is real and rare.** Used deliberately on a handful of large-size reads (`{typography.button-large}` at 18px/300 and `{typography.lead-airy}` at 24px/300). It's not an accident — it's a light-atmosphere cue reserved for moments where the content should feel airy.
-- **Weight 600, not 700, for headlines.** Apple's headlines sit at weight 600. Weight 700 is used sparingly for `{typography.tagline}` (21px) when a touch more assertion is needed.
-- **Line-height is context-specific.** Display sizes use 1.07–1.19 (tight). Body uses 1.47. Utility link stacks in the footer/store use an unusually relaxed 2.41 (`{typography.dense-link}`). The 2.41 is not a bug — it's how the footer's dense link columns breathe.
-- **Weight 500 is deliberately absent.** The ladder is 300 / 400 / 600 / 700. Mid-weight readings always use 600.
-
-### Note on Font Substitutes
-SF Pro is Apple's proprietary system font. When building off-system:
-
-- Use `system-ui, -apple-system, BlinkMacSystemFont` as the first stack entry — on macOS/iOS/Safari this resolves to the real SF Pro.
-- For non-Apple platforms, **Inter** (Google Fonts, variable) is the closest open-source equivalent. Inter at weight 600 with `font-feature-settings: "ss03"` approximates SF Pro's rounded "a" character.
-- Nudge `letter-spacing` down by `-0.01em` on display sizes to re-create the Apple tight feel; Inter's default tracking runs slightly wider than SF Pro.
-- For body text, tighten line-height by `0.03` (from 1.47 → 1.44) when substituting Inter — Inter's taller x-height needs less leading.
-
-## Layout
-
-### Spacing System
-- **Base unit:** 8px. Sub-base values (2, 4, 5, 6, 7) are used for tight typographic adjustments; structural layout snaps to 8/12/16/20/24.
-- **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 17px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 80px.
-- **Section vertical padding:** `{spacing.section}` (80px) inside a product tile; tiles stack edge-to-edge with 0 gap (the color change provides the break).
-- **Card padding:** `{spacing.lg}` (24px) inside utility grid cards.
-- **Button padding:** 8–11px vertical, 15–22px horizontal.
-- **Universal rhythm constants:** the 17px body line-height multiplier (~25px line) and 21px tagline size show up on every analyzed page.
-
-### Grid & Container
-- **Max content width:** ~980px on text-heavy sections (environment), ~1440px on product grids (store, accessories), full-bleed for product tiles (homepage).
-- **Column patterns:** 3 to 5 column utility card grid on store/accessories; 2-column side-by-side tiles on homepage occasional sections; single-column centered stack on product tile heroes.
-- **Gutters:** 20–24px between cards in a utility grid.
-
-### Whitespace Philosophy
-Apple's whitespace is the product's pedestal. Every tile begins with at least 64px of air above its headline and 48–64px below. Product renders are never crowded; the nearest content to a product image is at least 40px away. The footer is the only area that breaks this — there, Apple goes deliberately dense to make the full information architecture visible at a glance.
-
-## Elevation & Depth
-
-| Level | Treatment | Use |
-|---|---|---|
-| Flat | No shadow, no border | Full-bleed tiles, global nav, footer, body sections |
-| Soft hairline | 1px `rgba(0, 0, 0, 0.08)` border | Utility cards, sub-nav frosted-glass separator |
-| Backdrop blur | `backdrop-filter: blur(N)` on Parchment 80% | Sub-nav and the iPhone buy floating sticky bar |
-| Product shadow | `rgba(0, 0, 0, 0.22) 3px 5px 30px 0` | Product renders resting on a surface (the only true "shadow" in the system) |
-
-**Shadow philosophy.** Apple uses **exactly one** drop-shadow, and it is applied to photographic product imagery — never to cards, never to buttons, never to text. Elevation in the UI comes from (a) surface-color change (light tile ↔ dark tile) and (b) backdrop-blur on sticky bars. The single shadow is about giving the product weight, not about UI hierarchy.
-
-### Decorative Depth
-- **Atmospheric imagery** on the environment page (photographic vista) supplies mood; no CSS gradient involved.
-- **Edge-to-edge tile alternation** creates rhythm without borders or shadows — the color change itself is the divider.
-- **Backdrop-filter blur** on `{component.sub-nav-frosted}` and `{component.floating-sticky-bar}` creates a "floating over content" effect that's functional, not decorative.
-
-## Shapes
-
-### Border Radius Scale
-
-| Token | Value | Use |
-|---|---|---|
-| `{rounded.none}` | 0px | Full-bleed product tiles (no corner rounding) |
-| `{rounded.xs}` | 5px | Inline links when styled as subtle chips (rare) |
-| `{rounded.sm}` | 8px | Dark utility buttons (Sign In, Bag), inline card imagery |
-| `{rounded.md}` | 11px | White Pearl Button capsules |
-| `{rounded.lg}` | 18px | Store utility cards, accessories grid cards |
-| `{rounded.pill}` | 9999px | Primary blue pill CTAs, sub-nav buy button, configurator option chips, search input — the signature Apple pill |
-| `{rounded.full}` | 9999px / 50% | Circular control chips floating over photography |
-
-### Photography Geometry
-- **Hero imagery**: full-bleed, 21:9 or taller on the homepage; 16:9 on environment and shop pages. Product renders are photographic-realistic, often shot on a tinted surface that becomes the tile background.
-- **Product renders**: PNG/WebP with transparency; rest on a surface tile and pick up the system shadow.
-- **Accessory grid**: square 1:1 crops at `{rounded.lg}` (18px) radius, light neutral backgrounds, product centered with 20–40px internal padding.
-- **No rounded imagery in hero tiles** — images are full-bleed rectangular. Rounding (`{rounded.sm}`, `{rounded.lg}`) appears only on inline card imagery.
-- Lazy-loading via responsive `srcset` and `sizes` across all breakpoints; CDN-optimized WebP.
-
-## Components
-
-### Top Navigation
-
-**`global-nav`** — Persistent, ultra-thin black nav bar pinned to the top of every page. Background `{colors.surface-black}`, height 44px, text `{colors.on-dark}` in `{typography.nav-link}` (12px / 400 / -0.12px tracking). Links are quiet, spaced ~20px apart, running edge-to-edge across the top. Right-aligned cluster: Search, Bag icons — always visible. On mobile, collapses to hamburger at ~834px and the Apple logo centers.
-
-**`sub-nav-frosted`** — Surface-specific nav that sticks below the global nav. Background `{colors.canvas-parchment}` at 80% opacity with backdrop-filter blur, creating a frosted-glass effect. Height 52px. Content on left: product category name ("iPhone", "Store", "Accessories") in `{typography.tagline}` (21px / 600). Content right: inline nav links in `{typography.button-utility}` (14px), ending in a persistent `{component.button-primary}` ("Buy") or a utility link.
+## 4. Component Stylings
 
 ### Buttons
 
-**`button-primary`** — The signature Apple action. Background `{colors.primary}` (Action Blue #0066cc), text `{colors.on-primary}` in `{typography.body}` (SF Pro Text 17px / 400), rounded `{rounded.pill}` (full pill — capsule-shaped), padding 11px × 22px. The full-pill radius IS the brand action signal.
-- Active state: `{component.button-primary-active}` — `transform: scale(0.95)` (the system-wide micro-interaction).
-- Focus state: `{component.button-primary-focus}` — 2px solid `{colors.primary-focus}` outline.
+**Primary Button (Start Workout)**
+- Shape: Rounded rectangle, 14pt corner radius (Apple's prominent button)
+- Background: `#FA114F` (Move) — the brand accent as CTA
+- Text: `#FFFFFF`, SF Pro 17pt weight 600
+- Padding: 15pt vertical, 30pt horizontal (or full-width 50pt tall)
+- Pressed: background `#D80E45` + scale 0.98
+- Disabled: background `rgba(118,118,128,0.24)`, label tertiary
 
-**`button-secondary-pill`** — Used as the second CTA when two blue pills appear together ("Learn more" / "Buy"). Background transparent, text `{colors.primary}`, 1px solid `{colors.primary}` border, rounded `{rounded.pill}`, padding 11px × 22px. Reads as a "ghost pill."
+**Tinted Button (Add to Plan)**
+- Background: `rgba(250,17,79,0.18)` (Move at 18%)
+- Text: `#FF375F`, SF Pro 15pt weight 600
+- Corner radius: 12pt
+- Pressed: background `rgba(250,17,79,0.28)`
 
-**`button-dark-utility`** — Global nav actions (Sign In, Bag, language selector). Background `{colors.ink}` (#1d1d1f), text `{colors.on-dark}` in `{typography.button-utility}` (14px / 400 / -0.224px tracking), rounded `{rounded.sm}` (8px), padding 8px × 15px. Active state shrinks via `transform: scale(0.95)`.
+**Filled / Gray Button (Edit Goal)**
+- Background: `rgba(118,118,128,0.24)` (system fill)
+- Text: `#FFFFFF`, SF Pro 15pt weight 600
+- Corner radius: 12pt
+- Pressed: background `rgba(118,118,128,0.34)`
 
-**`button-pearl-capsule`** — Product-card secondary button. Background `{colors.surface-pearl}` (#fafafc), text `{colors.ink-muted-80}` in `{typography.caption}` (14px), 3px solid `{colors.divider-soft}` border (functions as a soft ring rather than a visible line), rounded `{rounded.md}` (11px), padding 8px × 14px.
+**Plain Button (See All / link)**
+- Background: none
+- Text: `#FF375F`, SF Pro 17pt weight 600
 
-**`button-store-hero`** — A larger primary CTA used on store hero surfaces. Same Action Blue + Paper White as `{component.button-primary}`, but with `{typography.button-large}` (18px / 300 — note the rare weight 300) and slightly more padding (14px × 28px). Used sparingly on the store landing.
+**Icon Button**
+- 22pt SF Symbol in 44pt hit area
+- Default `#FF375F` (interactive) or label-primary (neutral); pressed 60% opacity
 
-**`button-icon-circular`** — Floats over photography. 44 × 44px, background `{colors.surface-chip-translucent}` at ~64% alpha, icon in `{colors.ink}`, rounded `{rounded.full}`. Used for carousel controls, close buttons, and in-image controls (product image thumbnails on the iPhone buy page).
+### Core Atoms
 
-**`text-link`** — Inline body links in `{colors.primary}` (Action Blue). Underlined or non-underlined per context.
+**Activity Rings** (the hero atom)
+- Three concentric circles, thick stroke (14pt at hero size, scales with diameter), round line cap
+- Move outer (largest radius), Exercise middle, Stand inner
+- Each ring: a full-circle track in its own color at 22% opacity + a progress arc in its full color, starting at -90° (12 o'clock), clockwise
+- Overshoot: when a ring exceeds its goal it continues past 360° with a subtle layered look
+- Glow: a soft outer glow in the ring color sells the "lit" feel on black
 
-**`text-link-on-dark`** — Inline body links on dark tiles in `{colors.primary-on-dark}` (Sky Link Blue #2997ff) — Action Blue would disappear against `{colors.surface-tile-1}`.
+**Ring Legend Row**
+- Label: SF Pro 12pt 700 uppercase in the ring's label-brightened color (Move `#FF375F`, Exercise `#92E82A`, Stand `#1EE4E1`)
+- Value: SF Pro 19pt 800 tabular `#FFFFFF`
+- Goal suffix: SF Pro 12pt 600 secondary-label ("/620 KCAL")
 
-### Cards & Containers
+**Grouped Card**
+- Background: `#1C1C1E` (system grouped), corner radius 14–18pt, no border, no drop shadow
+- Internal padding: 14–22pt
+- Stack of cards separated by 10–16pt gaps on true black
 
-**`product-tile-light`** — Full-bleed light tile. Background `{colors.canvas}` (white), text `{colors.ink}`, rounded `{rounded.none}` (0 — tiles touch edges), vertical padding `{spacing.section}` (80px). Centered stack: product name in `{typography.display-lg}` (40px / 600) → one-line tagline in `{typography.lead}` (28px / 400) → two `{component.button-primary}` CTAs ("Learn more" / "Buy") → product render resting on the surface with the system shadow.
+**Metric Tile**
+- Grouped card, 14pt radius, 14pt padding
+- Top row: 16pt tinted SF Symbol (in the relevant ring/metric color) + label SF Pro 12pt 600 secondary
+- Value: SF Pro 22pt 800 tabular `#FFFFFF`
+- Sub: SF Pro 12pt tertiary ("Avg 7,540")
 
-**`product-tile-parchment`** — Same as `{component.product-tile-light}` but on `{colors.canvas-parchment}` (#f5f5f7). Used to break two consecutive white tiles.
+**Fitness+ Card**
+- 168pt wide, 200pt cinematic thumbnail, 16pt radius
+- Frosted badge top-left: `rgba(0,0,0,0.4)` + blur, SF Pro 10pt 700 uppercase white
+- Frosted play button bottom-left: 34pt circle, `rgba(255,255,255,0.22)` + blur, white triangle
+- Below: type label SF Pro 12pt 700 uppercase `#FF375F`, title SF Pro 15pt 600 `#FFFFFF`, meta SF Pro 13pt secondary ("Bakari · Pop Anthems")
 
-**`product-tile-dark`** — Full-bleed dark tile. Background `{colors.surface-tile-1}` (#272729), text `{colors.on-dark}`, rounded `{rounded.none}`, vertical padding `{spacing.section}` (80px). Same content stack as the light tile but with `{component.text-link-on-dark}` for inline copy and `{component.button-primary}` (Action Blue still works on the dark surface). Used on the homepage product grid as the alternating dark band.
+**Chip / Pill**
+- Background: `rgba(118,118,128,0.24)` (selected: `#FF375F`)
+- Text: SF Pro 13pt 600 (selected: white)
+- Corner radius: 500pt
 
-**`product-tile-dark-2`** — Variant on `{colors.surface-tile-2}` (#2a2a2c). Used where a dark tile sits directly above or below `{component.product-tile-dark}` to create the faintest separation through micro-step lightness change.
+### Navigation
 
-**`product-tile-dark-3`** — Variant on `{colors.surface-tile-3}` (#252527). Used at the bottom of the stack and in embedded video/player frames.
+**Bottom Tab Bar**
+- Height: 49pt + safe area
+- Background: system `.thinMaterial` blur over true black, 0.5pt top separator `#38383A`
+- Tabs (3): Summary, Fitness+, Sharing
+- Icon: 24pt SF Symbol; **no tint pill**
+- Active: glyph filled `#FF375F`, label `#FF375F`
+- Inactive: glyph `tertiaryLabel`, label `tertiaryLabel`
+- Labels: SF Pro 10pt 500, always shown
 
-**`store-utility-card`** — Used in store grid and accessories grid. Background `{colors.canvas}` (white), 1px solid `{colors.hairline}` border, rounded `{rounded.lg}` (18px), padding `{spacing.lg}` (24px). Top: product image (1:1 crop with `{rounded.sm}` (8px) inner image radius). Below: product name in `{typography.body-strong}` (17px / 600), price in `{typography.body}` (17px / 400), and a `{component.text-link}` ("Buy" or "Learn more"). No shadow by default; product render itself carries the system product-shadow.
+**Top (Summary)**
+- Day eyebrow SF Pro 13pt 700 uppercase `#FF375F`
+- Date SF Pro 32pt 800 label-primary
+- Trailing: 32pt profile avatar circle
+- Large-title "Summary" scrolls under a collapsing nav
 
-**`configurator-option-chip`** — Pill-shaped tappable cell used in the iPhone 17 Pro buy page. Background `{colors.canvas}`, text `{colors.ink}` in `{typography.caption}`, rounded `{rounded.pill}`, padding 12px × 16px. Contains a small product thumbnail + label + price delta. Arranged in a grid of 4–5 options per row.
+**Section Header (in-page)**
+- SF Pro 22pt 800 label-primary, 20pt top margin
+- Trailing "See All" plain button in `#FF375F`
 
-**`configurator-option-chip-selected`** — Selected state. Border upgrades to 2px solid `{colors.primary-focus}`. Same shape, same content.
+### Input Fields
 
-**`environment-quote-card`** — A photographic-canvas hero specific to the environment page. Dark photographic backdrop (mountain vista at dawn) with `{colors.surface-tile-1}` as the fallback color, centered white-text headline in `{typography.display-lg}` (40px), small green "Apple 2030" pictographic logo above the headline, single `{component.button-primary}` below. Padding `{spacing.section}` (80px).
+**Search Bar (Fitness+ catalog)**
+- Height: 36pt
+- Background: `rgba(118,118,128,0.24)` (system search field)
+- Corner radius: 10pt
+- Leading magnifier 15pt tertiary-label
+- Placeholder SF Pro 17pt tertiary-label
 
-**`floating-sticky-bar`** — Floats at the bottom of the viewport on the iPhone 17 Pro buy page during scroll. Background `{colors.canvas-parchment}` at 80% opacity with `backdrop-filter: blur(N)`, height 64px, padding 12px × 32px. Left: running price total in `{typography.body}`. Right: `{component.button-primary}` ("Add to Bag").
+**Segmented Control (Day / Week / Month — ring history)**
+- Track: `rgba(118,118,128,0.24)`, 8pt radius
+- Selected segment: `#3A3A3C` fill with subtle elevation, white text
+- Unselected: secondary-label text
+- SF Pro 13pt 600
 
-### Inputs & Forms
+**Filter Pills (Fitness+ filter)**
+- `rgba(118,118,128,0.24)` unselected, `#FF375F` selected
+- SF Pro 13pt 600, 500pt radius
 
-**`search-input`** — The accessories search input. Background `{colors.canvas}`, text `{colors.ink}` in `{typography.body}` (17px), 1px solid `rgba(0, 0, 0, 0.08)` border, rounded `{rounded.pill}` (full pill — search is also pill-shaped, matching the CTA grammar), padding 12px × 20px, height 44px. Leading icon: search glyph at 14px, muted tint.
+### Distinctive Components
 
-Error and validation states were not surfaced in the analyzed pages.
+**Activity Rings Hero**
+- The three rings drawn large (110–130pt) on a grouped card with a legend
+- Tappable → full-screen ring detail with hour-by-hour bar chart in the ring's color
+- Animate: each ring sweeps from 0 to its value over ~1s ease-out, slightly staggered (Move, then Exercise, then Stand), with a soft haptic when a ring closes
 
-### Footer
+**Ring Close Celebration**
+- When a ring reaches 100%, a burst of small particles in the ring color + a success haptic + the ring's "closed" state (a subtle pulse)
+- All-three-closed triggers a larger celebration
 
-**`footer`** — Background `{colors.canvas-parchment}` (#f5f5f7), text `{colors.ink-muted-80}`. Link columns in `{typography.dense-link}` (17px / 400 / 2.41 line-height — the relaxed leading is what makes the dense columns scannable). Column headings in `{typography.caption-strong}` (14px / 600). Legal row at the very bottom in `{typography.fine-print}` (12px / 400) with `{colors.ink-muted-48}` text. Vertical padding 64px.
+**Fitness+ Cinematic Shelf**
+- Horizontally scrolling 200pt artwork cards with frosted-glass overlays
+- Snap-scrolling, momentum; cards lift slightly on press (scale 0.98 → tap)
 
-## Do's and Don'ts
+**In-Workout Ring HUD**
+- During a Fitness+ session, the three rings overlay a corner of the trainer video and update live
+- A "Burn Bar" can appear comparing your output to others' median
+- Tappable metrics row (heart rate, active calories, time) in tabular SF Pro over the video with a subtle scrim
+
+**Awards / Trophy Case**
+- Grid of achievement medallions; earned ones full-color, unearned dimmed to `tertiaryLabel`
+- Tapping a medallion flips it with a 3D rotation to show detail
+
+**Sharing Activity Card**
+- A friend row: avatar + name + their three mini-rings + a status line
+- Your row pinned top; competition badges in Award Gold `#FFD60A`
+
+**Trends Indicators**
+- Up/down arrows beside a 90-day trend metric: green-up `#30D158` (improving) / `#FF453A` (declining), with the metric in tabular SF Pro
+
+## 5. Layout Principles
+
+### Spacing System
+- Base unit: 4pt (Apple's 8pt-ish rhythm built from 4pt)
+- Scale: 4, 8, 10, 12, 16, 20, 22, 28, 32, 44
+- Grouped card internal padding: 14–22pt
+- Card-to-card gap: 10–16pt
+- Screen side inset: 16pt (Apple's standard readable margin)
+
+### Grid & Container
+- iPhone: 16pt side insets; metric tiles 2-up grid; Fitness+ shelf horizontal scroll
+- iPad: content max-width centered; tiles 3–4-up; Fitness+ a multi-column grid
+- Ring card: rings sit left, legend right (or rings centered with legend below on narrow)
+- Fitness+ cards: fixed 168pt width, full-bleed thumbnail with rounded corners
+
+### Whitespace Philosophy
+- **The rings own the light**: the hero ring card gets generous space; everything else is calm and grouped so the rings stay the focal point
+- **Apple grouped rhythm**: cards float on true black with consistent 10–16pt gaps — the standard iOS grouped-list feel
+- **Cinematic content gets room**: Fitness+ artwork is large and uncluttered; chrome is thin
+- **No decorative emptiness**: spacing is the iOS grouped system; energy comes from ring color + artwork, not empty space
+
+### Border Radius Scale
+- Square (0pt): full-bleed video, separators
+- Standard (8pt): segmented control, search field
+- Comfortable (12pt): tinted/filled buttons, small chips-as-cards
+- Card (14pt): metric tiles, prominent buttons
+- Grouped Hero (18pt): the ring hero card, large grouped cards
+- Large (22pt): bottom sheets, modals
+- Pill (500pt): filter pills, chips
+- Circle (50%): rings, avatars, frosted play buttons
+
+## 6. Depth & Elevation
+
+Apple Fitness is **flat with material depth**. Depth is surface lightness + system blur materials, not custom drop shadows.
+
+| Level | Treatment | Use |
+|-------|-----------|-----|
+| Base (Level 0) | `#000000`, no shadow | App canvas |
+| Grouped (Level 1) | `#1C1C1E`, no shadow | Ring card, metric tiles, grouped cards |
+| Raised (Level 2) | `#2C2C2E` / `#3A3A3C` | Nested cells, pressed/selected control segments |
+| Material (Level 3) | System `.thinMaterial` / `.regularMaterial` blur | Tab bar, frosted Fitness+ badges & play buttons, nav |
+| Modal (Level 4) | `#1C1C1E` sheet + `.regularMaterial` + `rgba(0,0,0,0.4)` scrim | Bottom sheets, ring detail, share sheet |
+
+**Shadow Philosophy**: On true black, drop shadows are invisible, so Apple uses none on content — depth is "lighter surface = closer." The only elevation tool beyond surface lightness is the **system blur material** (UIBlurEffect): the tab bar, the frosted badge/play overlays on Fitness+ artwork, and modal backgrounds all use Apple's vibrancy materials. The rings themselves get a soft colored *glow* (not a drop shadow) to read as "lit" on black.
+
+### Motion
+- **Ring sweep**: on Summary open, each ring animates from 0 → its value over ~1.0s ease-out, slightly staggered (Move → Exercise → Stand by ~80ms); overshoot rings continue past 360° with a layered wrap
+- **Ring close**: at 100%, a particle burst in the ring color + a success haptic; the ring "pulses" once
+- **All-rings-closed**: larger confetti-style celebration + stronger haptic
+- **Card press**: grouped cards / Fitness+ cards scale 1.0 → 0.97 in 120ms, spring back on release
+- **Tab switch**: cross-fade 200ms; active glyph swaps to filled instantly, tint tween 150ms
+- **Fitness+ shelf**: momentum + snap horizontal scroll; parallax on thumbnails as they scroll
+- **Sheet present**: ring-detail / share sheet slides up 350ms with the iOS sheet spring; scrim fades in
+- **Live HUD (in-workout)**: rings update continuously with a smooth ~300ms ease as metrics change; heart-rate value ticks with tabular spacing
+- **Award flip**: medallion 3D-rotates (Y axis) 500ms to reveal detail
+- **Haptic**: light selection on tab/segment change; success notification on ring close; medium impact on Start Workout
+- **Reduce Motion**: rings set their final value with a 250ms crossfade (no sweep), no particle burst (use a static "closed" check), no card scale, no parallax, awards crossfade instead of flip
+
+## 7. Do's and Don'ts
 
 ### Do
-- Use `{colors.primary}` (Action Blue #0066cc) for every interactive element — links, pill CTAs, focus signals — and nothing else. The single accent is non-negotiable.
-- Set headlines in `{typography.hero-display}` or `{typography.display-lg}` with negative letter-spacing (`-0.28 → -0.374px`) to get the signature "Apple tight" cadence.
-- Run body copy at `{typography.body}` (17px / 400 / 1.47 / -0.374px) — not 16px. The extra pixel defines the brand's reading pace.
-- Alternate `{component.product-tile-light}` (or parchment) and `{component.product-tile-dark}` for full-bleed section rhythm. The color change IS the divider.
-- Reserve `{rounded.pill}` for the primary blue CTA and any other element that should read as an "action" (configurator chips, search input, sticky bar CTA).
-- Apply the single product-shadow (`rgba(0, 0, 0, 0.22) 3px 5px 30px`) only to product renders resting on a surface — never on cards, buttons, or text.
-- Use `transform: scale(0.95)` as the active/press state on every button — it's the system-wide micro-interaction.
-- Keep the global nav `{colors.surface-black}` (true black) — it's the only place pure black appears on most pages.
+- Use true black `#000000` as the iPhone canvas — the rings must be the brightest thing on screen
+- Treat the three ring colors (Move `#FA114F`, Exercise `#92E82A`, Stand `#1EE4E1`) as the immutable brand — never restyle them
+- Draw each ring on a 22%-opacity track of its own color, thick stroke, round cap, start at 12 o'clock
+- Give rings a soft colored glow (not a drop shadow) so they read as "lit" on black
+- Use grouped system cards (`#1C1C1E`, 14–18pt radius) with depth from surface lightness
+- Use Apple's label-opacity ramp (100% / 60% / 30%) for text, not fixed gray hexes
+- Tint the active tab and links Move-pink `#FF375F` (the one chrome accent)
+- Set numbers tabular so the ring legend and tiles never jitter
+- Use system blur materials for the tab bar and frosted Fitness+ overlays
+- Animate rings sweeping from 0 with a celebratory close + success haptic
 
 ### Don't
-- Don't introduce a second accent color; every "click me" signal is `{colors.primary}` (Action Blue).
-- Don't add shadows to cards, buttons, or text — shadow is reserved for product imagery.
-- Don't use gradients as decorative backgrounds; atmosphere comes from photography.
-- Don't set body copy at weight 500 — Apple's ladder is 300 / 400 / 600 / 700, with 500 deliberately absent. Body is always 400; strong inline is 600; display is 600.
-- Don't round full-bleed tiles — tiles are rectangular and edge-to-edge; the color change is the divider.
-- Don't tighten line-height below 1.47 for body copy — the editorial leading is part of the brand.
-- Don't mix radii grammars — use `{rounded.sm}` for compact utility, `{rounded.lg}` for utility cards, `{rounded.pill}` for pills, and nothing in between (except the rare `{rounded.md}` Pearl Button).
-- Don't use `{colors.primary-on-dark}` (Sky Link Blue) on light surfaces — it's the dark-tile-only variant. Action Blue is for light surfaces.
+- Don't use charcoal as the base — Apple Fitness is *true* black `#000000` on iPhone
+- Don't recolor the ring colors for theme, dark/light, or "brand harmony" — they are sacred
+- Don't put rings on a neutral gray track — the track is the ring's own color at 22%
+- Don't drop-shadow grouped cards — depth is surface lightness + blur materials
+- Don't invent a bespoke type scale — follow Apple's text styles and Dynamic Type
+- Don't use distinct gray hexes for secondary text — use white at 60% / 30% opacity
+- Don't add a Material/iOS tint pill behind the active tab — use Apple's tint-only style
+- Don't make Fitness+ artwork muted — it is cinematic, full-color, the visual reward
+- Don't use proportional figures on the ring legend / metric tiles — tabular only
+- Don't over-animate chrome — the rings carry the motion energy; chrome stays calm
 
-## Responsive Behavior
+## 8. Responsive Behavior
 
-### Breakpoints
+### Device Sizes
+| Device | Width | Key Changes |
+|--------|-------|-------------|
+| iPhone SE (3rd gen) | 375pt | Rings ~110pt; metric tiles stay 2-up; Fitness+ card 150pt |
+| iPhone 13/14/15 | 390pt | Standard layout |
+| iPhone 15/16 Pro | 393pt | Dynamic Island respected; collapsing large title |
+| iPhone 15/16 Pro Max | 430pt | Rings ~140pt; Fitness+ card 184pt |
+| iPad (portrait) | 768pt | Light grouped background option; tiles 3–4-up; Fitness+ multi-column grid |
+| iPad (landscape) | 1024pt+ | Ring card + tiles in a sidebar layout; Fitness+ full catalog grid |
 
-| Name | Width | Key Changes |
-|---|---|---|
-| Small phone | ≤ 419px | Single-column tiles; sub-nav collapses to category name + primary CTA only; hero typography drops to 28px |
-| Phone | 420–640px | Single-column stack; product renders scale to 80% of tile width; hero h1 drops to 34px |
-| Large phone | 641–735px | Tiles transition to tighter padding (48px vertical vs 80px); fine-print wraps |
-| Tablet portrait | 736–833px | Global nav collapses to hamburger; sub-nav hides category chips, keeps primary CTA |
-| Tablet landscape | 834–1023px | Global nav returns fully expanded; 3-column utility grids become 2-column |
-| Small desktop | 1024–1068px | Product tiles use 2/3 width with margin gutters; hero h1 stays at 40px |
-| Desktop | 1069–1440px | Full layout; 4–5 column store grids; 1440px content max |
-| Wide desktop | ≥ 1441px | Content locks at 1440px, margins absorb extra width |
+### Dynamic Type
+- Scales: all titles, body, footnotes through Apple's accessibility sizes
+- Fixed (layout-pinned): the ring legend numerals, in-workout HUD, tab labels, frosted badges — these live in tight live layouts
+- Ring diameter scales with available width, not Dynamic Type
 
-The structural breakpoints that matter for agents: 1440px (content lock), 1068px (small-desktop), 833px (tablet landscape switch), 734px (tablet portrait), 640px (phone), 480px (small phone).
+### Orientation
+- Summary is portrait-first on iPhone; iPad supports both
+- In-workout supports landscape: trainer video fills the frame, ring HUD overlays a corner
+- Apple Watch mirror (where relevant) keeps the same ring semantics
 
 ### Touch Targets
-- Minimum 44 × 44px. `{component.button-primary}` lands at ~44 × 100px (with the full-pill radius making the visible hit area more generous than the label suggests).
-- `{component.button-icon-circular}` is exactly 44 × 44px.
-- Global nav utility links are smaller (~32 × 80px) — they deliberately sit at a tighter target because they're precision desktop actions, and the mobile hamburger replaces them at ≤ 833px.
+- Tab bar icon: 24pt glyph, 49pt hit
+- Ring hero card: full-card tap → ring detail, large area
+- Metric tile: full-tile tap, ≥ 72pt tall
+- Fitness+ card: full-card tap, ≥ 280pt tall
+- Buttons: ≥ 44pt tall (primary 50pt full-width)
 
-### Collapsing Strategy
-- **Global nav**: full horizontal link row on desktop → collapses to Apple logo + hamburger + bag icon at 834px and below.
-- **Sub-nav**: category name + inline links + primary CTA → category name + primary CTA only at mobile; inline links move into a hamburger tray.
-- **Product tiles**: stack from 2-column to 1-column at 834px; vertical padding tightens from 80px → 48px at small-phone.
-- **Utility grids** (store, accessories): 5-col → 4-col (1440px) → 3-col (1068px) → 2-col (834px) → 1-col (640px).
-- **Hero typography**: `{typography.hero-display}` (56px) → `{typography.display-lg}` (40px) at 1068px → 34px at 640px → 28px at 419px.
+### Safe Area Handling
+- Top: large title + day/date respect safe area and Dynamic Island
+- Bottom: tab bar uses safe-area inset; in-workout HUD respects all edges over video
+- Sides: 16pt readable content inset; Fitness+ thumbnails full-bleed within their card
+- Materials extend edge-to-edge; content insets respect safe areas
 
-### Image Behavior
-- All product imagery uses responsive `srcset` with breakpoint-matched crops.
-- Hero photography may switch art direction at mobile (e.g., the environment page's vista crops to a taller aspect ratio on mobile, framing the subject differently).
-- Product renders maintain their 1:1 or 4:3 aspect ratios across breakpoints; only scale changes.
-- Lazy-loading is default; the above-fold hero loads eagerly.
+## 9. Agent Prompt Guide
 
-## Iteration Guide
+### Quick Color Reference
+- Canvas: `#000000`
+- Grouped surface 1 / 2 / 3: `#1C1C1E` / `#2C2C2E` / `#3A3A3C`
+- Separator: `#38383A`
+- Move ring / label: `#FA114F` / `#FF375F`
+- Exercise ring / bright: `#92E82A` / `#66FF00`
+- Stand ring / bright: `#1EE4E1` / `#00F0FF`
+- Ring track: ring color @ 22% opacity
+- Chrome accent (active tab / links / CTA): `#FF375F` (pressed `#D80E45`)
+- Fitness+ purple: `#C969E0`
+- Label primary / secondary / tertiary: `#FFFFFF` / white@60% / white@30%
+- Success / Error / Award gold: `#30D158` / `#FF453A` / `#FFD60A`
+- System fill (neutral button): `rgba(118,118,128,0.24)`
 
-1. Focus on ONE component at a time. Reference its YAML key directly (`{component.product-tile-dark}`, `{component.search-input}`).
-2. Variants of an existing component (`-active`, `-focus`, `-2`, `-3`) live as separate entries in `components:`.
-3. Use `{token.refs}` everywhere — never inline hex.
-4. Never document hover. Default and Active/Pressed states only.
-5. Display headlines stay SF Pro Display 600 with negative letter-spacing. Body stays SF Pro Text 400 at 17px. The boundary is unbreakable.
-6. The single drop-shadow (`rgba(0, 0, 0, 0.22) 3px 5px 30px`) is reserved for product photography only.
-7. When in doubt about emphasis: alternate surface (light → dark tile) before adding chrome.
+### Example Component Prompts
+- "Build the Apple Fitness Summary header in SwiftUI: a day eyebrow 'THURSDAY' (SF Pro 13pt 700 uppercase `#FF375F`), a date 'May 14' (SF Pro 32pt 800 label-primary) below it, and a 32pt circular profile avatar trailing. Below, a 'Summary' large title (SF Pro 40pt 800) that collapses into the nav on scroll. Canvas is true black `#000000`."
 
-## Known Gaps
+- "Create the Apple Fitness Activity rings: three concentric circles, round-capped, thick stroke (14pt at 130pt diameter). Move outer (`#FA114F`), Exercise middle (`#92E82A`), Stand inner (`#1EE4E1`). Each ring = a full-circle track in its own color at 22% opacity + a progress arc in full color starting at -90° clockwise. Add a soft outer glow in each ring's color. Animate each arc from 0 to its value over ~1.0s ease-out, staggered Move→Exercise→Stand by 80ms, with a success haptic when a ring reaches 100%."
 
-- Form validation and error states were not surfaced on the analyzed pages; only the neutral search input is documented.
-- The homepage's embedded video/player frame uses `{colors.surface-black}`; interior player controls are not documented (they're a platform widget, not a web-design token).
-- Some component imagery is dynamic (rotating product hero) and its specific copy varies per surface — component specs name the structure, not the rotating content.
-- Dark-mode counterparts for store and accessories utility cards were not surfaced on the analyzed pages; the system documented is the daytime/light-dominant variant Apple ships by default.
-- Atmospheric photography (environment page mountain vista) is a content asset, not a design token; the documented `{component.environment-quote-card}` describes the structural surface only.
-- The exact backdrop-filter blur radius on `{component.sub-nav-frosted}` and `{component.floating-sticky-bar}` is platform-dependent; production CSS uses `saturate(180%) blur(20px)` as a typical baseline but the value isn't formalized as a token.
+- "Build the Apple Fitness ring legend: three rows. Each: an uppercase label in the ring's label-brightened color (Move `#FF375F`, Exercise `#92E82A`, Stand `#1EE4E1`, SF Pro 12pt 700), then the value in SF Pro 19pt 800 tabular white with a secondary-label goal suffix — '486 /620 KCAL', '38 /30 MIN', '9 /12 HR'. Lay it out beside the rings on a grouped `#1C1C1E` 18pt-radius card."
+
+- "Build an Apple Fitness metric tile: a grouped `#1C1C1E` card, 14pt radius, 14pt padding. Top row a 16pt tinted SF Symbol (`chart.bar.fill` in `#FF375F`) + label 'Steps' (SF Pro 12pt 600 white@60%). Value '8,214' (SF Pro 22pt 800 tabular white). Sub 'Avg 7,540' (SF Pro 12pt white@30%). Lay four of these in a 2-column grid with 10pt gaps."
+
+- "Render the Apple Fitness Fitness+ shelf: a horizontal snap-scroll of 168pt cards. Each card: a 200pt cinematic thumbnail (use a rich gradient placeholder), 16pt radius, a frosted badge top-left (`rgba(0,0,0,0.4)` + blur, 'NEW' SF Pro 10pt 700 uppercase white) and a 34pt frosted play button bottom-left (`rgba(255,255,255,0.22)` + blur, white triangle). Below: type label SF Pro 12pt 700 uppercase `#FF375F`, title '20 min HIIT' SF Pro 15pt 600 white, meta 'Bakari · Pop Anthems' SF Pro 13pt white@60%."
+
+- "Build the Apple Fitness bottom tab bar: a 49pt bar using system `.thinMaterial` over true black with a 0.5pt `#38383A` top separator. Three tabs — Summary, Fitness+, Sharing — 24pt SF Symbols, no tint pill. Active glyph + label tinted `#FF375F`; inactive uses `tertiaryLabel`. Labels SF Pro 10pt 500 always shown."
+
+### Iteration Guide
+1. Canvas is **true black `#000000`** on iPhone — the three rings must be the brightest thing on screen
+2. The brand **is** the three ring colors — Move `#FA114F`, Exercise `#92E82A`, Stand `#1EE4E1` — immutable, never restyled
+3. Each ring sits on a **22%-opacity track of its own color**, thick round-capped stroke, starting at 12 o'clock, with a soft colored glow
+4. Use **grouped system cards** (`#1C1C1E`, 14–18pt radius); depth is surface lightness + blur materials, never drop shadows
+5. Text uses Apple's **label-opacity ramp** (100% / 60% / 30%), not fixed gray hexes; type is SF Pro per Apple's text styles
+6. **Move-pink `#FF375F`** is the single chrome accent — active tab, links, primary CTA (pressed `#D80E45`)
+7. Numbers are **tabular** — ring legend, metric tiles, live HUD never jitter
+8. **Fitness+ artwork is cinematic and full-color** with frosted-glass overlays — the visual reward
+9. Rings **sweep from 0** on open (staggered ~1s) and **celebrate on close** with a particle burst + success haptic
+10. Chrome stays **calm and HIG-correct** — the rings and artwork carry the energy, not the framing
