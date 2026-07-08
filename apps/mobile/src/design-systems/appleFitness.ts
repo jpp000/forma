@@ -226,7 +226,7 @@ export const appleFitnessSystem: DesignSystem = {
       separator: s.separator,
       border: s.separator,
       primary: afColors.accent,
-      primaryOn: afColors.labelPrimary,
+      primaryOn: afColors.onPrimary,
       training: afColors.exercise,
       nutrition: afColors.move,
       progress: afColors.stand,
