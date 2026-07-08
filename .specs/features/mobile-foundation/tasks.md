@@ -270,7 +270,7 @@ T19 → T20 → T21
 - [x] `signOut` clears storage
 - [x] `401` path clears session
 - [x] `roles` available for student gate
-- [ ] Gate: Build
+- [x] Gate: Build
 
 **Tests**: none (provider wiring; storage/client unit already exist)  
 **Gate**: build  
@@ -292,7 +292,7 @@ T19 → T20 → T21
 - [x] `token && !student` → onboarding
 - [x] `token && student` → tabs
 - [x] Loading session shows loading UI (not blank crash)
-- [ ] Gate: Build
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -314,7 +314,7 @@ T19 → T20 → T21
 - [x] Invalid email blocks OTP request
 - [x] Loading/error/empty states present
 - [x] Light/dark + green CTAs
-- [ ] Gate: Build
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -336,7 +336,7 @@ T19 → T20 → T21
 - [x] Wrong OTP / 401 shows localized error
 - [x] 429 shows rate-limit copy
 - [x] Network error + retry path
-- [ ] Gate: Build
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -357,7 +357,7 @@ T19 → T20 → T21
 - [x] Mock/dev path can complete to JWT (documented)
 - [x] Cancel/failure shows localized error
 - [x] Does not crash Expo Go on cancel
-- [ ] Gate: Build
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -377,7 +377,7 @@ T19 → T20 → T21
 
 - [x] No raw i18n keys visible on auth screens
 - [x] Both locales include auth strings
-- [ ] Gate: Build
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
