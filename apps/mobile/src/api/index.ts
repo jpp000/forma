@@ -1,5 +1,6 @@
 export type { ApiClient, ApiClientOptions } from './client';
 export { ApiError, createApiClient } from './client';
+export { mapApiError } from './mapApiError';
 export type {
   AuthResponse,
   IdentityApi,

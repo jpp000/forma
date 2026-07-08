@@ -1,9 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { ApiError } from '../../src/api/client';
-import { createApiClient } from '../../src/api/client';
-import { createIdentityApi } from '../../src/api/identity';
+import { createApiClient, createIdentityApi, mapApiError } from '../../src/api';
 import { getActiveLocale, useT } from '../../src/i18n';
 import { useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
@@ -66,7 +64,7 @@ export default function OtpScreen() {
       const { accessToken } = await identity.verifyOtp(emailAddress, code);
       await signIn(accessToken);
     } catch (error) {
-      setFormError(resolveOtpError(error, t));
+      setFormError(mapApiError(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -83,7 +81,7 @@ export default function OtpScreen() {
     try {
       await identity.requestOtp(emailAddress);
     } catch (error) {
-      setFormError(resolveOtpError(error, t));
+      setFormError(mapApiError(error));
     } finally {
       setIsResending(false);
     }
@@ -141,24 +139,6 @@ export default function OtpScreen() {
       </Pressable>
     </Screen>
   );
-}
-
-function resolveOtpError(
-  error: unknown,
-  t: (key: import('../../src/i18n').TranslationKey) => string,
-): string {
-  if (error instanceof ApiError) {
-    if (error.status === 401) {
-      return t('auth.otpInvalid');
-    }
-    if (error.status === 429) {
-      return t('auth.otpRateLimit');
-    }
-  }
-  if (error instanceof Error && error.name === 'TypeError') {
-    return t('errors.network');
-  }
-  return t('errors.generic');
 }
 
 const styles = StyleSheet.create({

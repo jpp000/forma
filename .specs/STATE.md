@@ -84,18 +84,20 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 
 **Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed). Streak today resets on gap day — rest-day rule **not** implemented yet (AD-027).
 
-**Frontend:** `mobile-foundation` **Batch 1 complete** (T1–T8). Scaffold + theme + i18n + UI primitives + session/API layer landed on `feat-frontend-foundation`.
+**Frontend:** `mobile-foundation` **Batch 2 complete** (T9–T14). SessionProvider, Protected navigation shell, Auth (sign-in + OTP + OAuth mock), and error i18n mapping landed on `feat-frontend-foundation`.
 
 | Item | Value |
 |------|-------|
 | Branch | `feat-frontend-foundation` |
 | Package | `@forma/mobile` → `apps/mobile` |
 | Run | `pnpm install` → `pnpm --filter @forma/mobile start` (API: `pnpm --filter @forma/api dev`) |
-| Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`) |
+| Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`); API `OAUTH_MOCK=true` for OAuth dev path |
 | Gates | `pnpm --filter @forma/mobile test` (8 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
-| Next batch | **Batch 2: T9–T14** — SessionProvider, Protected navigation shell, Auth screens + OTP + OAuth + i18n polish |
+| Next batch | **Batch 3: T15–T21** — onboarding screens, tab shell + logout, smoke checklist, OAuth API redirect, env docs, STATE handoff |
 
-**Blockers for Batch 2:** none. OAuth mobile redirect (T19) still deferred to Batch 3.
+**Blockers for Batch 3:** none. OAuth production mobile redirect still T19.
+
+**Slice 1 (parallel docs only):** `.specs/features/mobile-home-summary/spec.md` **drafted** — awaiting user confirm → Design → Tasks. **Do not Execute** until Slice 0 Verifier PASS (no parallel `apps/mobile` edits).
 
 ---
 

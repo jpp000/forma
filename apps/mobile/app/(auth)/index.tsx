@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { ApiError } from '../../src/api/client';
-import { createApiClient } from '../../src/api/client';
-import { createIdentityApi, type OAuthProvider } from '../../src/api/identity';
+import { createApiClient, createIdentityApi, mapApiError } from '../../src/api';
+import type { OAuthProvider } from '../../src/api/identity';
 import { isValidEmail } from '../../src/auth/validators';
 import { getActiveLocale, useT } from '../../src/i18n';
 import { OAuthCancelledError, startOAuth, useSession } from '../../src/session';
@@ -97,7 +96,7 @@ export default function AuthIndexScreen() {
         params: { email: trimmed },
       });
     } catch (error) {
-      setFormError(resolveRequestError(error, t));
+      setFormError(mapApiError(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -113,12 +112,8 @@ export default function AuthIndexScreen() {
     } catch (error) {
       if (error instanceof OAuthCancelledError) {
         setFormError(t('auth.oauthCancelled'));
-      } else if (error instanceof ApiError) {
-        setFormError(t('auth.oauthFailed'));
-      } else if (error instanceof Error && error.name === 'TypeError') {
-        setFormError(t('errors.network'));
       } else {
-        setFormError(t('auth.oauthFailed'));
+        setFormError(mapApiError(error));
       }
     } finally {
       setOauthLoading(null);
@@ -191,16 +186,6 @@ export default function AuthIndexScreen() {
       />
     </Screen>
   );
-}
-
-function resolveRequestError(
-  error: unknown,
-  t: (key: import('../../src/i18n').TranslationKey) => string,
-): string {
-  if (error instanceof Error && error.name === 'TypeError') {
-    return t('errors.network');
-  }
-  return t('errors.generic');
 }
 
 const styles = StyleSheet.create({

@@ -375,8 +375,8 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] No raw i18n keys visible on auth screens
-- [ ] Both locales include auth strings
+- [x] No raw i18n keys visible on auth screens
+- [x] Both locales include auth strings
 - [ ] Gate: Build
 
 **Tests**: none  
