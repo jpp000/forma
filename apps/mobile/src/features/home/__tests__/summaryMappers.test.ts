@@ -76,12 +76,12 @@ describe('computeExerciseProgress', () => {
 
 describe('computeStandProgress', () => {
   it('returns 1 when any macro is greater than zero', () => {
-    expect(computeStandProgress({ calories: 0, protein: 5, carbs: 0, fat: 0 })).toBe(
-      1,
-    );
-    expect(computeStandProgress({ calories: 10, protein: 0, carbs: 0, fat: 0 })).toBe(
-      1,
-    );
+    expect(
+      computeStandProgress({ calories: 0, protein: 5, carbs: 0, fat: 0 }),
+    ).toBe(1);
+    expect(
+      computeStandProgress({ calories: 10, protein: 0, carbs: 0, fat: 0 }),
+    ).toBe(1);
   });
 
   it('returns 0 when all macros are zero', () => {
@@ -92,7 +92,10 @@ describe('computeStandProgress', () => {
 describe('buildRingLegend', () => {
   it('shows consumed and target calories when target exists', () => {
     const legend = buildRingLegend(
-      daily({ calories: 1500 }, { calories: 2000, protein: 150, carbs: 200, fat: 60 }),
+      daily(
+        { calories: 1500 },
+        { calories: 2000, protein: 150, carbs: 200, fat: 60 },
+      ),
       true,
       true,
     );
@@ -107,7 +110,11 @@ describe('buildRingLegend', () => {
   });
 
   it('marks move legend without target when target is null', () => {
-    const legend = buildRingLegend(daily({ calories: 800 }, null), false, false);
+    const legend = buildRingLegend(
+      daily({ calories: 800 }, null),
+      false,
+      false,
+    );
 
     expect(legend.move).toEqual({
       value: '800',
@@ -145,7 +152,10 @@ describe('buildMetricTiles', () => {
   });
 
   it('shows consumed only when nutrition target is null', () => {
-    const tiles = buildMetricTiles(streaks, daily({ calories: 900, protein: 40 }, null));
+    const tiles = buildMetricTiles(
+      streaks,
+      daily({ calories: 900, protein: 40 }, null),
+    );
 
     expect(tiles[1].value).toBe('900');
     expect(tiles[2].value).toBe('40');

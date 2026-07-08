@@ -75,7 +75,11 @@ export function buildRingLegend(
 
 export type TileModel = {
   id: string;
-  labelKey: string;
+  labelKey:
+    | 'home.tiles.trainingStreak'
+    | 'home.tiles.calories'
+    | 'home.tiles.protein'
+    | 'home.tiles.nutritionStreak';
   value: string;
   accent?: 'award' | 'move' | 'exercise' | 'stand';
   error?: string;

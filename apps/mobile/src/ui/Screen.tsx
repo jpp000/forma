@@ -1,9 +1,9 @@
 import type { ReactElement, ReactNode } from 'react';
 import {
+  type RefreshControlProps,
   ScrollView,
   StyleSheet,
   View,
-  type RefreshControlProps,
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

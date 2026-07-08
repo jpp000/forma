@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import Svg, { Circle } from 'react-native-svg';
 import Animated, {
   Easing,
   useAnimatedProps,
@@ -7,6 +6,7 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+import Svg, { Circle } from 'react-native-svg';
 import { ringConfig } from '../../../theme/colors';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

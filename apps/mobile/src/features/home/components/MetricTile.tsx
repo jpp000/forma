@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { brand } from '../../../theme/colors';
-import { useFormaTheme } from '../../../theme';
 import { useT } from '../../../i18n';
+import { useFormaTheme } from '../../../theme';
+import { brand } from '../../../theme/colors';
 import type { TileModel } from '../summaryMappers';
 
 type MetricTileProps = {
@@ -39,7 +39,9 @@ export function MetricTile({ tile }: MetricTileProps) {
         },
       ]}
     >
-      <Text style={[typography.footnote, { color: tint }]}>{t(tile.labelKey)}</Text>
+      <Text style={[typography.footnote, { color: tint }]}>
+        {t(tile.labelKey)}
+      </Text>
       <Text
         allowFontScaling={false}
         style={[

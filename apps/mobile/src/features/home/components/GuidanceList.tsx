@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useT } from '../../../i18n';
-import { brand } from '../../../theme/colors';
 import { useFormaTheme } from '../../../theme';
+import { brand } from '../../../theme/colors';
 import { InlineError, PrimaryButton } from '../../../ui';
 import type { GuidanceSuggestion } from '../types';
 
@@ -58,8 +58,8 @@ export function GuidanceList({
         </Text>
       ) : (
         <View style={styles.list}>
-          {visible.map((item, index) => (
-            <View key={`${item.type}-${index}`} style={styles.row}>
+          {visible.map((item) => (
+            <View key={`${item.type}-${item.priority}`} style={styles.row}>
               <View
                 style={[styles.dot, { backgroundColor: dotColor(item.type) }]}
               />

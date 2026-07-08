@@ -16,13 +16,11 @@ afterEach(() => {
 
 describe('devMockSignIn', () => {
   it('returns accessToken from API mock OAuth chain', async () => {
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue(
-        new Response(JSON.stringify({ accessToken: 'jwt-mock' }), {
-          status: 200,
-        }),
-      ) as unknown as typeof fetch;
+    global.fetch = jest.fn().mockResolvedValue(
+      new Response(JSON.stringify({ accessToken: 'jwt-mock' }), {
+        status: 200,
+      }),
+    ) as unknown as typeof fetch;
 
     await expect(devMockSignIn()).resolves.toBe('jwt-mock');
   });
@@ -30,7 +28,9 @@ describe('devMockSignIn', () => {
   it('fails when API is not in mock mode', async () => {
     global.fetch = jest
       .fn()
-      .mockResolvedValue(new Response(null, { status: 404 })) as unknown as typeof fetch;
+      .mockResolvedValue(
+        new Response(null, { status: 404 }),
+      ) as unknown as typeof fetch;
 
     await expect(devMockSignIn()).rejects.toBeInstanceOf(OAuthFailedError);
   });

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useT } from '../../../i18n';
-import { ringConfig } from '../../../theme/colors';
 import { useFormaTheme } from '../../../theme';
+import { ringConfig } from '../../../theme/colors';
 import { InlineError } from '../../../ui';
 import type { RingLegendSet } from '../summaryMappers';
 import { ActivityRings } from './ActivityRings';

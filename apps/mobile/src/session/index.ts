@@ -1,8 +1,8 @@
 export { type SessionUser, useSession } from '../stores/sessionStore';
 export {
+  devMockSignIn,
   OAuthCancelledError,
   OAuthFailedError,
-  devMockSignIn,
   startOAuth,
 } from './oauth';
 export { SessionBootstrap } from './SessionBootstrap';

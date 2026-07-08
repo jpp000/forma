@@ -1,5 +1,5 @@
-import type { ApiClient } from './client';
 import type { StreaksResponse } from '../features/home/types';
+import type { ApiClient } from './client';
 
 export type { StreaksResponse };
 

@@ -1,5 +1,7 @@
 export type { ApiClient, ApiClientOptions } from './client';
 export { ApiError, createApiClient } from './client';
+export type { GuidanceApi } from './guidance';
+export { createGuidanceApi } from './guidance';
 export type {
   AuthResponse,
   IdentityApi,
@@ -8,6 +10,10 @@ export type {
 } from './identity';
 export { createIdentityApi } from './identity';
 export { mapApiError } from './mapApiError';
+export type { NutritionApi } from './nutrition';
+export { createNutritionApi } from './nutrition';
+export type { ProgressApi, TrainingRestDay } from './progress';
+export { createProgressApi } from './progress';
 export type {
   SetHealthGoalInput,
   StudentApi,
@@ -28,12 +34,6 @@ export type {
   WorkoutSet,
 } from './training';
 export { createTrainingApi } from './training';
-export type { GuidanceApi } from './guidance';
-export { createGuidanceApi } from './guidance';
-export type { NutritionApi } from './nutrition';
-export { createNutritionApi } from './nutrition';
-export type { ProgressApi, TrainingRestDay } from './progress';
-export { createProgressApi } from './progress';
 export { useApiClient } from './useApiClient';
 export {
   getWiredIdentityApi,
