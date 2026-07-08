@@ -83,6 +83,12 @@ When scaffolding `apps/mobile`, recreate these — names are guidance, not legac
 
 `pt-BR` default + full `en`. No hard-coded user-facing strings.
 
+## Client state (mobile Expo, AD-030)
+
+- **Zustand** stores in `apps/mobile/src/stores/` — session, locale, per-slice feature state.
+- Hooks: `useSession`, `useLocale`, `useFormaTheme()` (system light/dark via `useColorScheme`).
+- No React Context for app state. API client reads stores via `wireApiStores`.
+
 ## Agent prompt (paste into specs / tasks)
 
 ```

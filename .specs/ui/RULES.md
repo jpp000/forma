@@ -48,6 +48,13 @@ When writing `spec.md` / `design.md` / `tasks.md` for UI:
 - [ ] Design.md task notes point to `DESIGN.md` + this file
 - [ ] No dependency on deleted `apps/mobile` prototype paths
 
+## Client state (mobile, AD-030)
+
+- **Zustand** for session, locale, and per-slice feature state (`apps/mobile/src/stores/`).
+- Thin hooks (`useSession`, `useLocale`) read stores; screens stay dumb.
+- **No React Context** for app state. Theme follows system via `useFormaTheme()` + `useColorScheme`.
+- New slices: one `create()` store per feature domain (e.g. `homeSummaryStore`); wire API via `getWired*Api()` or `wireApiStores`.
+
 ## Scaffold note
 
-`apps/mobile` does not exist until a frontend feature is specified and executed. Scaffold Expo (or web) via Execute with designs grounded here — do not resurrect Wise/Shopify prototypes.
+`apps/mobile` is scaffolded via `mobile-foundation`. New UI slices follow this file + `DESIGN.md` — do not resurrect Wise/Shopify prototypes.

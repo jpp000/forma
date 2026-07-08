@@ -116,6 +116,7 @@ Cada contexto = um módulo NestJS em `apps/api/src/modules/[context]/`. Tabelas 
 | Feature spec | [`.specs/features/platform-foundation/spec.md`](.specs/features/platform-foundation/spec.md) |
 | Design técnico | [`.specs/features/platform-foundation/design.md`](.specs/features/platform-foundation/design.md) |
 | Tipos compartilhados | `packages/types` (enums `Role`, `HealthGoal`, etc.) |
+| Mobile client state | Zustand (`apps/mobile/src/stores/`) — AD-030; sem React Context para estado de app |
 | Schema | `prisma/schema.prisma` (schema único, prefixos por módulo) |
 
 **Arquitetura intencionalmente simples:** controller + service + DTO por módulo; Prisma direto no service. Setup local, Docker e deploy → [README.md](README.md).

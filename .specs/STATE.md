@@ -33,10 +33,13 @@
 | AD-027 | **Training streak protection (priority):** (1) explicit rest-day mark → (2) plan-scheduled rest → (3) at most 1 grace gap per Mon–Sun week; 2nd gap resets. Nutrition streak unchanged. | Happy path includes rest; API+UI in Slice 2 `mobile-training` | 2026-07-08 |
 | AD-028 | **Mobile navigation** = Expo Router Protected routes (SDK 53+); JWT in SecureStore | Current Expo auth pattern; secure token storage | 2026-07-08 |
 | AD-029 | **Mobile API client** = thin `fetch` + `EXPO_PUBLIC_API_URL`; onboarding gate = `student` role from `GET /identity/me` | Simple; matches MeResponseDto roles | 2026-07-08 |
+| AD-030 | **Mobile client state = Zustand** — session, locale, and per-slice feature state live in Zustand stores under `apps/mobile/src/stores/`; thin hooks (`useSession`, `useLocale`) read stores; **no React Context** for app state | Session + locale migrated from Context; theme follows system via `useColorScheme` in `useFormaTheme()` (no store until user override); `SessionBootstrap` runs SecureStore restore on mount; API client wired via `wireApiStores` | 2026-07-08 |
 
 ## Mobile slice roadmap (student)
 
 Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own chat/agent. Do **not** parallelize slices that both edit `apps/mobile` until Slice 0 lands.
+
+**Mobile state (AD-030):** All client state uses **Zustand** (`src/stores/`). Session + locale migrated; theme = `useFormaTheme()` + system scheme. New slices add a store per feature domain — no React Context for app state.
 
 | # | Feature folder | Ships | Depends on | Typical agent prompt |
 |---|----------------|-------|------------|----------------------|
@@ -84,7 +87,7 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 
 **Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed). Streak today resets on gap day — rest-day rule **not** implemented yet (AD-027).
 
-**Frontend:** `mobile-foundation` **Batch 2 complete** (T9–T14). SessionProvider, Protected navigation shell, Auth (sign-in + OTP + OAuth mock), and error i18n mapping landed on `feat-frontend-foundation`.
+**Frontend:** `mobile-foundation` **Batch 2 complete** (T9–T14) + **AD-030 Zustand migration**. Session/locale in Zustand stores; Protected navigation shell, Auth (sign-in + OTP + OAuth mock), and error i18n mapping on `feat-frontend-foundation`.
 
 | Item | Value |
 |------|-------|
@@ -97,7 +100,7 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 
 **Blockers for Batch 3:** none. OAuth production mobile redirect still T19.
 
-**Slice 1 (parallel docs only):** `.specs/features/mobile-home-summary/spec.md` **drafted** — awaiting user confirm → Design → Tasks. **Do not Execute** until Slice 0 Verifier PASS (no parallel `apps/mobile` edits).
+**Slice 1 (parallel docs only):** `mobile-home-summary` — spec + design + tasks approved; **AD-030 Zustand** for feature state. Execute blocked until Slice 0 Verifier PASS.
 
 ---
 
