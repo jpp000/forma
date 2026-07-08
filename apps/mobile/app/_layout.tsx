@@ -1,9 +1,8 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { I18nProvider } from '../src/i18n';
-import { SessionProvider, useSession } from '../src/session';
-import { ThemeProvider, useFormaTheme } from '../src/theme';
+import { SessionBootstrap, useSession } from '../src/session';
+import { useFormaTheme } from '../src/theme';
 import { LoadingState } from '../src/ui';
 
 function RootNavigator() {
@@ -46,13 +45,10 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <I18nProvider>
-        <SessionProvider>
-          <RootNavigator />
-        </SessionProvider>
-      </I18nProvider>
-    </ThemeProvider>
+    <>
+      <SessionBootstrap />
+      <RootNavigator />
+    </>
   );
 }
 

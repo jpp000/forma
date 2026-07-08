@@ -1,5 +1,3 @@
-export type { ColorScheme, FormaColors } from './colors';
-export { brand, palettes } from './colors';
-export { ThemeProvider, useFormaTheme } from './ThemeProvider';
-export type { FormaTypography } from './typography';
-export { typography } from './typography';
+export { palettes, type ColorScheme, type FormaColors } from './colors';
+export { typography, type FormaTypography } from './typography';
+export { useFormaTheme, type FormaTheme } from './useFormaTheme';

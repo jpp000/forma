@@ -1,8 +1,8 @@
 import { useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { createApiClient, createIdentityApi, mapApiError } from '../../src/api';
-import { getActiveLocale, useT } from '../../src/i18n';
+import { getWiredIdentityApi, mapApiError } from '../../src/api';
+import { useT } from '../../src/i18n';
 import { useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
 import {
@@ -25,13 +25,6 @@ export default function OtpScreen() {
   const [formError, setFormError] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
-
-  const identity = useMemo(() => {
-    const api = createApiClient({
-      getLocale: () => getActiveLocale(),
-    });
-    return createIdentityApi(api);
-  }, []);
 
   const emailAddress = typeof email === 'string' ? email : '';
 
@@ -61,7 +54,10 @@ export default function OtpScreen() {
     setFormError(undefined);
 
     try {
-      const { accessToken } = await identity.verifyOtp(emailAddress, code);
+      const { accessToken } = await getWiredIdentityApi().verifyOtp(
+        emailAddress,
+        code,
+      );
       await signIn(accessToken);
     } catch (error) {
       setFormError(mapApiError(error));
@@ -79,7 +75,7 @@ export default function OtpScreen() {
     setFormError(undefined);
 
     try {
-      await identity.requestOtp(emailAddress);
+      await getWiredIdentityApi().requestOtp(emailAddress);
     } catch (error) {
       setFormError(mapApiError(error));
     } finally {

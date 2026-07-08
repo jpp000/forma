@@ -18,5 +18,7 @@ module.exports = {
   moduleNameMapper: {
     '^expo-secure-store$':
       '<rootDir>/src/session/__mocks__/expo-secure-store.ts',
+    '^expo-localization$':
+      '<rootDir>/src/stores/__mocks__/expo-localization.ts',
   },
 };

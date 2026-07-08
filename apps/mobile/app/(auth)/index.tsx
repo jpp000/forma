@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { createApiClient, createIdentityApi, mapApiError } from '../../src/api';
+import { getWiredIdentityApi, mapApiError } from '../../src/api';
 import type { OAuthProvider } from '../../src/api/identity';
 import { isValidEmail } from '../../src/auth/validators';
-import { getActiveLocale, useT } from '../../src/i18n';
+import { useT } from '../../src/i18n';
 import { OAuthCancelledError, startOAuth, useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
 import {
@@ -56,13 +56,6 @@ export default function AuthIndexScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<OAuthProvider | null>(null);
 
-  const identity = useMemo(() => {
-    const api = createApiClient({
-      getLocale: () => getActiveLocale(),
-    });
-    return createIdentityApi(api);
-  }, []);
-
   const isBusy = isSubmitting || oauthLoading !== null;
 
   function handleEmailChange(value: string) {
@@ -90,7 +83,7 @@ export default function AuthIndexScreen() {
     setFormError(undefined);
 
     try {
-      await identity.requestOtp(trimmed);
+      await getWiredIdentityApi().requestOtp(trimmed);
       router.push({
         pathname: '/(auth)/otp',
         params: { email: trimmed },

@@ -1,8 +1,8 @@
 import { HealthGoal } from '@forma/types';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { createApiClient, createStudentApi, mapApiError } from '../../src/api';
-import { getActiveLocale, useT } from '../../src/i18n';
+import { getWiredStudentApi, mapApiError } from '../../src/api';
+import { useT } from '../../src/i18n';
 import type { TranslationKey } from '../../src/i18n/pt-BR';
 import { useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
@@ -66,21 +66,10 @@ function GoalOption({ label, selected, onPress, disabled }: GoalOptionProps) {
 export default function OnboardingGoalScreen() {
   const t = useT();
   const { colors, typography } = useFormaTheme();
-  const { token, signOut, refreshMe } = useSession();
+  const { refreshMe } = useSession();
   const [selectedGoal, setSelectedGoal] = useState<HealthGoal | null>(null);
   const [formError, setFormError] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const studentApi = useMemo(() => {
-    const api = createApiClient({
-      getToken: () => token,
-      getLocale: () => getActiveLocale(),
-      onUnauthorized: () => {
-        void signOut();
-      },
-    });
-    return createStudentApi(api);
-  }, [token, signOut]);
 
   async function handleSubmit() {
     if (!selectedGoal) {
@@ -92,7 +81,7 @@ export default function OnboardingGoalScreen() {
     setFormError(undefined);
 
     try {
-      await studentApi.setGoal({ goalType: selectedGoal });
+      await getWiredStudentApi().setGoal({ goalType: selectedGoal });
       await refreshMe();
     } catch (error) {
       setFormError(mapApiError(error));

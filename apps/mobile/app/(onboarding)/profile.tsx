@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { createApiClient, createStudentApi, mapApiError } from '../../src/api';
-import { getActiveLocale, useT } from '../../src/i18n';
+import { getWiredStudentApi, mapApiError } from '../../src/api';
+import { useT } from '../../src/i18n';
 import type { TranslationKey } from '../../src/i18n/pt-BR';
 import {
   PROFILE_ACTIVITY_OPTIONS,
@@ -14,7 +14,6 @@ import {
   type StudentProfileForm,
   validateStudentProfile,
 } from '../../src/onboarding/validators';
-import { useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
 import {
   InlineError,
@@ -105,7 +104,6 @@ export default function OnboardingProfileScreen() {
   const router = useRouter();
   const t = useT();
   const { colors, typography } = useFormaTheme();
-  const { token, signOut } = useSession();
   const [form, setForm] = useState<StudentProfileForm>({
     age: '',
     sex: '',
@@ -117,17 +115,6 @@ export default function OnboardingProfileScreen() {
   >({});
   const [formError, setFormError] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const studentApi = useMemo(() => {
-    const api = createApiClient({
-      getToken: () => token,
-      getLocale: () => getActiveLocale(),
-      onUnauthorized: () => {
-        void signOut();
-      },
-    });
-    return createStudentApi(api);
-  }, [token, signOut]);
 
   function updateField<K extends keyof StudentProfileForm>(
     key: K,
@@ -163,7 +150,7 @@ export default function OnboardingProfileScreen() {
     setFormError(undefined);
 
     try {
-      await studentApi.createProfile(validation.profile);
+      await getWiredStudentApi().createProfile(validation.profile);
       router.replace('/(onboarding)/goal');
     } catch (error) {
       setFormError(mapApiError(error));

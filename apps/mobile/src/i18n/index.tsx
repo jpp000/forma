@@ -1,38 +1,17 @@
-import { getLocales } from 'expo-localization';
+import { useCallback } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import {
-  createContext,
-  type ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+  getActiveLocale,
+  useLocaleStore,
+  type Locale,
+} from '../stores/localeStore';
 import en from './en';
 import ptBR, { type TranslationKey } from './pt-BR';
-
-export type Locale = 'pt-BR' | 'en';
 
 const catalogs: Record<Locale, Record<TranslationKey, string>> = {
   'pt-BR': ptBR,
   en,
 };
-
-function resolveDeviceLocale(): Locale {
-  const tag = getLocales()[0]?.languageTag ?? 'pt-BR';
-  if (tag.toLowerCase().startsWith('en')) {
-    return 'en';
-  }
-  return 'pt-BR';
-}
-
-type I18nContextValue = {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
-};
-
-const I18nContext = createContext<I18nContextValue | null>(null);
 
 function interpolate(
   template: string,
@@ -46,45 +25,31 @@ function interpolate(
   );
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(resolveDeviceLocale);
+function translate(
+  locale: Locale,
+  key: TranslationKey,
+  params?: Record<string, string | number>,
+): string {
+  const catalog = catalogs[locale] ?? catalogs['pt-BR'];
+  const template = catalog[key] ?? catalogs['pt-BR'][key] ?? key;
+  return interpolate(template, params);
+}
 
-  useEffect(() => {
-    setActiveLocale(locale);
-  }, [locale]);
-
-  const setLocale = useCallback((next: Locale) => {
-    setActiveLocale(next);
-    setLocaleState(next);
-  }, []);
+export function useLocale() {
+  const { locale, setLocale } = useLocaleStore(
+    useShallow((state) => ({
+      locale: state.locale,
+      setLocale: state.setLocale,
+    })),
+  );
 
   const t = useCallback(
-    (key: TranslationKey, params?: Record<string, string | number>) => {
-      const catalog = catalogs[locale] ?? catalogs['pt-BR'];
-      const template = catalog[key] ?? catalogs['pt-BR'][key] ?? key;
-      return interpolate(template, params);
-    },
+    (key: TranslationKey, params?: Record<string, string | number>) =>
+      translate(locale, key, params),
     [locale],
   );
 
-  const value = useMemo(
-    () => ({
-      locale,
-      setLocale,
-      t,
-    }),
-    [locale, t, setLocale],
-  );
-
-  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
-}
-
-export function useLocale(): I18nContextValue {
-  const ctx = useContext(I18nContext);
-  if (!ctx) {
-    throw new Error('useLocale must be used within I18nProvider');
-  }
-  return ctx;
+  return { locale, setLocale, t };
 }
 
 export function useT() {
@@ -92,23 +57,11 @@ export function useT() {
 }
 
 /** Standalone translator for non-React modules (API client). */
-let activeLocale: Locale = 'pt-BR';
-
-export function setActiveLocale(locale: Locale) {
-  activeLocale = locale;
-}
-
-export function getActiveLocale(): Locale {
-  return activeLocale;
-}
-
 export function t(
   key: TranslationKey,
   params?: Record<string, string | number>,
 ): string {
-  const catalog = catalogs[activeLocale] ?? catalogs['pt-BR'];
-  const template = catalog[key] ?? catalogs['pt-BR'][key] ?? key;
-  return interpolate(template, params);
+  return translate(getActiveLocale(), key, params);
 }
 
-export type { TranslationKey };
+export { getActiveLocale, type Locale, type TranslationKey };

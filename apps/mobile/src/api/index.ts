@@ -14,3 +14,4 @@ export type {
   StudentProfileInput,
 } from './student';
 export { createStudentApi } from './student';
+export { getWiredIdentityApi, getWiredStudentApi } from './wired';
