@@ -5,7 +5,12 @@ import { getWiredIdentityApi, mapApiError } from '../../src/api';
 import type { OAuthProvider } from '../../src/api/identity';
 import { isValidEmail } from '../../src/auth/validators';
 import { useT } from '../../src/i18n';
-import { OAuthCancelledError, devMockSignIn, startOAuth, useSession } from '../../src/session';
+import {
+  devMockSignIn,
+  OAuthCancelledError,
+  startOAuth,
+  useSession,
+} from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
 import {
   InlineError,

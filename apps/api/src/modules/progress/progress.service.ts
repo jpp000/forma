@@ -185,7 +185,8 @@ export class ProgressService {
 
       if (uncoveredGapDays.length === 0) {
         currentStreak =
-          existing.currentStreak + diffDays(existing.lastActiveDate, activeDate);
+          existing.currentStreak +
+          diffDays(existing.lastActiveDate, activeDate);
       } else if (uncoveredGapDays.length === 1) {
         const gapWeekKey = getIsoWeekKey(uncoveredGapDays[0]);
         if (graceWeekKey !== gapWeekKey) {
