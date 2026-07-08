@@ -24,7 +24,8 @@ const ptBR = {
   'auth.oauthFailed': 'Não foi possível entrar com este provedor.',
   'auth.oauthCancelled': 'Login cancelado.',
   'onboarding.profileTitle': 'Seu perfil',
-  'onboarding.profileSubtitle': 'Precisamos de alguns dados para personalizar o Forma.',
+  'onboarding.profileSubtitle':
+    'Precisamos de alguns dados para personalizar o Forma.',
   'onboarding.age': 'Idade',
   'onboarding.sex': 'Sexo',
   'onboarding.sex.male': 'Masculino',
