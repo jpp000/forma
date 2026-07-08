@@ -6,6 +6,7 @@ import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { StudentModule } from './modules/student/student.module';
 import { TrainingModule } from './modules/training/training.module';
+import { NutritionModule } from './modules/nutrition/nutrition.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { PrismaModule } from './prisma/prisma.module';
     IdentityModule,
     StudentModule,
     TrainingModule,
+    NutritionModule,
   ],
 })
 export class AppModule {}
