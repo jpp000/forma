@@ -9,6 +9,13 @@ export type {
 export { createIdentityApi } from './identity';
 export { mapApiError } from './mapApiError';
 export type {
+  ProgressApi,
+  StreaksResponse,
+  StreakSummary,
+  TrainingRestDay,
+} from './progress';
+export { createProgressApi } from './progress';
+export type {
   SetHealthGoalInput,
   StudentApi,
   StudentProfileInput,
@@ -28,13 +35,6 @@ export type {
   WorkoutSet,
 } from './training';
 export { createTrainingApi } from './training';
-export type {
-  ProgressApi,
-  StreaksResponse,
-  StreakSummary,
-  TrainingRestDay,
-} from './progress';
-export { createProgressApi } from './progress';
 export {
   getWiredIdentityApi,
   getWiredProgressApi,
