@@ -180,6 +180,30 @@ describe('Progress (e2e)', () => {
     expect(streak?.longestStreak).toBe(2);
   });
 
+  it('GET /api/progress/streaks returns current and longest streaks', async () => {
+    const token = await createStudent();
+
+    await request(app.getHttpServer())
+      .post('/api/nutrition/meals')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        mealType: MealType.Breakfast,
+        date: '2026-07-07',
+        items: [
+          { name: 'Oats', calories: 250, protein: 8, carbs: 45, fat: 5 },
+        ],
+      });
+
+    const response = await request(app.getHttpServer())
+      .get('/api/progress/streaks')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.nutrition.current).toBe(1);
+    expect(response.body.nutrition.longest).toBe(1);
+    expect(response.body.training).toEqual({ current: 0, longest: 0 });
+  });
+
   it('increments nutrition streak when logging meals', async () => {
     const token = await createStudent();
 
