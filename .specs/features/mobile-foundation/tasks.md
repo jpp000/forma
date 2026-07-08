@@ -139,10 +139,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Dark canvas `#000000`; light canvas `#F2F2F7` (or design-locked values)
-- [ ] Primary CTA token `#30D158` / pressed `#248A3D` in both schemes
-- [ ] Provider follows system appearance and re-renders on change
-- [ ] Gate: Build
+- [x] Dark canvas `#000000`; light canvas `#F2F2F7` (or design-locked values)
+- [x] Primary CTA token `#30D158` / pressed `#248A3D` in both schemes
+- [x] Provider follows system appearance and re-renders on change
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
