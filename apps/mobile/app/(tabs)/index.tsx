@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useTranslation } from '@/src/i18n';
@@ -8,6 +8,7 @@ import { useFormaTheme } from '@/src/theme/useFormaTheme';
 export default function IndexScreen() {
   const theme = useFormaTheme();
   const { t, locale } = useTranslation();
+  const router = useRouter();
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.bg }]}>
@@ -16,16 +17,15 @@ export default function IndexScreen() {
         {locale === 'pt-BR' ? 'Protótipo de UI — Home' : 'UI prototype — Home'}
       </Text>
 
-      <Link href="/prototype/home?variant=A" asChild>
-        <Pressable
-          style={[styles.cta, { backgroundColor: theme.colors.primary }]}
-          accessibilityRole="button"
-        >
-          <Text style={styles.ctaText}>
-            {locale === 'pt-BR' ? 'Ver variações da Home' : 'View Home variants'}
-          </Text>
-        </Pressable>
-      </Link>
+      <Pressable
+        style={{ ...styles.cta, backgroundColor: theme.colors.primary }}
+        accessibilityRole="button"
+        onPress={() => router.push('/prototype/home?variant=A')}
+      >
+        <Text style={styles.ctaText}>
+          {locale === 'pt-BR' ? 'Ver variações da Home' : 'View Home variants'}
+        </Text>
+      </Pressable>
 
       <Text style={[styles.hint, { color: theme.colors.inkSecondary }]}>
         A — {t.prototype.variantA} · B — {t.prototype.variantB} · C — {t.prototype.variantC}

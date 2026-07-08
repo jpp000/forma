@@ -1,6 +1,6 @@
 import { SymbolView } from 'expo-symbols';
-import { Link, Tabs } from 'expo-router';
-import { Platform, Pressable } from 'react-native';
+import { Tabs, useRouter } from 'expo-router';
+import { Pressable } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -8,6 +8,7 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <Tabs
@@ -33,18 +34,20 @@ export default function TabLayout() {
             />
           ),
           headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable style={{ marginRight: 15 }}>
-                {({ pressed }) => (
-                  <SymbolView
-                    name={{ ios: 'info.circle', android: 'info', web: 'info' }}
-                    size={25}
-                    tintColor={Colors[colorScheme].text}
-                    style={{ opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+            <Pressable
+              style={{ marginRight: 15 }}
+              onPress={() => router.push('/modal')}
+              accessibilityRole="button"
+            >
+              {({ pressed }) => (
+                <SymbolView
+                  name={{ ios: 'info.circle', android: 'info', web: 'info' }}
+                  size={25}
+                  tintColor={Colors[colorScheme].text}
+                  style={{ opacity: pressed ? 0.5 : 1 }}
+                />
+              )}
+            </Pressable>
           ),
         }}
       />
