@@ -45,9 +45,7 @@ export function PrimaryButton({
       style={[
         styles.button,
         {
-          backgroundColor: showPressed
-            ? colors.primaryPressed
-            : colors.primary,
+          backgroundColor: showPressed ? colors.primaryPressed : colors.primary,
           opacity: isDisabled ? 0.5 : 1,
         },
       ]}
@@ -55,9 +53,7 @@ export function PrimaryButton({
       {loading && !reduceMotion ? (
         <ActivityIndicator color={colors.onPrimary} />
       ) : loading ? (
-        <Text style={[typography.button, { color: colors.onPrimary }]}>
-          …
-        </Text>
+        <Text style={[typography.button, { color: colors.onPrimary }]}>…</Text>
       ) : (
         <Text style={[typography.button, { color: colors.onPrimary }]}>
           {label}

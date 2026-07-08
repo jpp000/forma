@@ -7,9 +7,9 @@ import type { TranslationKey } from '../../src/i18n/pt-BR';
 import {
   PROFILE_ACTIVITY_OPTIONS,
   PROFILE_SEX_OPTIONS,
+  type ProfileActivityLevel,
   type ProfileFieldErrorCode,
   type ProfileFieldName,
-  type ProfileActivityLevel,
   type ProfileSex,
   type StudentProfileForm,
   validateStudentProfile,
@@ -23,19 +23,14 @@ import {
   TextField,
 } from '../../src/ui';
 
-type OptionChipProps<T extends string> = {
+type OptionChipProps = {
   label: string;
   selected: boolean;
   onPress: () => void;
   disabled?: boolean;
 };
 
-function OptionChip<T extends string>({
-  label,
-  selected,
-  onPress,
-  disabled,
-}: OptionChipProps<T>) {
+function OptionChip({ label, selected, onPress, disabled }: OptionChipProps) {
   const { colors, typography } = useFormaTheme();
 
   return (

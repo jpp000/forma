@@ -27,7 +27,9 @@ function resolveApiBaseUrl(): string {
 }
 
 function resolveOAuthSuccessUrl(): string {
-  return process.env.EXPO_PUBLIC_OAUTH_SUCCESS_URL ?? Linking.createURL('oauth');
+  return (
+    process.env.EXPO_PUBLIC_OAUTH_SUCCESS_URL ?? Linking.createURL('oauth')
+  );
 }
 
 type AuthResponse = { accessToken: string };
@@ -46,10 +48,7 @@ export async function startOAuth(provider: OAuthProvider): Promise<string> {
   const startUrl = identity.startOAuthUrl(provider, { platform: 'mobile' });
   const callbackPrefix = `${baseUrl}/api/identity/oauth/${provider}/callback`;
 
-  const result = await WebBrowser.openAuthSessionAsync(
-    startUrl,
-    successUrl,
-  );
+  const result = await WebBrowser.openAuthSessionAsync(startUrl, successUrl);
 
   if (result.type === 'cancel' || result.type === 'dismiss') {
     throw new OAuthCancelledError();

@@ -1,6 +1,5 @@
 export type { ApiClient, ApiClientOptions } from './client';
 export { ApiError, createApiClient } from './client';
-export { mapApiError } from './mapApiError';
 export type {
   AuthResponse,
   IdentityApi,
@@ -8,6 +7,7 @@ export type {
   OAuthProvider,
 } from './identity';
 export { createIdentityApi } from './identity';
+export { mapApiError } from './mapApiError';
 export type {
   SetHealthGoalInput,
   StudentApi,

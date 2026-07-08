@@ -9,11 +9,8 @@ jest.mock('../../api/wired', () => ({
   wireApiStores: jest.fn(),
 }));
 
-import {
-  clearAccessToken,
-  getAccessToken,
-} from '../../session/tokenStorage';
 import { getWiredIdentityApi } from '../../api/wired';
+import { clearAccessToken, getAccessToken } from '../../session/tokenStorage';
 import { useSessionStore } from '../sessionStore';
 
 const mockMe = {

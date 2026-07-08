@@ -13,9 +13,7 @@ export function LoadingState({ message }: LoadingStateProps) {
 
   return (
     <View style={styles.wrap} accessibilityRole="progressbar">
-      {!reduceMotion ? (
-        <ActivityIndicator color={colors.primary} />
-      ) : null}
+      {!reduceMotion ? <ActivityIndicator color={colors.primary} /> : null}
       <Text style={[typography.footnote, { color: colors.labelSecondary }]}>
         {message ?? t('common.loading')}
       </Text>

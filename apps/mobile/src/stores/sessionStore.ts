@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { getWiredIdentityApi, wireApiStores } from '../api/wired';
 import type { MeResponse } from '../api/identity';
+import { getWiredIdentityApi, wireApiStores } from '../api/wired';
 import {
   clearAccessToken,
   getAccessToken,

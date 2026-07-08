@@ -1,4 +1,4 @@
-import { t, type TranslationKey } from '../i18n';
+import { type TranslationKey, t } from '../i18n';
 import { ApiError } from './client';
 
 const API_CODE_TO_KEY: Record<string, TranslationKey> = {

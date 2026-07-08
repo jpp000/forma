@@ -1,6 +1,6 @@
+import { useLocaleStore } from '../../stores/localeStore';
 import { ApiError } from '../client';
 import { mapApiError } from '../mapApiError';
-import { useLocaleStore } from '../../stores/localeStore';
 
 describe('mapApiError', () => {
   beforeEach(() => {

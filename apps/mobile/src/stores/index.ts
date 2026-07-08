@@ -1,6 +1,6 @@
-export { getActiveLocale, useLocaleStore, type Locale } from './localeStore';
+export { getActiveLocale, type Locale, useLocaleStore } from './localeStore';
 export {
+  type SessionUser,
   useSession,
   useSessionStore,
-  type SessionUser,
 } from './sessionStore';

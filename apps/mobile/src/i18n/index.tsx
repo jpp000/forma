@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   getActiveLocale,
-  useLocaleStore,
   type Locale,
+  useLocaleStore,
 } from '../stores/localeStore';
 import en from './en';
 import ptBR, { type TranslationKey } from './pt-BR';

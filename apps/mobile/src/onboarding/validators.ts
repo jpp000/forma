@@ -67,10 +67,7 @@ export function validateStudentProfile(
   const heightCm = parsePositiveInt(form.heightCm);
   if (heightCm === null) {
     fields.heightCm = form.heightCm.trim() ? 'invalid' : 'required';
-  } else if (
-    heightCm < PROFILE_HEIGHT_MIN ||
-    heightCm > PROFILE_HEIGHT_MAX
-  ) {
+  } else if (heightCm < PROFILE_HEIGHT_MIN || heightCm > PROFILE_HEIGHT_MAX) {
     fields.heightCm = 'invalid';
   }
 

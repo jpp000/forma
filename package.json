@@ -4,8 +4,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "biome check .",
-    "format": "biome format --write .",
+    "lint": "node ./node_modules/@biomejs/biome/bin/biome check .",
+    "format": "node ./node_modules/@biomejs/biome/bin/biome format --write .",
     "check-types": "turbo run check-types",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -28,5 +28,10 @@
   "packageManager": "pnpm@9.15.9",
   "engines": {
     "node": ">=20"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-native": "0.79.6"
+    }
   }
 }

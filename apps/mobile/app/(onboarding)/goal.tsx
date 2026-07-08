@@ -6,12 +6,7 @@ import { useT } from '../../src/i18n';
 import type { TranslationKey } from '../../src/i18n/pt-BR';
 import { useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
-import {
-  InlineError,
-  LoadingState,
-  PrimaryButton,
-  Screen,
-} from '../../src/ui';
+import { InlineError, LoadingState, PrimaryButton, Screen } from '../../src/ui';
 
 const GOAL_OPTIONS = [
   HealthGoal.LoseWeight,
