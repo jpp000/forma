@@ -13,5 +13,14 @@
   },
   "validation": {
     "email": "Informe um e-mail válido"
+  },
+  "guidance": {
+    "training_needed": "Você não treinou recentemente. Programe um treino hoje.",
+    "meal_log_needed": "Registre suas refeições hoje para acompanhar sua nutrição.",
+    "calorie_over_target": "Você ultrapassou a meta calórica de hoje.",
+    "protein_gap": "Sua proteína está abaixo da meta — inclua uma refeição rica em proteína.",
+    "weight_trend_up": "Seu peso está subindo — revise seu plano alimentar.",
+    "protein_for_muscle": "Aumente a proteína para apoiar o ganho muscular.",
+    "stay_active": "Mantenha-se ativo hoje — até uma caminhada curta ajuda."
   }
 }

@@ -8,6 +8,7 @@ import { StudentModule } from './modules/student/student.module';
 import { TrainingModule } from './modules/training/training.module';
 import { NutritionModule } from './modules/nutrition/nutrition.module';
 import { ProgressModule } from './modules/progress/progress.module';
+import { GuidanceModule } from './modules/guidance/guidance.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { PrismaModule } from './prisma/prisma.module';
     TrainingModule,
     NutritionModule,
     ProgressModule,
+    GuidanceModule,
   ],
 })
 export class AppModule {}

@@ -13,5 +13,14 @@
   },
   "validation": {
     "email": "Must be a valid email address"
+  },
+  "guidance": {
+    "training_needed": "You have not trained recently. Schedule a workout today.",
+    "meal_log_needed": "Log your meals today to track your nutrition.",
+    "calorie_over_target": "You exceeded your calorie target for today.",
+    "protein_gap": "Your protein intake is below target — add a protein-rich meal.",
+    "weight_trend_up": "Your weight is trending up — review your nutrition plan.",
+    "protein_for_muscle": "Increase protein intake to support muscle gain.",
+    "stay_active": "Stay active today — even a short walk helps."
   }
 }

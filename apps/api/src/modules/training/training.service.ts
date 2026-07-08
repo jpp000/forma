@@ -183,4 +183,12 @@ export class TrainingService {
       totalPages: Math.ceil(total / limit) || 1,
     };
   }
+
+  async getLastSessionDate(userId: string): Promise<string | null> {
+    const session = await this.prisma.trainingWorkoutSession.findFirst({
+      where: { userId },
+      orderBy: { completedAt: 'desc' },
+    });
+    return session ? session.completedAt.toISOString().slice(0, 10) : null;
+  }
 }
