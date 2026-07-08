@@ -202,10 +202,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Native path uses `expo-secure-store`
-- [ ] Clear removes token
-- [ ] Unit tests cover set/get/clear (+ failure treated as null)
-- [ ] Gate: Quick — tests pass
+- [x] Native path uses `expo-secure-store`
+- [x] Clear removes token
+- [x] Unit tests cover set/get/clear (+ failure treated as null)
+- [x] Gate: Quick — tests pass
 
 **Tests**: unit  
 **Gate**: quick  
