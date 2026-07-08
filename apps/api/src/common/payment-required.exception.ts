@@ -1,10 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class PaymentRequiredException extends HttpException {
-  constructor(
-    messageKey: string,
-    extras?: Record<string, unknown>,
-  ) {
+  constructor(messageKey: string, extras?: Record<string, unknown>) {
     super(
       {
         statusCode: HttpStatus.PAYMENT_REQUIRED,

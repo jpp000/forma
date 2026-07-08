@@ -6,12 +6,10 @@ import {
   Headers,
   Param,
   Post,
-  RawBodyRequest,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import type { FastifyRequest } from 'fastify';
 import { AuthGuard } from '../../common/auth.guard';
 import { CurrentUser } from '../../common/current-user.decorator';
 import { EntitlementGuard } from '../../common/entitlement.guard';
@@ -44,11 +42,15 @@ export class BillingController {
   @Post('webhook')
   @ApiOperation({ summary: 'Stripe webhook handler' })
   async webhook(
-    @Req() req: RawBodyRequest<FastifyRequest>,
+    @Req() req: { rawBody?: string },
     @Headers('stripe-signature') signature: string | undefined,
-    @Body() body: { type: string; data: { userId?: string; planSlug?: string; subscriptionId?: string } },
+    @Body() body: {
+      type: string;
+      data: { userId?: string; planSlug?: string; subscriptionId?: string };
+    },
   ) {
-    const rawBody = typeof req.rawBody === 'string' ? req.rawBody : JSON.stringify(body);
+    const rawBody =
+      typeof req.rawBody === 'string' ? req.rawBody : JSON.stringify(body);
     if (!this.billingService.verifyWebhookSignature(rawBody, signature)) {
       throw new BadRequestException('errors.invalid_webhook_signature');
     }

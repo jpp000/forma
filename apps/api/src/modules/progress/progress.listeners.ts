@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { TRAINING_SESSION_COMPLETED } from '../training/events/training.events';
-import type { TrainingSessionCompletedEvent } from '../training/events/training.events';
-import { NUTRITION_MEAL_LOGGED } from '../nutrition/events/nutrition.events';
 import type { NutritionMealLoggedEvent } from '../nutrition/events/nutrition.events';
+import { NUTRITION_MEAL_LOGGED } from '../nutrition/events/nutrition.events';
+import type { TrainingSessionCompletedEvent } from '../training/events/training.events';
+import { TRAINING_SESSION_COMPLETED } from '../training/events/training.events';
 import { ProgressService } from './progress.service';
 
 @Injectable()

@@ -59,12 +59,18 @@ describe('Billing (e2e)', () => {
   }
 
   it('GET /api/billing/plans returns seeded tiers', async () => {
-    const response = await request(app.getHttpServer()).get('/api/billing/plans');
+    const response = await request(app.getHttpServer()).get(
+      '/api/billing/plans',
+    );
 
     expect(response.status).toBe(200);
     expect(response.body.length).toBeGreaterThanOrEqual(3);
-    expect(response.body.some((p: { slug: string }) => p.slug === 'student_free')).toBe(true);
-    expect(response.body.some((p: { slug: string }) => p.slug === 'student_pro')).toBe(true);
+    expect(
+      response.body.some((p: { slug: string }) => p.slug === 'student_free'),
+    ).toBe(true);
+    expect(
+      response.body.some((p: { slug: string }) => p.slug === 'student_pro'),
+    ).toBe(true);
   });
 
   it('POST /api/billing/checkout returns checkout url (mock)', async () => {
@@ -80,7 +86,7 @@ describe('Billing (e2e)', () => {
   });
 
   it('webhook activates subscription on checkout.session.completed', async () => {
-    const token = await auth();
+    await auth();
     const user = await prisma.identityUser.findFirstOrThrow({
       where: { email: userEmail },
     });
@@ -122,7 +128,9 @@ describe('Billing (e2e)', () => {
       .set('Accept-Language', 'en');
 
     expect(response.status).toBe(402);
-    expect(response.body.message).toBe('Upgrade required to access this feature');
+    expect(response.body.message).toBe(
+      'Upgrade required to access this feature',
+    );
     expect(response.body.upgradeUrl).toBe('/api/billing/checkout');
   });
 

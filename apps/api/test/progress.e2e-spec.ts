@@ -189,9 +189,7 @@ describe('Progress (e2e)', () => {
       .send({
         mealType: MealType.Breakfast,
         date: '2026-07-07',
-        items: [
-          { name: 'Oats', calories: 250, protein: 8, carbs: 45, fat: 5 },
-        ],
+        items: [{ name: 'Oats', calories: 250, protein: 8, carbs: 45, fat: 5 }],
       });
 
     const response = await request(app.getHttpServer())

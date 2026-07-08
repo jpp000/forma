@@ -1,6 +1,6 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { RolesGuard } from '../../common/roles.guard';
+import { forwardRef, Module } from '@nestjs/common';
 import { EntitlementGuard } from '../../common/entitlement.guard';
+import { RolesGuard } from '../../common/roles.guard';
 import { BillingModule } from '../billing/billing.module';
 import { IdentityModule } from '../identity/identity.module';
 import { NutritionModule } from '../nutrition/nutrition.module';

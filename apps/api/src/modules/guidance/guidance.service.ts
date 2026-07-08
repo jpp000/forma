@@ -60,10 +60,7 @@ export class GuidanceService {
       });
     }
 
-    if (
-      daily.target &&
-      daily.consumed.protein < daily.target.protein * 0.7
-    ) {
+    if (daily.target && daily.consumed.protein < daily.target.protein * 0.7) {
       suggestions.push({
         type: 'nutrition',
         message: this.i18n.t('guidance.protein_gap', lang),
@@ -82,10 +79,7 @@ export class GuidanceService {
         }
         break;
       case HealthGoal.GainMuscle:
-        if (
-          daily.target &&
-          daily.consumed.protein < daily.target.protein
-        ) {
+        if (daily.target && daily.consumed.protein < daily.target.protein) {
           suggestions.push({
             type: 'nutrition',
             message: this.i18n.t('guidance.protein_for_muscle', lang),
@@ -110,6 +104,8 @@ export class GuidanceService {
 
 function daysSince(date: string): number {
   const then = new Date(`${date}T00:00:00.000Z`).getTime();
-  const now = new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`).getTime();
+  const now = new Date(
+    `${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`,
+  ).getTime();
   return Math.floor((now - then) / (24 * 60 * 60 * 1000));
 }

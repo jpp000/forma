@@ -42,7 +42,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
           message = rawMessage.map((item) =>
             this.localizeMessage(String(item), lang),
           );
-        } else         if (typeof rawMessage === 'string') {
+        } else if (typeof rawMessage === 'string') {
           message = this.localizeMessage(rawMessage, lang);
         }
 

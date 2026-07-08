@@ -65,7 +65,9 @@ export class BillingService {
       return { url: `https://checkout.stripe.com/pay/${plan.slug}` };
     }
 
-    return { url: `https://checkout.stripe.com/mock/${plan.slug}?user=${userId}` };
+    return {
+      url: `https://checkout.stripe.com/mock/${plan.slug}?user=${userId}`,
+    };
   }
 
   async handleWebhook(event: {
@@ -73,14 +75,17 @@ export class BillingService {
     data: { userId?: string; planSlug?: string; subscriptionId?: string };
   }) {
     if (event.type === 'checkout.session.completed') {
+      const userId = event.data.userId;
+      if (!userId) return;
+
       const plan = await this.prisma.billingPlan.findUniqueOrThrow({
         where: { slug: event.data.planSlug ?? 'student_pro' },
       });
 
       await this.prisma.billingSubscription.upsert({
-        where: { userId: event.data.userId! },
+        where: { userId },
         create: {
-          userId: event.data.userId!,
+          userId,
           planId: plan.id,
           status: 'active',
           stripeSubscriptionId: event.data.subscriptionId,
@@ -102,8 +107,11 @@ export class BillingService {
         where: { slug: 'student_free' },
       });
 
+      const userId = event.data.userId;
+      if (!userId) return;
+
       await this.prisma.billingSubscription.update({
-        where: { userId: event.data.userId! },
+        where: { userId },
         data: {
           planId: freePlan.id,
           status: 'cancelled',

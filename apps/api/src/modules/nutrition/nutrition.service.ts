@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BillingService } from '../billing/billing.service';

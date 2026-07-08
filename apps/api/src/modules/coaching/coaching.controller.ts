@@ -7,7 +7,6 @@ import { EntitlementGuard } from '../../common/entitlement.guard';
 import { RequiresEntitlement } from '../../common/requires-entitlement.decorator';
 import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
-import { IdentityService } from '../identity/identity.service';
 import { CoachingService } from './coaching.service';
 import { CreateCoachingProfileDto } from './dto/create-coaching-profile.dto';
 import { CreateInviteDto } from './dto/create-invite.dto';
@@ -17,10 +16,7 @@ import { CreateInviteDto } from './dto/create-invite.dto';
 @UseGuards(AuthGuard)
 @Controller('coaching')
 export class CoachingController {
-  constructor(
-    private readonly coachingService: CoachingService,
-    private readonly identityService: IdentityService,
-  ) {}
+  constructor(private readonly coachingService: CoachingService) {}
 
   @Post('profile')
   @UseGuards(EntitlementGuard)

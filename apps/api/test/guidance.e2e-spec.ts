@@ -92,9 +92,11 @@ describe('Guidance (e2e)', () => {
       message: expect.any(String),
       priority: expect.any(Number),
     });
-    expect(response.body.some((s: { message: string }) =>
-      s.message.includes('trained'),
-    )).toBe(true);
+    expect(
+      response.body.some((s: { message: string }) =>
+        s.message.includes('trained'),
+      ),
+    ).toBe(true);
   });
 
   it('GET /api/guidance/daily returns 403 without student profile', async () => {

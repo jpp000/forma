@@ -1,12 +1,14 @@
+import { randomBytes } from 'node:crypto';
 import { Role } from '@forma/types';
 import {
   ConflictException,
   ForbiddenException,
+  forwardRef,
   GoneException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { randomBytes } from 'node:crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NutritionService } from '../nutrition/nutrition.service';
 import { ProgressService } from '../progress/progress.service';
@@ -20,6 +22,7 @@ export class CoachingService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly trainingService: TrainingService,
+    @Inject(forwardRef(() => NutritionService))
     private readonly nutritionService: NutritionService,
     private readonly progressService: ProgressService,
   ) {}
@@ -61,7 +64,11 @@ export class CoachingService {
     });
   }
 
-  async acceptInvite(token: string, studentUserId: string, studentEmail: string) {
+  async acceptInvite(
+    token: string,
+    studentUserId: string,
+    studentEmail: string,
+  ) {
     const invite = await this.prisma.coachingInvite.findUnique({
       where: { token },
     });

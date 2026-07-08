@@ -5,9 +5,9 @@ import { AuthGuard } from '../../common/auth.guard';
 import { CurrentUser } from '../../common/current-user.decorator';
 import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
-import { LogMealDto } from './dto/log-meal.dto';
 import { CreateNutritionPlanDto } from './dto/create-nutrition-plan.dto';
 import { DailySummaryQueryDto } from './dto/daily-summary-query.dto';
+import { LogMealDto } from './dto/log-meal.dto';
 import { NutritionService } from './nutrition.service';
 
 @ApiTags('nutrition')
@@ -20,10 +20,7 @@ export class NutritionController {
   @Post('meals')
   @Roles(Role.Student)
   @ApiOperation({ summary: 'Log meal with manual macros' })
-  async logMeal(
-    @CurrentUser() user: { id: string },
-    @Body() body: LogMealDto,
-  ) {
+  async logMeal(@CurrentUser() user: { id: string }, @Body() body: LogMealDto) {
     return this.nutritionService.logMeal(user.id, body);
   }
 

@@ -149,7 +149,9 @@ describe('Coaching (e2e)', () => {
     const invite = await prisma.coachingInvite.create({
       data: {
         professionalUserId: (
-          await prisma.identityUser.findFirstOrThrow({ where: { email: proEmail } })
+          await prisma.identityUser.findFirstOrThrow({
+            where: { email: proEmail },
+          })
         ).id,
         studentEmail,
         token: 'expired-token',

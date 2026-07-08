@@ -139,7 +139,7 @@ export class TrainingService {
         exercises: {
           create: dto.exercises.map((item) => ({
             exerciseId: item.exerciseId,
-            sets: item.sets,
+            sets: item.sets as object,
           })),
         },
       },

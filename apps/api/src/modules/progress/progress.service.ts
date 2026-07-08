@@ -81,7 +81,10 @@ export class ProgressService {
       where: { userId_streakType: { userId, streakType } },
     });
 
-    if (existing?.lastActiveDate && sameDay(existing.lastActiveDate, activeDate)) {
+    if (
+      existing?.lastActiveDate &&
+      sameDay(existing.lastActiveDate, activeDate)
+    ) {
       return existing;
     }
 
@@ -93,10 +96,7 @@ export class ProgressService {
       currentStreak = existing.currentStreak + 1;
     }
 
-    const longestStreak = Math.max(
-      currentStreak,
-      existing?.longestStreak ?? 0,
-    );
+    const longestStreak = Math.max(currentStreak, existing?.longestStreak ?? 0);
 
     return this.prisma.progressStreak.upsert({
       where: { userId_streakType: { userId, streakType } },

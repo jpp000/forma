@@ -32,11 +32,7 @@ export class ProgressController {
     @CurrentUser() user: { id: string },
     @Query() query: WeightHistoryQueryDto,
   ) {
-    return this.progressService.getWeightHistory(
-      user.id,
-      query.from,
-      query.to,
-    );
+    return this.progressService.getWeightHistory(user.id, query.from, query.to);
   }
 
   @Get('streaks')
