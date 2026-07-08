@@ -354,9 +354,9 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Mock/dev path can complete to JWT (documented)
-- [ ] Cancel/failure shows localized error
-- [ ] Does not crash Expo Go on cancel
+- [x] Mock/dev path can complete to JWT (documented)
+- [x] Cancel/failure shows localized error
+- [x] Does not crash Expo Go on cancel
 - [ ] Gate: Build
 
 **Tests**: none  

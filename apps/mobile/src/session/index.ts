@@ -5,3 +5,8 @@ export {
   getAccessToken,
   setAccessToken,
 } from './tokenStorage';
+export {
+  OAuthCancelledError,
+  OAuthFailedError,
+  startOAuth,
+} from './oauth';

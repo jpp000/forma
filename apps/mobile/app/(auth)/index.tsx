@@ -1,10 +1,12 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ApiError } from '../../src/api/client';
 import { createApiClient } from '../../src/api/client';
 import { createIdentityApi, type OAuthProvider } from '../../src/api/identity';
 import { isValidEmail } from '../../src/auth/validators';
 import { getActiveLocale, useT } from '../../src/i18n';
+import { OAuthCancelledError, startOAuth, useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
 import {
   InlineError,
@@ -48,6 +50,7 @@ export default function AuthIndexScreen() {
   const router = useRouter();
   const t = useT();
   const { colors, typography } = useFormaTheme();
+  const { signIn } = useSession();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<string | undefined>();
   const [formError, setFormError] = useState<string | undefined>();
@@ -100,12 +103,26 @@ export default function AuthIndexScreen() {
     }
   }
 
-  function handleOAuthPress(provider: OAuthProvider) {
+  async function handleOAuthPress(provider: OAuthProvider) {
     setOauthLoading(provider);
     setFormError(undefined);
-    // Wired in T13 via startOAuth helper.
-    setOauthLoading(null);
-    setFormError(t('auth.oauthFailed'));
+
+    try {
+      const accessToken = await startOAuth(provider);
+      await signIn(accessToken);
+    } catch (error) {
+      if (error instanceof OAuthCancelledError) {
+        setFormError(t('auth.oauthCancelled'));
+      } else if (error instanceof ApiError) {
+        setFormError(t('auth.oauthFailed'));
+      } else if (error instanceof Error && error.name === 'TypeError') {
+        setFormError(t('errors.network'));
+      } else {
+        setFormError(t('auth.oauthFailed'));
+      }
+    } finally {
+      setOauthLoading(null);
+    }
   }
 
   return (
