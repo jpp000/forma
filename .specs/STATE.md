@@ -50,16 +50,18 @@
 
 ## Handoff
 
-**Feature in flight:** `platform-foundation` — **Complete (T01–T32)**.
+**Feature in flight:** `platform-foundation` — **MVP P1 backend complete**.
 
-**Branch:** `feat-platform-foundation`.
+**Branch:** `feat-platform-foundation` (dac3e06).
 
-**Completed:** T01–T32 (all phases: Foundation, Identity/Student, Training, Nutrition, Progress/Guidance, Coaching, Billing).
+**Completed:** T01–T32 (all phases). Post-MVP verification recorded in `.specs/features/platform-foundation/validation.md`.
 
-**Next task:** None — MVP backend API vertical slice complete. P2: AI food photo, food DB, exercise library, mobile/web UI.
+**Next task:** Manual PR (`main` ← `feat-platform-foundation`); frontend/mobile UI work (P2).
 
-**Blockers:** Docker unavailable locally — e2e uses `TEST_DATABASE_URL` fallback (`postgresql://${USER}@localhost:5432/forma`). CI should use `docker compose postgres` with `postgresql://forma:forma@localhost:5432/forma`. Stripe/OAuth run in mock mode when secrets unset.
+**Blockers:** None for backend merge. Docker unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. CI should use `docker compose postgres`.
 
-**Test gate:** `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 57/57 e2e tests passing.
+**Test gate:** `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 57/57 passing (verified 2026-07-07).
 
-**Notes:** OAuth mock when `OAUTH_MOCK=true` or `GOOGLE_CLIENT_ID` unset. Email OTP uses mock provider in test/dev. Stripe checkout/webhook mock when `STRIPE_SECRET_KEY` unset; webhook accepts `mock-signature`.
+**Validation gaps:** BILL-05 (subscription cancel webhook e2e), BILL-06 (meal log limit e2e) — implemented, not e2e-covered.
+
+**Notes:** OAuth mock when `OAUTH_MOCK=true`. Email OTP mock in test/dev. Stripe mock when `STRIPE_SECRET_KEY` unset.
