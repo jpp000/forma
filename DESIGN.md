@@ -19,8 +19,9 @@
 | `canvas` | `#000000` | App background (iPhone) |
 | `grouped1` | `#1C1C1E` | Ring card, metric tiles |
 | `grouped2` | `#2C2C2E` | Nested / raised |
-| `move` / `accent` | `#30D158` | Outer ring, CTAs, day eyebrow, See All (Forma primary) |
-| `accentPressed` | `#248A3D` | Pressed primary |
+| `primary` / `accent` | `#30D158` | Brand CTAs, day eyebrow, See All, guidance |
+| `primaryPressed` | `#248A3D` | Pressed primary |
+| `move` / `moveLabel` | `#FA114F` / `#FF375F` | Outer Activity ring + energy accents (steps tile, Fitness+ type) |
 | `exercise` | `#92E82A` | Middle ring |
 | `stand` | `#1EE4E1` | Inner ring |
 | `ringTrack` | ring @ 22% opacity | Unfilled groove |
@@ -29,7 +30,7 @@
 | `onPrimary` | `#000000` | Text on green CTA |
 | `error` | `#FF453A` | Errors |
 
-**Forma brand:** primary green replaces Apple Move-pink everywhere chrome used to be pink.
+**Color roles:** green = brand actions; pink = Move ring / energy only — not competitive CTAs.
 
 ## Typography
 

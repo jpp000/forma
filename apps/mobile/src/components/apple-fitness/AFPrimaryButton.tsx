@@ -17,7 +17,7 @@ export function AFPrimaryButton({ title, onPress }: AFPrimaryButtonProps) {
         onPress?.();
       }}
       style={({ pressed }) => ({
-        backgroundColor: pressed ? afColors.accentPressed : afColors.move,
+        backgroundColor: pressed ? afColors.primaryPressed : afColors.primary,
         borderRadius: 14,
         paddingVertical: 15,
         alignItems: 'center',

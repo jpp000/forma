@@ -72,7 +72,7 @@ export function getHomeMockData(t: Translation): HomeMockData {
         type: 'FORÇA',
         title: '20 min Upper Body',
         meta: 'Bakari · Pop Anthems',
-        gradient: ['#30D158', '#C969E0', '#1C1C1E'],
+        gradient: ['#FA114F', '#C969E0', '#1C1C1E'],
       },
       {
         id: '2',

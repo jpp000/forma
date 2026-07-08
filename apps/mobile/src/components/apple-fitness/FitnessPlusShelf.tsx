@@ -37,7 +37,7 @@ export function FitnessPlusShelf({
       <View style={styles.header}>
         <Text style={[afTypography.section, { color: s.ink }]}>{title}</Text>
         <Pressable onPress={onSeeAll} accessibilityRole="button">
-          <Text style={[afTypography.body, { color: afColors.accent }]}>{seeAllLabel}</Text>
+          <Text style={[afTypography.body, { color: afColors.primary }]}>{seeAllLabel}</Text>
         </Pressable>
       </View>
       <ScrollView

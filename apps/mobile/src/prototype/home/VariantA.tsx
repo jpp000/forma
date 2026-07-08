@@ -39,7 +39,7 @@ export function VariantA({ data, theme, t }: VariantProps) {
       {/* Header: day eyebrow + date + profile */}
       <View style={styles.header}>
         <View style={styles.headerText}>
-          <Text style={[afTypography.eyebrow, { color: afColors.moveLabel }]}>{dayEyebrow}</Text>
+          <Text style={[afTypography.eyebrow, { color: afColors.primary }]}>{dayEyebrow}</Text>
           <Text style={[afTypography.date, { color: s.ink }]}>{dateLabel}</Text>
         </View>
         <View style={[styles.avatar, { backgroundColor: afColors.fill }]}>
@@ -121,7 +121,7 @@ export function VariantA({ data, theme, t }: VariantProps) {
 
       {/* Guidance as a quiet grouped card */}
       <View style={[styles.guidance, { backgroundColor: s.grouped }]}>
-        <Text style={[afTypography.eyebrow, { color: afColors.accent }]}>{t.home.guidance}</Text>
+        <Text style={[afTypography.eyebrow, { color: afColors.primary }]}>{t.home.guidance}</Text>
         <Text style={[afTypography.bodyReg, { color: s.ink, marginTop: 6 }]}>
           {data.guidanceMessage}
         </Text>

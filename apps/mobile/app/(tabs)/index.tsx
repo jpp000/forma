@@ -43,7 +43,7 @@ export default function IndexScreen() {
           style={({ pressed }) => [
             styles.cta,
             {
-              backgroundColor: pressed ? afColors.accentPressed : afColors.move,
+              backgroundColor: pressed ? afColors.primaryPressed : afColors.primary,
               transform: [{ scale: pressed ? 0.98 : 1 }],
             },
           ]}

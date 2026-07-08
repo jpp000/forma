@@ -1,10 +1,11 @@
 /**
  * Forma × Apple Fitness Summary layout.
- * Spec anatomy from apps/mobile/apple/DESIGN.md — brand chrome remapped to Forma primary green.
- * Source layout: https://github.com/Meliwat/awesome-ios-design-md/tree/main/design-md/fitness/apple-fitness
+ * Anatomy from apps/mobile/apple/DESIGN.md.
  *
- * Move ring + chrome = Forma primary `#30D158` (replaces Apple Move-pink).
- * Exercise / Stand keep Apple ring roles (lime / cyan) for a three-ring read.
+ * Brand primary (CTAs, See All, brand chrome): Forma green `#30D158`
+ * Move ring (energy): Apple pink `#FA114F` / label `#FF375F` — kept where the
+ * three-ring Activity identity needs it
+ * Exercise / Stand: Apple lime / cyan
  */
 import { Platform, type TextStyle } from 'react-native';
 
@@ -13,18 +14,26 @@ import type { FormaTheme } from '@/src/theme/useFormaTheme';
 import type { DesignPalette, DesignSystem } from './types';
 
 export const afColors = {
-  // Forma primary — owns Move ring + chrome (was Apple Move-pink)
-  move: '#30D158',
-  moveLabel: '#30D158',
+  // Forma brand — primary chrome
+  primary: '#30D158',
+  primaryPressed: '#248A3D',
+  primarySoft: 'rgba(48,209,88,0.18)',
+  onPrimary: '#000000',
+
+  // Move ring — Apple energy pink (rings keep their identity)
+  move: '#FA114F',
+  moveLabel: '#FF375F',
+  moveTrack: 'rgba(250,17,79,0.22)',
+
   exercise: '#92E82A',
   exerciseHi: '#66FF00',
+  exerciseTrack: 'rgba(146,232,42,0.22)',
+
   stand: '#1EE4E1',
   standHi: '#00F0FF',
-
-  moveTrack: 'rgba(48,209,88,0.22)',
-  exerciseTrack: 'rgba(146,232,42,0.22)',
   standTrack: 'rgba(30,228,225,0.22)',
 
+  // Brand aliases used by chrome helpers
   accent: '#30D158',
   accentPressed: '#248A3D',
   accentSoft: 'rgba(48,209,88,0.18)',
@@ -48,11 +57,9 @@ export const afColors = {
   lightLabelSecondary: 'rgba(60,60,67,0.60)',
   lightLabelTertiary: 'rgba(60,60,67,0.30)',
 
-  // Distinct from Move — reserved for goal-met confirmations when needed
   success: '#32D74B',
   error: '#FF453A',
   awardGold: '#FFD60A',
-  onPrimary: '#000000',
 } as const;
 
 export const ringConfig = [
@@ -225,7 +232,7 @@ export const appleFitnessSystem: DesignSystem = {
       inkTertiary: s.inkTertiary,
       separator: s.separator,
       border: s.separator,
-      primary: afColors.accent,
+      primary: afColors.primary,
       primaryOn: afColors.onPrimary,
       training: afColors.exercise,
       nutrition: afColors.move,
@@ -243,7 +250,7 @@ export const appleFitnessSystem: DesignSystem = {
   },
   radius: { card: 14, button: 14, group: 18 },
   buttonPrimary: () => ({
-    backgroundColor: afColors.move,
+    backgroundColor: afColors.primary,
     borderRadius: 14,
     paddingVertical: 15,
     minHeight: 50,
@@ -255,7 +262,7 @@ export const appleFitnessSystem: DesignSystem = {
     color: afColors.onPrimary,
   }),
   buttonSecondary: () => ({
-    backgroundColor: afColors.accentSoft,
+    backgroundColor: afColors.primarySoft,
     borderRadius: 12,
     paddingVertical: 12,
     minHeight: 44,
@@ -265,6 +272,6 @@ export const appleFitnessSystem: DesignSystem = {
   buttonSecondaryText: () => ({
     ...afTypography.button,
     fontSize: 15,
-    color: afColors.accent,
+    color: afColors.primary,
   }),
 };
