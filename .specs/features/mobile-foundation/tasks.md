@@ -119,9 +119,9 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `pnpm --filter @forma/mobile check-types` runs
-- [ ] `pnpm lint` includes mobile sources without prototype dead paths
-- [ ] Gate: Build passes for mobile package types
+- [x] `pnpm --filter @forma/mobile check-types` runs
+- [x] `pnpm lint` includes mobile sources without prototype dead paths
+- [x] Gate: Build passes for mobile package types
 
 **Tests**: none  
 **Gate**: build  
