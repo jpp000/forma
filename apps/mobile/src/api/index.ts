@@ -14,4 +14,25 @@ export type {
   StudentProfileInput,
 } from './student';
 export { createStudentApi } from './student';
-export { getWiredIdentityApi, getWiredStudentApi } from './wired';
+export type {
+  CreateExerciseInput,
+  CreateWorkoutPlanInput,
+  CreateWorkoutSessionInput,
+  Paginated,
+  SessionExercise,
+  TrainingApi,
+  TrainingExercise,
+  TrainingWorkoutSession,
+  WorkoutPlan,
+  WorkoutPlanItem,
+  WorkoutSet,
+} from './training';
+export { createTrainingApi } from './training';
+export type { ProgressApi, TrainingRestDay } from './progress';
+export { createProgressApi } from './progress';
+export {
+  getWiredIdentityApi,
+  getWiredProgressApi,
+  getWiredStudentApi,
+  getWiredTrainingApi,
+} from './wired';

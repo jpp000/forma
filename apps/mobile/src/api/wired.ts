@@ -1,6 +1,8 @@
 import { createApiClient } from './client';
 import { createIdentityApi } from './identity';
+import { createProgressApi } from './progress';
 import { createStudentApi } from './student';
+import { createTrainingApi } from './training';
 
 type StoreRefs = {
   getToken: () => string | null;
@@ -28,6 +30,8 @@ function createWiredClient() {
 
 let identityApi: ReturnType<typeof createIdentityApi> | null = null;
 let studentApi: ReturnType<typeof createStudentApi> | null = null;
+let trainingApi: ReturnType<typeof createTrainingApi> | null = null;
+let progressApi: ReturnType<typeof createProgressApi> | null = null;
 
 export function getWiredIdentityApi() {
   if (!identityApi) {
@@ -41,4 +45,18 @@ export function getWiredStudentApi() {
     studentApi = createStudentApi(createWiredClient());
   }
   return studentApi;
+}
+
+export function getWiredTrainingApi() {
+  if (!trainingApi) {
+    trainingApi = createTrainingApi(createWiredClient());
+  }
+  return trainingApi;
+}
+
+export function getWiredProgressApi() {
+  if (!progressApi) {
+    progressApi = createProgressApi(createWiredClient());
+  }
+  return progressApi;
 }
