@@ -395,11 +395,11 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Validation respects API bounds
-- [ ] Success navigates to goal step
-- [ ] API failure shows localized error + retry
-- [ ] Loading state on submit
-- [ ] Gate: Build
+- [x] Validation respects API bounds
+- [x] Success navigates to goal step
+- [x] API failure shows localized error + retry
+- [x] Loading state on submit
+- [x] Gate: Build
 
 **Tests**: unit for validators if extracted to pure fn — preferred in `src/onboarding/validators.ts` + `__tests__`  
 **Gate**: quick if validators added; else build  
@@ -417,10 +417,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] All four goals selectable
-- [ ] Success refreshes me and lands in tabs
-- [ ] Goal failure after profile success stays on goal with retry
-- [ ] Gate: Build
+- [x] All four goals selectable
+- [x] Success refreshes me and lands in tabs
+- [x] Goal failure after profile success stays on goal with retry
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -438,11 +438,11 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Tabs render with i18n labels
-- [ ] Active tint `#30D158`
-- [ ] Logout → Auth
-- [ ] Unauthenticated cannot open tabs (Protected)
-- [ ] Gate: Build
+- [x] Tabs render with i18n labels
+- [x] Active tint `#30D158`
+- [x] Logout → Auth
+- [x] Unauthenticated cannot open tabs (Protected)
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -460,9 +460,9 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Documented smoke steps: OTP → onboarding → tabs; returning student skips onboarding; logout; 401 note
-- [ ] Any guard bugs found are fixed in this task
-- [ ] Gate: Build
+- [x] Documented smoke steps: OTP → onboarding → tabs; returning student skips onboarding; logout; 401 note
+- [x] Any guard bugs found are fixed in this task
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
@@ -480,11 +480,11 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Default/web behavior unchanged (JSON) unless mobile flag set
-- [ ] Mobile flag → redirect to configured success URL including token
-- [ ] E2E covers mock mobile redirect
-- [ ] Mobile OAuth helper reads token from redirect
-- [ ] Gate: Full
+- [x] Default/web behavior unchanged (JSON) unless mobile flag set
+- [x] Mobile flag → redirect to configured success URL including token
+- [x] E2E covers mock mobile redirect
+- [x] Mobile OAuth helper reads token from redirect
+- [x] Gate: Full
 
 **Tests**: e2e (API)  
 **Gate**: full  
@@ -502,9 +502,9 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Env vars documented
-- [ ] Dev run steps clear for next agent
-- [ ] Gate: Build (docs only ok)
+- [x] Env vars documented
+- [x] Dev run steps clear for next agent
+- [x] Gate: Build (docs only ok)
 
 **Tests**: none  
 **Gate**: build  
@@ -522,9 +522,9 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Handoff lists branch, how to run, env, auth entry, “Slice 1 = Home Summary in `(tabs)/index`”
-- [ ] No blocker left for starting Specify on Slice 1
-- [ ] Gate: n/a docs
+- [x] Handoff lists branch, how to run, env, auth entry, “Slice 1 = Home Summary in `(tabs)/index`”
+- [x] No blocker left for starting Specify on Slice 1
+- [x] Gate: n/a docs
 
 **Tests**: none  
 **Gate**: build  

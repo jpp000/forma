@@ -87,20 +87,20 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 
 **Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed). Streak today resets on gap day — rest-day rule **not** implemented yet (AD-027).
 
-**Frontend:** `mobile-foundation` **Batch 2 complete** (T9–T14) + **AD-030 Zustand migration**. Session/locale in Zustand stores; Protected navigation shell, Auth (sign-in + OTP + OAuth mock), and error i18n mapping on `feat-frontend-foundation`.
+**Frontend:** `mobile-foundation` **Execute complete** (T1–T21) on `feat-frontend-foundation`. Slice 0 ships Expo scaffold, Zustand session/locale (AD-030), Protected nav, Auth (OTP + OAuth mobile redirect), student onboarding, tab shell + logout, smoke checklist, and env docs. **Awaiting Verifier PASS** before Slice 1 Execute.
 
 | Item | Value |
 |------|-------|
 | Branch | `feat-frontend-foundation` |
 | Package | `@forma/mobile` → `apps/mobile` |
 | Run | `pnpm install` → `pnpm --filter @forma/mobile start` (API: `pnpm --filter @forma/api dev`) |
-| Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`); API `OAUTH_MOCK=true` for OAuth dev path |
-| Gates | `pnpm --filter @forma/mobile test` (8 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
-| Next batch | **Batch 3: T15–T21** — onboarding screens, tab shell + logout, smoke checklist, OAuth API redirect, env docs, STATE handoff |
+| Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`); `EXPO_PUBLIC_OAUTH_SUCCESS_URL` (default `forma://oauth`); API `OAUTH_MOCK=true` + `OAUTH_MOBILE_SUCCESS_URL=forma://oauth` for OAuth on device |
+| Auth entry | `app/(auth)/index.tsx` — email OTP or OAuth (Google/Apple/Facebook) |
+| Gates | `pnpm --filter @forma/mobile test` (17 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` · `pnpm --filter @forma/api test:e2e` (identity OAuth mobile redirect) |
+| Smoke | `apps/mobile/SMOKE.md` |
+| Slice 1 target | Replace Home placeholder in `app/(tabs)/index.tsx` per `.specs/features/mobile-home-summary/` |
 
-**Blockers for Batch 3:** none. OAuth production mobile redirect still T19.
-
-**Slice 1 (parallel docs only):** `mobile-home-summary` — spec + design + tasks approved; **AD-030 Zustand** for feature state. Execute blocked until Slice 0 Verifier PASS.
+**Slice 1:** `mobile-home-summary` — spec/design/tasks ready; start **new chat** with `/tlc-spec-driven implement mobile-home-summary` after Slice 0 Verifier PASS.
 
 ---
 
