@@ -181,10 +181,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `PrimaryButton` uses green fill + black label
-- [ ] Components use theme labels (no gray hex for secondary text)
-- [ ] Touch targets ≥44pt where interactive
-- [ ] Gate: Build
+- [x] `PrimaryButton` uses green fill + black label
+- [x] Components use theme labels (no gray hex for secondary text)
+- [x] Touch targets ≥44pt where interactive
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  
