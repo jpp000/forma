@@ -246,9 +246,9 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Helpers call correct paths under `/api/identity/*` and `/api/student/*`
-- [ ] Types align with API bodies
-- [ ] Gate: Build (+ any thin unit if helper pure; else covered via client tests)
+- [x] Helpers call correct paths under `/api/identity/*` and `/api/student/*`
+- [x] Types align with API bodies
+- [x] Gate: Build (+ any thin unit if helper pure; else covered via client tests)
 
 **Tests**: none (thin wrappers; client unit in T7)  
 **Gate**: build  

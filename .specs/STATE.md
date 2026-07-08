@@ -27,25 +27,54 @@
 | AD-021 | **Mobile visual system = Apple Fitness Summary × Forma green** | Prototype Variant A accepted; Wise/Shopify rejected. Docs in `DESIGN.md` + `.specs/ui/`. Expo prototype deleted — scaffold from specs. | 2026-07-08 |
 | AD-022 | **Color roles:** primary `#30D158` for brand/CTAs; Move pink `#FA114F` for outer ring/energy only | Keep three-ring Activity read while Forma owns chrome. | 2026-07-08 |
 | AD-023 | **Frontend starts clean via tlc-spec-driven** — no committed Expo prototype | `apps/mobile` removed; UI rules and Apple Fitness anatomy live under `.specs/ui/` + root `DESIGN.md`. | 2026-07-08 |
+| AD-024 | **Mobile MVP = student-only, slice-based** — one feature folder/spec per vertical slice; no pro UI in Expo yet | Context optimization + shippable demos; professional web later | 2026-07-08 |
+| AD-025 | **Theme: light + dark** from first mobile scaffold | User requested; dark = canonical Apple Fitness black; light = surfaces remapped, same green brand | 2026-07-08 |
+| AD-026 | **Mobile MVP UI out of scope:** billing screens, multi-profile switcher, coaching chat | Deferred; invite-accept may ship later as thin flow if needed | 2026-07-08 |
+| AD-027 | **Training streak protection (priority):** (1) explicit rest-day mark → (2) plan-scheduled rest → (3) at most 1 grace gap per Mon–Sun week; 2nd gap resets. Nutrition streak unchanged. | Happy path includes rest; API+UI in Slice 2 `mobile-training` | 2026-07-08 |
+| AD-028 | **Mobile navigation** = Expo Router Protected routes (SDK 53+); JWT in SecureStore | Current Expo auth pattern; secure token storage | 2026-07-08 |
+| AD-029 | **Mobile API client** = thin `fetch` + `EXPO_PUBLIC_API_URL`; onboarding gate = `student` role from `GET /identity/me` | Simple; matches MeResponseDto roles | 2026-07-08 |
+
+## Mobile slice roadmap (student)
+
+Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own chat/agent. Do **not** parallelize slices that both edit `apps/mobile` until Slice 0 lands.
+
+| # | Feature folder | Ships | Depends on | Typical agent prompt |
+|---|----------------|-------|------------|----------------------|
+| **0** | `mobile-foundation` | Expo app, tokens light/dark, i18n, nav shell, API client, Auth (OAuth+OTP), Student onboarding | API | `/tlc-spec-driven implement mobile-foundation` |
+| **1** | `mobile-home-summary` | Home Summary (rings, tiles, guidance, CTA), tab bar | Slice 0 | new chat + STATE handoff |
+| **2** | `mobile-training` | Exercises, plans, session log, **rest day** | Slice 0–1 | after Home |
+| **3** | `mobile-nutrition` | Meal log macros, daily summary vs plan | Slice 0–1 | parallel-ok **after** Slice 0 if Home done or queued |
+| **4** | `mobile-progress` | Weight log, streaks UI, history | Slice 0–1 + rest-day API from 2 | after training streak rule |
+| **5** | `mobile-invite-accept` *(optional thin)* | Accept coaching invite deep link | Slice 0 | P2-ish if not blocking daily loop |
+
+**Multi-agent playbook:**
+1. Parent chat holds roadmap + STATE; never loads >1 full feature spec.
+2. Per slice: Specify → Design → Tasks → Execute in a **dedicated agent/chat** (fresh context).
+3. Inside a slice with >~8 tasks: offer batch workers (~7 tasks/batch), sequential batches.
+4. After last task of a slice: Verifier runs automatically; update STATE Handoff before starting next slice.
+5. Parallel only Slice 3 vs polish-on-2 once foundations + contracts are frozen — prefer sequential until Home ships.
 
 ## MVP Scope Boundaries
 
-**In scope (P1):**
+**In scope (P1) — API (done) + mobile student slices 0–4:**
 1. Monorepo structure + shared packages + test harness + i18n (pt-BR + en)
 2. Identity/Auth (email OTP via Resend, OAuth Google/Apple/Facebook, JWT sessions)
 3. Student onboarding + health goal + rule-based guidance
-4. Training (manual exercise creation, workout plan, session logging)
+4. Training (manual exercise creation, workout plan, session logging) + rest day ≠ streak break
 5. Nutrition (manual macro/meal logging, prescribed plan)
 6. Progress (weight tracking, streaks)
-7. Coaching (professional-student link, invite, basic dashboard API; professional subscription required)
-8. Billing (Stripe student free/pro + professional paid tiers; Pro AI entitlement)
+7. Coaching (professional-student link, invite, basic dashboard API; professional subscription required) — API only; thin invite-accept UI optional
+8. Billing (Stripe) — API only; no mobile billing UI yet
+9. Mobile Expo student surfaces (Slices 0–4), light + dark
 
 **Out of scope (P2+):**
 - AI food photo analysis (Pro-gated when shipped)
 - Curated food database (searchable; TACO/USDA)
 - Exercise library with instructional videos
 - WhatsApp integration
-- Mobile app polish / full UI
+- Billing UI / paywall screens on mobile
+- Multi-profile switcher in app
+- Coaching chat
 - Web portal UI (professionals)
 - Advanced periodization
 - WhatsApp groups
@@ -53,21 +82,20 @@
 
 ## Handoff
 
-**Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed).
+**Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed). Streak today resets on gap day — rest-day rule **not** implemented yet (AD-027).
 
-**Frontend:** design locked; **code slate clean**.
+**Frontend:** `mobile-foundation` **Batch 1 complete** (T1–T8). Scaffold + theme + i18n + UI primitives + session/API layer landed on `feat-frontend-foundation`.
 
 | Item | Value |
 |------|-------|
 | Branch | `feat-frontend-foundation` |
-| Design | Apple Fitness Summary × Forma `#30D158` — see `DESIGN.md` |
-| UI rules | `.specs/ui/RULES.md` |
-| Anatomy refs | `.specs/ui/references/apple-fitness-DESIGN.md` (+ Expo companion) |
-| App code | **None** — `apps/mobile` deleted on purpose |
+| Package | `@forma/mobile` → `apps/mobile` |
+| Run | `pnpm install` → `pnpm --filter @forma/mobile start` (API: `pnpm --filter @forma/api dev`) |
+| Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`) |
+| Gates | `pnpm --filter @forma/mobile test` (8 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
+| Next batch | **Batch 2: T9–T14** — SessionProvider, Protected navigation shell, Auth screens + OTP + OAuth + i18n polish |
 
-**Next task:** run **tlc-spec-driven** for the first mobile feature (recommend: Expo scaffold + Home Summary, or Auth). Specs must cite `DESIGN.md` + `.specs/ui/RULES.md`. Do not restore Wise/Shopify prototypes.
-
-**Blockers:** none for specifying frontend. Logo TBD. API client env TBD at Execute.
+**Blockers for Batch 2:** none. OAuth mobile redirect (T19) still deferred to Batch 3.
 
 ---
 

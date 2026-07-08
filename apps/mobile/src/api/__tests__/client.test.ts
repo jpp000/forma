@@ -6,9 +6,11 @@ describe('api client (MFOUND-05, MFOUND-06, MFOUND-07)', () => {
   it('uses EXPO_PUBLIC_API_URL as the request base', async () => {
     const previous = process.env.EXPO_PUBLIC_API_URL;
     process.env.EXPO_PUBLIC_API_URL = baseUrl;
-    const fetchImpl = jest.fn().mockResolvedValue(
-      new Response(JSON.stringify({ ok: true }), { status: 200 }),
-    );
+    const fetchImpl = jest
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ ok: true }), { status: 200 }),
+      );
 
     const api = createApiClient({
       fetchImpl: fetchImpl as unknown as typeof fetch,
@@ -26,9 +28,11 @@ describe('api client (MFOUND-05, MFOUND-06, MFOUND-07)', () => {
   });
 
   it('attaches Authorization Bearer when a token is present', async () => {
-    const fetchImpl = jest.fn().mockResolvedValue(
-      new Response(JSON.stringify({ id: '1' }), { status: 200 }),
-    );
+    const fetchImpl = jest
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ id: '1' }), { status: 200 }),
+      );
 
     const api = createApiClient({
       baseUrl,
@@ -45,9 +49,11 @@ describe('api client (MFOUND-05, MFOUND-06, MFOUND-07)', () => {
   });
 
   it('attaches Accept-Language from the active locale getter', async () => {
-    const fetchImpl = jest.fn().mockResolvedValue(
-      new Response(JSON.stringify({ id: '1' }), { status: 200 }),
-    );
+    const fetchImpl = jest
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ id: '1' }), { status: 200 }),
+      );
 
     const api = createApiClient({
       baseUrl,
@@ -85,9 +91,11 @@ describe('api client (MFOUND-05, MFOUND-06, MFOUND-07)', () => {
   });
 
   it('does not set Authorization when no token is present', async () => {
-    const fetchImpl = jest.fn().mockResolvedValue(
-      new Response(JSON.stringify({ ok: true }), { status: 200 }),
-    );
+    const fetchImpl = jest
+      .fn()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ ok: true }), { status: 200 }),
+      );
 
     const api = createApiClient({
       baseUrl,
