@@ -6,10 +6,14 @@ export default function AuthLayout() {
 
   return (
     <Stack
+      initialRouteName="index"
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.canvas },
       }}
-    />
+    >
+      <Stack.Screen name="index" />
+      <Stack.Screen name="otp" />
+    </Stack>
   );
 }
