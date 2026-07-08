@@ -87,20 +87,20 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 
 **Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed). Streak today resets on gap day — rest-day rule **not** implemented yet (AD-027).
 
-**Frontend:** `mobile-foundation` **Execute complete** (T1–T21) on `feat-frontend-foundation`. Slice 0 ships Expo scaffold, Zustand session/locale (AD-030), Protected nav, Auth (OTP + OAuth mobile redirect), student onboarding, tab shell + logout, smoke checklist, and env docs. **Awaiting Verifier PASS** before Slice 1 Execute.
+**Frontend:** `mobile-home-summary` **Execute complete** (T1–T16) on `feature/home-summary`. Slice 1 ships Home Summary (rings, tiles, guidance, CTA), Zustand `homeStore` (AD-030), pull-to-refresh, tab bar icons, and i18n `home.*` keys. **Verifier PASS** — see `.specs/features/mobile-home-summary/validation.md`.
 
 | Item | Value |
 |------|-------|
-| Branch | `feat-frontend-foundation` |
+| Branch | `feature/home-summary` |
 | Package | `@forma/mobile` → `apps/mobile` |
 | Run | `pnpm install` → `pnpm --filter @forma/mobile start` (API: `pnpm --filter @forma/api dev`) |
 | Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`); `EXPO_PUBLIC_OAUTH_SUCCESS_URL` (default `forma://oauth`); API `OAUTH_MOCK=true` + `OAUTH_MOBILE_SUCCESS_URL=forma://oauth` for OAuth on device |
 | Auth entry | `app/(auth)/index.tsx` — email OTP or OAuth (Google/Apple/Facebook) |
-| Gates | `pnpm --filter @forma/mobile test` (17 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` · `pnpm --filter @forma/api test:e2e` (identity OAuth mobile redirect) |
-| Smoke | `apps/mobile/SMOKE.md` |
-| Slice 1 target | Replace Home placeholder in `app/(tabs)/index.tsx` per `.specs/features/mobile-home-summary/` |
+| Gates | `pnpm --filter @forma/mobile test` (51 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
+| Smoke | Authenticated student opens Home → Summary anatomy (header, rings, 2×2 tiles, guidance, green CTA); pull-to-refresh; partial errors when one endpoint fails |
+| Slice 2 target | `mobile-training` — `.specs/features/mobile-training/` (exercises, plans, session log, rest day) |
 
-**Slice 1:** `mobile-home-summary` — spec/design/tasks ready; start **new chat** with `/tlc-spec-driven implement mobile-home-summary` after Slice 0 Verifier PASS.
+**Slice 2:** `mobile-training` — start **new chat** with `/tlc-spec-driven implement mobile-training` after merging `feature/home-summary`.
 
 ---
 
