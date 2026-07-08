@@ -152,7 +152,7 @@ export class TrainingService {
 
     const date = completedAt.toISOString().slice(0, 10);
     const payload: TrainingSessionCompletedEvent = { userId, date };
-    this.eventEmitter.emit(TRAINING_SESSION_COMPLETED, payload);
+    await this.eventEmitter.emitAsync(TRAINING_SESSION_COMPLETED, payload);
 
     return session;
   }

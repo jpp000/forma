@@ -54,7 +54,7 @@ export class NutritionService {
       userId,
       date: dto.date,
     };
-    this.eventEmitter.emit(NUTRITION_MEAL_LOGGED, payload);
+    await this.eventEmitter.emitAsync(NUTRITION_MEAL_LOGGED, payload);
 
     return mealLog;
   }

@@ -38,4 +38,10 @@ export class ProgressController {
       query.to,
     );
   }
+
+  @Get('streaks')
+  @ApiOperation({ summary: 'Current and longest streaks' })
+  async streaks(@CurrentUser() user: { id: string }) {
+    return this.progressService.getStreaks(user.id);
+  }
 }

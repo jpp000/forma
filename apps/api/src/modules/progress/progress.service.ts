@@ -6,6 +6,16 @@ function parseLogDate(date: string): Date {
   return new Date(`${date}T00:00:00.000Z`);
 }
 
+function previousDay(date: Date): Date {
+  const prev = new Date(date);
+  prev.setUTCDate(prev.getUTCDate() - 1);
+  return prev;
+}
+
+function sameDay(a: Date, b: Date): boolean {
+  return a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);
+}
+
 @Injectable()
 export class ProgressService {
   constructor(private readonly prisma: PrismaService) {}
@@ -63,5 +73,65 @@ export class ProgressService {
     if (diff > 0.2) return 'up';
     if (diff < -0.2) return 'down';
     return 'stable';
+  }
+
+  async updateStreak(userId: string, streakType: string, date: string) {
+    const activeDate = parseLogDate(date);
+    const existing = await this.prisma.progressStreak.findUnique({
+      where: { userId_streakType: { userId, streakType } },
+    });
+
+    if (existing?.lastActiveDate && sameDay(existing.lastActiveDate, activeDate)) {
+      return existing;
+    }
+
+    let currentStreak = 1;
+    if (
+      existing?.lastActiveDate &&
+      sameDay(existing.lastActiveDate, previousDay(activeDate))
+    ) {
+      currentStreak = existing.currentStreak + 1;
+    }
+
+    const longestStreak = Math.max(
+      currentStreak,
+      existing?.longestStreak ?? 0,
+    );
+
+    return this.prisma.progressStreak.upsert({
+      where: { userId_streakType: { userId, streakType } },
+      create: {
+        userId,
+        streakType,
+        currentStreak,
+        longestStreak,
+        lastActiveDate: activeDate,
+      },
+      update: {
+        currentStreak,
+        longestStreak,
+        lastActiveDate: activeDate,
+      },
+    });
+  }
+
+  async getStreaks(userId: string) {
+    const streaks = await this.prisma.progressStreak.findMany({
+      where: { userId },
+    });
+
+    const training = streaks.find((s) => s.streakType === 'training');
+    const nutrition = streaks.find((s) => s.streakType === 'nutrition');
+
+    return {
+      training: {
+        current: training?.currentStreak ?? 0,
+        longest: training?.longestStreak ?? 0,
+      },
+      nutrition: {
+        current: nutrition?.currentStreak ?? 0,
+        longest: nutrition?.longestStreak ?? 0,
+      },
+    };
   }
 }

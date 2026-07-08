@@ -1,3 +1,4 @@
+import { MealType } from '@forma/types';
 import {
   FastifyAdapter,
   type NestFastifyApplication,
@@ -38,6 +39,14 @@ describe('Progress (e2e)', () => {
   beforeEach(async () => {
     mockEmail.clear();
     await prisma.progressWeightEntry.deleteMany();
+    await prisma.progressStreak.deleteMany();
+    await prisma.trainingWorkoutSessionExercise.deleteMany();
+    await prisma.trainingWorkoutSession.deleteMany();
+    await prisma.trainingWorkoutPlanItem.deleteMany();
+    await prisma.trainingWorkoutPlan.deleteMany();
+    await prisma.trainingExercise.deleteMany();
+    await prisma.nutritionMealItem.deleteMany();
+    await prisma.nutritionMealLog.deleteMany();
     await prisma.studentHealthGoal.deleteMany();
     await prisma.studentProfile.deleteMany();
     await prisma.identitySession.deleteMany();
@@ -126,5 +135,90 @@ describe('Progress (e2e)', () => {
     expect(response.body).toHaveLength(2);
     expect(response.body[0].weightKg).toBe(76);
     expect(response.body[1].weightKg).toBe(75);
+  });
+
+  it('increments training streak on session and resets after skipped day', async () => {
+    const token = await createStudent();
+
+    const exercise = await request(app.getHttpServer())
+      .post('/api/training/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Squat',
+        muscleGroup: 'legs',
+        equipment: 'barbell',
+      });
+
+    const logSession = (date: string) =>
+      request(app.getHttpServer())
+        .post('/api/training/sessions')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          completedAt: `${date}T10:00:00.000Z`,
+          exercises: [
+            {
+              exerciseId: exercise.body.id,
+              sets: [{ reps: 5, weightKg: 100 }],
+            },
+          ],
+        });
+
+    await logSession('2026-07-05');
+    await logSession('2026-07-06');
+    await logSession('2026-07-08');
+
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email: testEmail },
+    });
+    const streak = await prisma.progressStreak.findUnique({
+      where: {
+        userId_streakType: { userId: user.id, streakType: 'training' },
+      },
+    });
+
+    expect(streak?.currentStreak).toBe(1);
+    expect(streak?.longestStreak).toBe(2);
+  });
+
+  it('increments nutrition streak when logging meals', async () => {
+    const token = await createStudent();
+
+    await request(app.getHttpServer())
+      .post('/api/nutrition/meals')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        mealType: MealType.Breakfast,
+        date: '2026-07-07',
+        items: [
+          { name: 'Eggs', calories: 200, protein: 14, carbs: 2, fat: 14 },
+        ],
+      });
+
+    await request(app.getHttpServer())
+      .post('/api/nutrition/meals')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        mealType: MealType.Lunch,
+        date: '2026-07-08',
+        items: [
+          { name: 'Salad', calories: 300, protein: 10, carbs: 20, fat: 15 },
+        ],
+      });
+
+    const streak = await prisma.progressStreak.findUnique({
+      where: {
+        userId_streakType: {
+          userId: (
+            await prisma.identityUser.findFirstOrThrow({
+              where: { email: testEmail },
+            })
+          ).id,
+          streakType: 'nutrition',
+        },
+      },
+    });
+
+    expect(streak?.currentStreak).toBe(2);
+    expect(streak?.longestStreak).toBe(2);
   });
 });
