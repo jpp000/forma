@@ -1,5 +1,11 @@
-import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View, type ViewStyle } from 'react-native';
+import type { ReactElement, ReactNode } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  type RefreshControlProps,
+  type ViewStyle,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFormaTheme } from '../theme';
 
@@ -7,9 +13,15 @@ type ScreenProps = {
   children: ReactNode;
   scroll?: boolean;
   style?: ViewStyle;
+  refreshControl?: ReactElement<RefreshControlProps>;
 };
 
-export function Screen({ children, scroll = false, style }: ScreenProps) {
+export function Screen({
+  children,
+  scroll = false,
+  style,
+  refreshControl,
+}: ScreenProps) {
   const { colors } = useFormaTheme();
 
   if (scroll) {
@@ -18,6 +30,7 @@ export function Screen({ children, scroll = false, style }: ScreenProps) {
         <ScrollView
           contentContainerStyle={[styles.content, style]}
           keyboardShouldPersistTaps="handled"
+          refreshControl={refreshControl}
         >
           {children}
         </ScrollView>
