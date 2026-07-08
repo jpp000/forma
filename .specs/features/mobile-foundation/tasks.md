@@ -288,10 +288,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `!token` → auth routes only
-- [ ] `token && !student` → onboarding
-- [ ] `token && student` → tabs
-- [ ] Loading session shows loading UI (not blank crash)
+- [x] `!token` → auth routes only
+- [x] `token && !student` → onboarding
+- [x] `token && student` → tabs
+- [x] Loading session shows loading UI (not blank crash)
 - [ ] Gate: Build
 
 **Tests**: none  
@@ -310,10 +310,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Screen shows OAuth (Google/Apple/Facebook) + email entry
-- [ ] Invalid email blocks OTP request
-- [ ] Loading/error/empty states present
-- [ ] Light/dark + green CTAs
+- [x] Screen shows OAuth (Google/Apple/Facebook) + email entry
+- [x] Invalid email blocks OTP request
+- [x] Loading/error/empty states present
+- [x] Light/dark + green CTAs
 - [ ] Gate: Build
 
 **Tests**: none  

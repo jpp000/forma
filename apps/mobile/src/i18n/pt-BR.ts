@@ -12,6 +12,7 @@ const ptBR = {
   'auth.emailPlaceholder': 'voce@email.com',
   'auth.emailInvalid': 'Informe um e-mail válido.',
   'auth.requestOtp': 'Receber código',
+  'auth.emailDivider': 'ou',
   'auth.otpTitle': 'Código de verificação',
   'auth.otpSubtitle': 'Digite o código de 6 dígitos enviado ao seu e-mail.',
   'auth.otpPlaceholder': '000000',

@@ -14,6 +14,7 @@ const en: Record<TranslationKey, string> = {
   'auth.emailPlaceholder': 'you@email.com',
   'auth.emailInvalid': 'Enter a valid email.',
   'auth.requestOtp': 'Get code',
+  'auth.emailDivider': 'or',
   'auth.otpTitle': 'Verification code',
   'auth.otpSubtitle': 'Enter the 6-digit code sent to your email.',
   'auth.otpPlaceholder': '000000',
