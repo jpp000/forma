@@ -6,10 +6,14 @@ export default function OnboardingLayout() {
 
   return (
     <Stack
+      initialRouteName="profile"
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.canvas },
       }}
-    />
+    >
+      <Stack.Screen name="profile" />
+      <Stack.Screen name="goal" />
+    </Stack>
   );
 }
