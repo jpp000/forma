@@ -1,5 +1,5 @@
 import { MealType } from '@forma/types';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
@@ -8,7 +8,6 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   Min,
   ValidateNested,
@@ -20,12 +19,12 @@ export class MealItemDto {
   @IsNotEmpty()
   name!: string;
 
-  @ApiProperty({ example: 165 })
+  @ApiProperty({ example: 250 })
   @IsNumber()
   @Min(0)
   calories!: number;
 
-  @ApiProperty({ example: 31 })
+  @ApiProperty({ example: 45 })
   @IsNumber()
   @Min(0)
   protein!: number;
@@ -35,7 +34,7 @@ export class MealItemDto {
   @Min(0)
   carbs!: number;
 
-  @ApiProperty({ example: 3.6 })
+  @ApiProperty({ example: 5 })
   @IsNumber()
   @Min(0)
   fat!: number;
@@ -46,10 +45,9 @@ export class LogMealDto {
   @IsEnum(MealType)
   mealType!: MealType;
 
-  @ApiPropertyOptional({ example: '2026-07-07' })
-  @IsOptional()
+  @ApiProperty({ example: '2026-07-07' })
   @IsDateString()
-  date?: string;
+  date!: string;
 
   @ApiProperty({ type: [MealItemDto] })
   @IsArray()
