@@ -33,6 +33,7 @@ coverage/
 
 # Prisma
 prisma/*.db
+generated/
 
 # Misc
 *.tsbuildinfo
