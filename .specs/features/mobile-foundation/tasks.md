@@ -223,12 +223,12 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `EXPO_PUBLIC_API_URL` used as base
-- [ ] Attaches `Authorization` when token present
-- [ ] Attaches `Accept-Language` from locale getter
-- [ ] On HTTP 401 invokes `onUnauthorized` (clears session at provider layer)
-- [ ] Unit tests mock fetch for happy + 401 + header assertions
-- [ ] Gate: Quick
+- [x] `EXPO_PUBLIC_API_URL` used as base
+- [x] Attaches `Authorization` when token present
+- [x] Attaches `Accept-Language` from locale getter
+- [x] On HTTP 401 invokes `onUnauthorized` (clears session at provider layer)
+- [x] Unit tests mock fetch for happy + 401 + header assertions
+- [x] Gate: Quick
 
 **Tests**: unit  
 **Gate**: quick  
