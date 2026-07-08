@@ -266,10 +266,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Cold start restores token and refreshes `/me` when present
-- [ ] `signOut` clears storage
-- [ ] `401` path clears session
-- [ ] `roles` available for student gate
+- [x] Cold start restores token and refreshes `/me` when present
+- [x] `signOut` clears storage
+- [x] `401` path clears session
+- [x] `roles` available for student gate
 - [ ] Gate: Build
 
 **Tests**: none (provider wiring; storage/client unit already exist)  
