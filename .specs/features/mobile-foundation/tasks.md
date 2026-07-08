@@ -332,10 +332,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Success → `signIn` + proceed to gate (onboarding/tabs)
-- [ ] Wrong OTP / 401 shows localized error
-- [ ] 429 shows rate-limit copy
-- [ ] Network error + retry path
+- [x] Success → `signIn` + proceed to gate (onboarding/tabs)
+- [x] Wrong OTP / 401 shows localized error
+- [x] 429 shows rate-limit copy
+- [x] Network error + retry path
 - [ ] Gate: Build
 
 **Tests**: none  

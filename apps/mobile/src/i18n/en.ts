@@ -18,6 +18,8 @@ const en: Record<TranslationKey, string> = {
   'auth.otpTitle': 'Verification code',
   'auth.otpSubtitle': 'Enter the 6-digit code sent to your email.',
   'auth.otpPlaceholder': '000000',
+  'auth.otpLabel': 'Code',
+  'auth.otpResend': 'Resend code',
   'auth.otpSubmit': 'Sign in',
   'auth.otpInvalid': 'Invalid or expired code.',
   'auth.otpRateLimit': 'Too many attempts. Wait a moment and try again.',

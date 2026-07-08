@@ -1,23 +1,177 @@
-import { StyleSheet, Text } from 'react-native';
-import { useT } from '../../src/i18n';
+import { useLocalSearchParams } from 'expo-router';
+import { useMemo, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ApiError } from '../../src/api/client';
+import { createApiClient } from '../../src/api/client';
+import { createIdentityApi } from '../../src/api/identity';
+import { getActiveLocale, useT } from '../../src/i18n';
+import { useSession } from '../../src/session';
 import { useFormaTheme } from '../../src/theme';
-import { Screen } from '../../src/ui';
+import {
+  InlineError,
+  LoadingState,
+  PrimaryButton,
+  Screen,
+  TextField,
+} from '../../src/ui';
+
+const OTP_LENGTH = 6;
 
 export default function OtpScreen() {
-  const { colors, typography } = useFormaTheme();
+  const { email } = useLocalSearchParams<{ email?: string }>();
   const t = useT();
+  const { colors, typography } = useFormaTheme();
+  const { signIn } = useSession();
+  const [code, setCode] = useState('');
+  const [codeError, setCodeError] = useState<string | undefined>();
+  const [formError, setFormError] = useState<string | undefined>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+
+  const identity = useMemo(() => {
+    const api = createApiClient({
+      getLocale: () => getActiveLocale(),
+    });
+    return createIdentityApi(api);
+  }, []);
+
+  const emailAddress = typeof email === 'string' ? email : '';
+
+  function handleCodeChange(value: string) {
+    const digits = value.replace(/\D/g, '').slice(0, OTP_LENGTH);
+    setCode(digits);
+    if (codeError) {
+      setCodeError(undefined);
+    }
+    if (formError) {
+      setFormError(undefined);
+    }
+  }
+
+  async function handleVerify() {
+    if (!emailAddress) {
+      setFormError(t('errors.generic'));
+      return;
+    }
+
+    if (code.length !== OTP_LENGTH) {
+      setCodeError(t('auth.otpInvalid'));
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFormError(undefined);
+
+    try {
+      const { accessToken } = await identity.verifyOtp(emailAddress, code);
+      await signIn(accessToken);
+    } catch (error) {
+      setFormError(resolveOtpError(error, t));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleResend() {
+    if (!emailAddress) {
+      return;
+    }
+
+    setIsResending(true);
+    setFormError(undefined);
+
+    try {
+      await identity.requestOtp(emailAddress);
+    } catch (error) {
+      setFormError(resolveOtpError(error, t));
+    } finally {
+      setIsResending(false);
+    }
+  }
+
+  if (!emailAddress) {
+    return (
+      <Screen style={styles.content}>
+        <InlineError message={t('errors.generic')} />
+      </Screen>
+    );
+  }
 
   return (
-    <Screen style={styles.content}>
-      <Text style={[typography.title, { color: colors.labelPrimary }]}>
-        {t('auth.otpTitle')}
-      </Text>
+    <Screen scroll style={styles.content}>
+      <View style={styles.header}>
+        <Text style={[typography.title, { color: colors.labelPrimary }]}>
+          {t('auth.otpTitle')}
+        </Text>
+        <Text style={[typography.body, { color: colors.labelSecondary }]}>
+          {t('auth.otpSubtitle')}
+        </Text>
+      </View>
+
+      {isSubmitting ? <LoadingState /> : null}
+
+      <TextField
+        label={t('auth.otpLabel')}
+        value={code}
+        onChangeText={handleCodeChange}
+        placeholder={t('auth.otpPlaceholder')}
+        keyboardType="number-pad"
+        autoCapitalize="none"
+        error={codeError}
+      />
+
+      {formError ? <InlineError message={formError} /> : null}
+
+      <PrimaryButton
+        label={t('auth.otpSubmit')}
+        onPress={() => void handleVerify()}
+        loading={isSubmitting}
+        disabled={isResending}
+      />
+
+      <Pressable
+        accessibilityRole="button"
+        disabled={isSubmitting || isResending}
+        onPress={() => void handleResend()}
+        style={styles.resend}
+      >
+        <Text style={[typography.body, { color: colors.primary }]}>
+          {isResending ? t('common.loading') : t('auth.otpResend')}
+        </Text>
+      </Pressable>
     </Screen>
   );
 }
 
+function resolveOtpError(
+  error: unknown,
+  t: (key: import('../../src/i18n').TranslationKey) => string,
+): string {
+  if (error instanceof ApiError) {
+    if (error.status === 401) {
+      return t('auth.otpInvalid');
+    }
+    if (error.status === 429) {
+      return t('auth.otpRateLimit');
+    }
+  }
+  if (error instanceof Error && error.name === 'TypeError') {
+    return t('errors.network');
+  }
+  return t('errors.generic');
+}
+
 const styles = StyleSheet.create({
   content: {
+    gap: 20,
+    paddingVertical: 24,
+  },
+  header: {
+    gap: 8,
+  },
+  resend: {
+    minHeight: 44,
+    alignItems: 'center',
     justifyContent: 'center',
   },
 });

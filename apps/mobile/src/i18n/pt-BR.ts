@@ -16,6 +16,8 @@ const ptBR = {
   'auth.otpTitle': 'Código de verificação',
   'auth.otpSubtitle': 'Digite o código de 6 dígitos enviado ao seu e-mail.',
   'auth.otpPlaceholder': '000000',
+  'auth.otpLabel': 'Código',
+  'auth.otpResend': 'Reenviar código',
   'auth.otpSubmit': 'Entrar',
   'auth.otpInvalid': 'Código inválido ou expirado.',
   'auth.otpRateLimit': 'Muitas tentativas. Aguarde um pouco e tente de novo.',
