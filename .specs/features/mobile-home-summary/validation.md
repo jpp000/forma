@@ -2,7 +2,7 @@
 
 **Status:** PASS  
 **Date:** 2026-07-08  
-**Diff range:** `2f5d6d3..51dd234` (`feature/home-summary`)  
+**Diff range:** `2f5d6d3..f61d5f7` (`feature/home-summary`)  
 **Verifier:** Independent post-Execute pass (author ≠ verifier)
 
 ---

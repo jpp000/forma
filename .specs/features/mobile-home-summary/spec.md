@@ -236,35 +236,35 @@ All require `Authorization: Bearer` + student role (inherited from Slice 0). No 
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| MHOME-01 | P1-01 Summary anatomy | Tasks | Pending |
-| MHOME-02 | P1-01 Dark theme | Tasks | Pending |
-| MHOME-03 | P1-01 Light theme | Tasks | Pending |
-| MHOME-04 | P1-01 Tabular numerals | Tasks | Pending |
-| MHOME-05 | P1-01 Pull to refresh | Tasks | Pending |
-| MHOME-06 | P1-02 Move ring | Tasks | Pending |
-| MHOME-07 | P1-02 Move no target | Tasks | Pending |
-| MHOME-08 | P1-02 Exercise ring | Tasks | Pending |
-| MHOME-09 | P1-02 Stand ring | Tasks | Pending |
-| MHOME-10 | P1-02 Ring animation | Tasks | Pending |
-| MHOME-11 | P1-03 Streak tiles | Tasks | Pending |
-| MHOME-12 | P1-03 Calorie tile | Tasks | Pending |
-| MHOME-13 | P1-03 Protein tile | Tasks | Pending |
-| MHOME-14 | P1-03 Partial tile errors | Tasks | Pending |
-| MHOME-15 | P1-04 Guidance list | Tasks | Pending |
-| MHOME-16 | P1-04 Guidance empty | Tasks | Pending |
-| MHOME-17 | P1-04 Guidance error | Tasks | Pending |
-| MHOME-18 | P1-04 Guidance styling | Tasks | Pending |
-| MHOME-19 | P1-05 CTA label | Tasks | Pending |
-| MHOME-20 | P1-05 CTA navigation | Tasks | Pending |
-| MHOME-21 | P1-05 CTA fallback | Tasks | Pending |
-| MHOME-22 | P1-05 CTA colors | Tasks | Pending |
-| MHOME-23 | P1-06 Loading | Tasks | Pending |
-| MHOME-24 | P1-06 Full error | Tasks | Pending |
-| MHOME-25 | P1-06 401 handling | Tasks | Pending |
-| MHOME-26 | P1-06 Partial errors | Tasks | Pending |
-| MHOME-27 | P2-01 Tab tint | Tasks | Pending |
-| MHOME-28 | P2-01 Tab i18n | Tasks | Pending |
-| MHOME-29 | P2-01 Tab touch targets | Tasks | Pending |
+| MHOME-01 | P1-01 Summary anatomy | Tasks | ✅ Verified |
+| MHOME-02 | P1-01 Dark theme | Tasks | ✅ Verified |
+| MHOME-03 | P1-01 Light theme | Tasks | ✅ Verified |
+| MHOME-04 | P1-01 Tabular numerals | Tasks | ✅ Verified |
+| MHOME-05 | P1-01 Pull to refresh | Tasks | ✅ Verified |
+| MHOME-06 | P1-02 Move ring | Tasks | ✅ Verified |
+| MHOME-07 | P1-02 Move no target | Tasks | ✅ Verified |
+| MHOME-08 | P1-02 Exercise ring | Tasks | ✅ Verified |
+| MHOME-09 | P1-02 Stand ring | Tasks | ✅ Verified |
+| MHOME-10 | P1-02 Ring animation | Tasks | ✅ Verified |
+| MHOME-11 | P1-03 Streak tiles | Tasks | ✅ Verified |
+| MHOME-12 | P1-03 Calorie tile | Tasks | ✅ Verified |
+| MHOME-13 | P1-03 Protein tile | Tasks | ✅ Verified |
+| MHOME-14 | P1-03 Partial tile errors | Tasks | ✅ Verified |
+| MHOME-15 | P1-04 Guidance list | Tasks | ✅ Verified |
+| MHOME-16 | P1-04 Guidance empty | Tasks | ✅ Verified |
+| MHOME-17 | P1-04 Guidance error | Tasks | ✅ Verified |
+| MHOME-18 | P1-04 Guidance styling | Tasks | ✅ Verified |
+| MHOME-19 | P1-05 CTA label | Tasks | ✅ Verified |
+| MHOME-20 | P1-05 CTA navigation | Tasks | ✅ Verified |
+| MHOME-21 | P1-05 CTA fallback | Tasks | ✅ Verified |
+| MHOME-22 | P1-05 CTA colors | Tasks | ✅ Verified |
+| MHOME-23 | P1-06 Loading | Tasks | ✅ Verified |
+| MHOME-24 | P1-06 Full error | Tasks | ✅ Verified |
+| MHOME-25 | P1-06 401 handling | Tasks | ✅ Verified |
+| MHOME-26 | P1-06 Partial errors | Tasks | ✅ Verified |
+| MHOME-27 | P2-01 Tab tint | Tasks | ✅ Verified |
+| MHOME-28 | P2-01 Tab i18n | Tasks | ✅ Verified |
+| MHOME-29 | P2-01 Tab touch targets | Tasks | ✅ Verified |
 
 **Coverage:** 29 total, 16 tasks mapped, 0 unmapped ✅ (see `tasks.md`)
 
@@ -272,12 +272,12 @@ All require `Authorization: Bearer` + student role (inherited from Slice 0). No 
 
 ## Success Criteria
 
-- [ ] Student opens Home → Summary matches design anatomy in light and dark
-- [ ] Rings and tiles reflect live API data for today; pull-to-refresh updates them
-- [ ] Guidance shows localized suggestions; CTA routes to the correct tab stub
-- [ ] Loading, empty, and error states present per RULES
-- [ ] No new API endpoints; no training/nutrition/progress log UIs beyond navigation
-- [ ] Execute waits until `mobile-foundation` Verifier PASS; no parallel edits to `apps/mobile` with Slice 0 agent
+- [x] Student opens Home → Summary matches design anatomy in light and dark
+- [x] Rings and tiles reflect live API data for today; pull-to-refresh updates them
+- [x] Guidance shows localized suggestions; CTA routes to the correct tab stub
+- [x] Loading, empty, and error states present per RULES
+- [x] No new API endpoints; no training/nutrition/progress log UIs beyond navigation
+- [x] Execute waits until `mobile-foundation` Verifier PASS; no parallel edits to `apps/mobile` with Slice 0 agent
 
 ---
 
