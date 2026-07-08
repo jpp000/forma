@@ -24,6 +24,9 @@
 | AD-018 | **i18n pt-BR + en** — full API and user-facing string support from MVP | Not UI-only later; `Accept-Language` drives localized errors and messages. | 2026-07-07 |
 | AD-019 | **OTP via Resend** — production email; mock in dev/test | Confirmed email provider for OTP delivery. | 2026-07-07 |
 | AD-020 | **Manual food/training MVP**; curated food DB + exercise video library P2 | MVP: manual macro logging and manual exercise setup; searchable food DB and video library explicit P2 scope. | 2026-07-07 |
+| AD-021 | **Mobile visual system = Apple Fitness Summary × Forma green** | Prototype Variant A accepted; Wise/Shopify variants rejected. Tokens in `apps/mobile/src/design-systems/appleFitness.ts`; root `DESIGN.md`. | 2026-07-08 |
+| AD-022 | **Color roles:** primary `#30D158` for brand/CTAs; Move pink `#FA114F` for outer ring/energy only | Keep three-ring Activity read while Forma owns chrome. | 2026-07-08 |
+| AD-023 | **Frontend branch:** `feat-frontend-foundation` for Expo shell + design system before full feature UI | Prototype validated design; next agents promote A → production routes. | 2026-07-08 |
 
 ## MVP Scope Boundaries
 
@@ -50,18 +53,25 @@
 
 ## Handoff
 
-**Feature in flight:** `platform-foundation` — **MVP P1 backend complete**.
+**Backend:** `platform-foundation` — **MVP P1 API complete** (see prior validation). Merge to `main` as needed.
 
-**Branch:** `feat-platform-foundation` (dac3e06).
+**Frontend in flight:** `feat-frontend-foundation` — Expo shell + design system.
 
-**Completed:** T01–T32 (all phases). Post-MVP verification recorded in `.specs/features/platform-foundation/validation.md`.
+| Item | Value |
+|------|-------|
+| Branch | `feat-frontend-foundation` |
+| Design verdict | **Variant A accepted** — Apple Fitness Summary × Forma `#30D158` primary |
+| Canonical docs | `/DESIGN.md`, `apps/mobile/HANDOFF.md`, `apps/mobile/apple/DESIGN.md` |
+| Tokens | `apps/mobile/src/design-systems/appleFitness.ts` |
+| Components | `apps/mobile/src/components/apple-fitness/` |
+| Prototype (reference only) | `apps/mobile/src/prototype/home/VariantA.tsx` |
 
-**Next task:** Manual PR (`main` ← `feat-platform-foundation`); frontend/mobile UI work (P2).
+**Next task (new agent):** promote Variant A into production mobile routes (tabs + Summary Home), then auth/onboarding + API wiring. Do **not** continue from Wise/Shopify prototypes.
 
-**Blockers:** None for backend merge. Docker unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. CI should use `docker compose postgres`.
+**Run:** `cd apps/mobile && pnpm ios` → Abrir Summary → Variant A (dark mode).
 
-**Test gate:** `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 57/57 passing (verified 2026-07-07).
+**Blockers (frontend):** none for UI foundation. Logo TBD. API base URL / env for clients TBD when wiring.
 
-**Validation gaps:** BILL-05 (subscription cancel webhook e2e), BILL-06 (meal log limit e2e) — implemented, not e2e-covered.
+---
 
-**Notes:** OAuth mock when `OAUTH_MOCK=true`. Email OTP mock in test/dev. Stripe mock when `STRIPE_SECRET_KEY` unset.
+**Backend notes (unchanged):** Docker unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Test gate historically: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 57/57. OAuth/email/Stripe mocks as before.

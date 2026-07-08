@@ -2,9 +2,11 @@
 
 Referência rápida de domínio, linguagem e convenções da API. Para especificação completa, critérios de aceite e decisões de implementação, veja [`.specs/features/platform-foundation/`](.specs/features/platform-foundation/).
 
+**UI / design system (mobile):** canônico em [`DESIGN.md`](DESIGN.md) — Apple Fitness Summary × Forma green (Variant A). Handoff para o próximo agente: [`apps/mobile/HANDOFF.md`](apps/mobile/HANDOFF.md). Estado do projeto: [`.specs/STATE.md`](.specs/STATE.md).
+
 ## O que é o Forma
 
-Plataforma integrada de saúde, treino e nutrição que conecta **alunos** a **profissionais** (personal trainers e nutricionistas). O aluno registra treino, alimentação e progresso no dia a dia; o profissional prescreve planos, convida alunos e acompanha evolução. O MVP é **API-first** (NestJS modular monolith); apps mobile e web portal vêm depois. Canais futuros incluem WhatsApp.
+Plataforma integrada de saúde, treino e nutrição que conecta **alunos** a **profissionais** (personal trainers e nutricionistas). O aluno registra treino, alimentação e progresso no dia a dia; o profissional prescreve planos, convida alunos e acompanha evolução. Backend MVP: **API-first** (NestJS modular monolith). Frontend mobile: Expo em `apps/mobile` (branch `feat-frontend-foundation`). Portal web e WhatsApp vêm depois.
 
 ---
 
