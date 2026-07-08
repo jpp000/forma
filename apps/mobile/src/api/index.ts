@@ -28,10 +28,13 @@ export type {
   WorkoutSet,
 } from './training';
 export { createTrainingApi } from './training';
+export type { GuidanceApi } from './guidance';
+export { createGuidanceApi } from './guidance';
 export type { NutritionApi } from './nutrition';
 export { createNutritionApi } from './nutrition';
 export type { ProgressApi, TrainingRestDay } from './progress';
 export { createProgressApi } from './progress';
+export { useApiClient } from './useApiClient';
 export {
   getWiredIdentityApi,
   getWiredProgressApi,
