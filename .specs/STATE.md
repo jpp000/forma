@@ -24,9 +24,9 @@
 | AD-018 | **i18n pt-BR + en** — full API and user-facing string support from MVP | Not UI-only later; `Accept-Language` drives localized errors and messages. | 2026-07-07 |
 | AD-019 | **OTP via Resend** — production email; mock in dev/test | Confirmed email provider for OTP delivery. | 2026-07-07 |
 | AD-020 | **Manual food/training MVP**; curated food DB + exercise video library P2 | MVP: manual macro logging and manual exercise setup; searchable food DB and video library explicit P2 scope. | 2026-07-07 |
-| AD-021 | **Mobile visual system = Apple Fitness Summary × Forma green** | Prototype Variant A accepted; Wise/Shopify variants rejected. Tokens in `apps/mobile/src/design-systems/appleFitness.ts`; root `DESIGN.md`. | 2026-07-08 |
+| AD-021 | **Mobile visual system = Apple Fitness Summary × Forma green** | Prototype Variant A accepted; Wise/Shopify rejected. Docs in `DESIGN.md` + `.specs/ui/`. Expo prototype deleted — scaffold from specs. | 2026-07-08 |
 | AD-022 | **Color roles:** primary `#30D158` for brand/CTAs; Move pink `#FA114F` for outer ring/energy only | Keep three-ring Activity read while Forma owns chrome. | 2026-07-08 |
-| AD-023 | **Frontend branch:** `feat-frontend-foundation` for Expo shell + design system before full feature UI | Prototype validated design; next agents promote A → production routes. | 2026-07-08 |
+| AD-023 | **Frontend starts clean via tlc-spec-driven** — no committed Expo prototype | `apps/mobile` removed; UI rules and Apple Fitness anatomy live under `.specs/ui/` + root `DESIGN.md`. | 2026-07-08 |
 
 ## MVP Scope Boundaries
 
@@ -53,25 +53,22 @@
 
 ## Handoff
 
-**Backend:** `platform-foundation` — **MVP P1 API complete** (see prior validation). Merge to `main` as needed.
+**Backend:** `platform-foundation` — MVP P1 API complete (merge to `main` as needed).
 
-**Frontend in flight:** `feat-frontend-foundation` — Expo shell + design system.
+**Frontend:** design locked; **code slate clean**.
 
 | Item | Value |
 |------|-------|
 | Branch | `feat-frontend-foundation` |
-| Design verdict | **Variant A accepted** — Apple Fitness Summary × Forma `#30D158` primary |
-| Canonical docs | `/DESIGN.md`, `apps/mobile/HANDOFF.md`, `apps/mobile/apple/DESIGN.md` |
-| Tokens | `apps/mobile/src/design-systems/appleFitness.ts` |
-| Components | `apps/mobile/src/components/apple-fitness/` |
-| Prototype (reference only) | `apps/mobile/src/prototype/home/VariantA.tsx` |
+| Design | Apple Fitness Summary × Forma `#30D158` — see `DESIGN.md` |
+| UI rules | `.specs/ui/RULES.md` |
+| Anatomy refs | `.specs/ui/references/apple-fitness-DESIGN.md` (+ Expo companion) |
+| App code | **None** — `apps/mobile` deleted on purpose |
 
-**Next task (new agent):** promote Variant A into production mobile routes (tabs + Summary Home), then auth/onboarding + API wiring. Do **not** continue from Wise/Shopify prototypes.
+**Next task:** run **tlc-spec-driven** for the first mobile feature (recommend: Expo scaffold + Home Summary, or Auth). Specs must cite `DESIGN.md` + `.specs/ui/RULES.md`. Do not restore Wise/Shopify prototypes.
 
-**Run:** `cd apps/mobile && pnpm ios` → Abrir Summary → Variant A (dark mode).
-
-**Blockers (frontend):** none for UI foundation. Logo TBD. API base URL / env for clients TBD when wiring.
+**Blockers:** none for specifying frontend. Logo TBD. API client env TBD at Execute.
 
 ---
 
-**Backend notes (unchanged):** Docker unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Test gate historically: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e` — 57/57. OAuth/email/Stripe mocks as before.
+**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before.

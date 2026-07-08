@@ -2,11 +2,20 @@
 
 Referência rápida de domínio, linguagem e convenções da API. Para especificação completa, critérios de aceite e decisões de implementação, veja [`.specs/features/platform-foundation/`](.specs/features/platform-foundation/).
 
-**UI / design system (mobile):** canônico em [`DESIGN.md`](DESIGN.md) — Apple Fitness Summary × Forma green (Variant A). Handoff para o próximo agente: [`apps/mobile/HANDOFF.md`](apps/mobile/HANDOFF.md). Estado do projeto: [`.specs/STATE.md`](.specs/STATE.md).
+**UI / design (frontend):**
+
+| Doc | Role |
+|-----|------|
+| [`DESIGN.md`](DESIGN.md) | Design system canônico (Apple Fitness Summary × Forma green) |
+| [`.specs/ui/RULES.md`](.specs/ui/RULES.md) | Regras UX/UI obrigatórias |
+| [`.specs/ui/`](.specs/ui/) | Referências Apple Fitness (anatomy) |
+| [`.specs/STATE.md`](.specs/STATE.md) | Decisões + handoff |
+
+Não há app Expo no monorepo até uma feature frontend ser especificada/scaffoldada com **tlc-spec-driven**. Backend MVP: API-first NestJS.
 
 ## O que é o Forma
 
-Plataforma integrada de saúde, treino e nutrição que conecta **alunos** a **profissionais** (personal trainers e nutricionistas). O aluno registra treino, alimentação e progresso no dia a dia; o profissional prescreve planos, convida alunos e acompanha evolução. Backend MVP: **API-first** (NestJS modular monolith). Frontend mobile: Expo em `apps/mobile` (branch `feat-frontend-foundation`). Portal web e WhatsApp vêm depois.
+Plataforma integrada de saúde, treino e nutrição que conecta **alunos** a **profissionais** (personal trainers e nutricionistas). O aluno registra treino, alimentação e progresso no dia a dia; o profissional prescreve planos, convida alunos e acompanha evolução. Backend MVP: **API-first** (NestJS modular monolith). Clientes mobile (Expo) e portal web: a scaffoldar via specs. Canais futuros incluem WhatsApp.
 
 ---
 
