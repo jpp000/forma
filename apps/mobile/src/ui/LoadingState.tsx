@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useT } from '../i18n';
-import { useFormaTheme } from '../theme';
+import { useFormaTheme, useReduceMotion } from '../theme';
 
 type LoadingStateProps = {
   message?: string;
@@ -8,11 +8,14 @@ type LoadingStateProps = {
 
 export function LoadingState({ message }: LoadingStateProps) {
   const { colors, typography } = useFormaTheme();
+  const reduceMotion = useReduceMotion();
   const t = useT();
 
   return (
     <View style={styles.wrap} accessibilityRole="progressbar">
-      <ActivityIndicator color={colors.primary} />
+      {!reduceMotion ? (
+        <ActivityIndicator color={colors.primary} />
+      ) : null}
       <Text style={[typography.footnote, { color: colors.labelSecondary }]}>
         {message ?? t('common.loading')}
       </Text>
