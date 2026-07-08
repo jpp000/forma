@@ -16,6 +16,7 @@ describe('Nutrition (e2e)', () => {
   let mockEmail: MockEmailProvider;
 
   const studentEmail = 'nutrition-student@example.com';
+  const proEmail = 'nutrition-pro@example.com';
 
   beforeAll(async () => {
     process.env.EMAIL_PROVIDER = 'mock';
@@ -40,6 +41,7 @@ describe('Nutrition (e2e)', () => {
     mockEmail.clear();
     await prisma.nutritionMealItem.deleteMany();
     await prisma.nutritionMealLog.deleteMany();
+    await prisma.nutritionPlan.deleteMany();
     await prisma.studentHealthGoal.deleteMany();
     await prisma.studentProfile.deleteMany();
     await prisma.identitySession.deleteMany();
@@ -198,6 +200,56 @@ describe('Nutrition (e2e)', () => {
       protein: 0,
       carbs: 0,
       fat: 0,
+    });
+  });
+
+  it('POST /api/nutrition/plans stores targets and daily summary shows consumed vs target', async () => {
+    const studentToken = await createStudent(studentEmail);
+    const proToken = await authenticate(proEmail);
+
+    const meResponse = await request(app.getHttpServer())
+      .get('/api/identity/me')
+      .set('Authorization', `Bearer ${studentToken}`);
+
+    await request(app.getHttpServer())
+      .post('/api/nutrition/plans')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        studentUserId: meResponse.body.id,
+        dailyCalories: 2000,
+        dailyProtein: 150,
+        dailyCarbs: 200,
+        dailyFat: 65,
+      });
+
+    await request(app.getHttpServer())
+      .post('/api/nutrition/meals')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({
+        mealType: MealType.Snack,
+        date: '2026-07-07',
+        items: [
+          {
+            name: 'Protein shake',
+            calories: 200,
+            protein: 40,
+            carbs: 5,
+            fat: 2,
+          },
+        ],
+      });
+
+    const summary = await request(app.getHttpServer())
+      .get('/api/nutrition/daily?date=2026-07-07')
+      .set('Authorization', `Bearer ${studentToken}`);
+
+    expect(summary.status).toBe(200);
+    expect(summary.body.consumed.calories).toBe(200);
+    expect(summary.body.target).toEqual({
+      calories: 2000,
+      protein: 150,
+      carbs: 200,
+      fat: 65,
     });
   });
 });
