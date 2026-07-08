@@ -150,4 +150,54 @@ describe('Nutrition (e2e)', () => {
     expect(response.status).toBe(201);
     expect(response.body.items).toHaveLength(2);
   });
+
+  it('GET /api/nutrition/daily returns macro totals for date', async () => {
+    const token = await createStudent(studentEmail);
+
+    await request(app.getHttpServer())
+      .post('/api/nutrition/meals')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        mealType: MealType.Dinner,
+        date: '2026-07-07',
+        items: [
+          {
+            name: 'Salmon',
+            calories: 400,
+            protein: 35,
+            carbs: 0,
+            fat: 25,
+          },
+        ],
+      });
+
+    const response = await request(app.getHttpServer())
+      .get('/api/nutrition/daily?date=2026-07-07')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.consumed).toEqual({
+      calories: 400,
+      protein: 35,
+      carbs: 0,
+      fat: 25,
+    });
+    expect(response.body.target).toBeNull();
+  });
+
+  it('GET /api/nutrition/daily returns zeros for empty day', async () => {
+    const token = await createStudent(studentEmail);
+
+    const response = await request(app.getHttpServer())
+      .get('/api/nutrition/daily?date=2026-07-08')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.consumed).toEqual({
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+    });
+  });
 });

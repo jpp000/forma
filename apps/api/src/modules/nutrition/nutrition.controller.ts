@@ -1,11 +1,12 @@
 import { Role } from '@forma/types';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/auth.guard';
 import { CurrentUser } from '../../common/current-user.decorator';
 import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
 import { LogMealDto } from './dto/log-meal.dto';
+import { DailySummaryQueryDto } from './dto/daily-summary-query.dto';
 import { NutritionService } from './nutrition.service';
 
 @ApiTags('nutrition')
@@ -23,5 +24,15 @@ export class NutritionController {
     @Body() body: LogMealDto,
   ) {
     return this.nutritionService.logMeal(user.id, body);
+  }
+
+  @Get('daily')
+  @ApiOperation({ summary: 'Daily macro summary' })
+  async dailySummary(
+    @CurrentUser() user: { id: string },
+    @Query() query: DailySummaryQueryDto,
+  ) {
+    const date = query.date ?? new Date().toISOString().slice(0, 10);
+    return this.nutritionService.getDailySummary(user.id, date);
   }
 }
