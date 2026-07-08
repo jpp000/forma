@@ -1,0 +1,37 @@
+export const ptBR = {
+  home: {
+    greeting: 'Olá',
+    today: 'Hoje',
+    guidance: 'Orientação do dia',
+    streak: 'dias seguidos',
+    training: 'Treino',
+    nutrition: 'Nutrição',
+    progress: 'Progresso',
+    startWorkout: 'Iniciar treino',
+    logMeal: 'Registrar refeição',
+    logWeight: 'Registrar peso',
+    planned: 'Planejado',
+    completed: 'Concluído',
+    remaining: 'restante',
+    kcal: 'kcal',
+    sets: 'séries',
+    kg: 'kg',
+    thisWeek: 'esta semana',
+  },
+  guidance: {
+    training_needed: 'Você não treinou recentemente. Programe um treino hoje.',
+    meal_log_needed: 'Registre suas refeições hoje para acompanhar sua nutrição.',
+    protein_gap: 'Sua proteína está abaixo da meta — inclua uma refeição rica em proteína.',
+  },
+  tabs: {
+    home: 'Início',
+    training: 'Treino',
+    nutrition: 'Nutrição',
+    progress: 'Progresso',
+  },
+  prototype: {
+    variantA: 'Anéis primeiro',
+    variantB: 'Coach primeiro',
+    variantC: 'Linha do tempo',
+  },
+} as const;

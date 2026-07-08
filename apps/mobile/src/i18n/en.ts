@@ -1,0 +1,37 @@
+export const en = {
+  home: {
+    greeting: 'Hello',
+    today: 'Today',
+    guidance: "Today's guidance",
+    streak: 'day streak',
+    training: 'Training',
+    nutrition: 'Nutrition',
+    progress: 'Progress',
+    startWorkout: 'Start workout',
+    logMeal: 'Log meal',
+    logWeight: 'Log weight',
+    planned: 'Planned',
+    completed: 'Completed',
+    remaining: 'remaining',
+    kcal: 'kcal',
+    sets: 'sets',
+    kg: 'kg',
+    thisWeek: 'this week',
+  },
+  guidance: {
+    training_needed: 'You have not trained recently. Schedule a workout today.',
+    meal_log_needed: 'Log your meals today to track your nutrition.',
+    protein_gap: 'Your protein intake is below target — add a protein-rich meal.',
+  },
+  tabs: {
+    home: 'Home',
+    training: 'Training',
+    nutrition: 'Nutrition',
+    progress: 'Progress',
+  },
+  prototype: {
+    variantA: 'Rings first',
+    variantB: 'Coach first',
+    variantC: 'Timeline',
+  },
+} as const;
