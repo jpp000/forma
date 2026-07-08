@@ -14,9 +14,8 @@ export class ProgressListeners {
   async onTrainingSessionCompleted(
     payload: TrainingSessionCompletedEvent,
   ): Promise<void> {
-    await this.progressService.updateStreak(
+    await this.progressService.applyTrainingActivity(
       payload.userId,
-      'training',
       payload.date,
     );
   }
