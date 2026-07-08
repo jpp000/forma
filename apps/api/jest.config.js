@@ -1,6 +1,5 @@
-import type { Config } from 'jest';
-
-const config: Config = {
+/** @type {import('jest').Config} */
+module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
   testEnvironment: 'node',
@@ -11,5 +10,3 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   testTimeout: 30_000,
 };
-
-export default config;
