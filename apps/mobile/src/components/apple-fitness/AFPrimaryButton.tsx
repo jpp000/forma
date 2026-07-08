@@ -25,7 +25,7 @@ export function AFPrimaryButton({ title, onPress }: AFPrimaryButtonProps) {
         transform: [{ scale: pressed ? 0.98 : 1 }],
       })}
     >
-      <Text style={afTypography.button}>{title}</Text>
+      <Text style={[afTypography.button, { color: afColors.onPrimary }]}>{title}</Text>
     </Pressable>
   );
 }

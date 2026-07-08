@@ -13,6 +13,6 @@
 | **B** | Wise | Sage canvas, lime CTA, heavy metrics |
 | **C** | Shopify | Cinematic black / cream, thin display |
 
-**Ring brand (immutable):** Move `#FA114F` · Exercise `#92E82A` · Stand `#1EE4E1` · chrome `#FF375F`
+**Ring brand (Forma):** Move / chrome `#30D158` · Exercise `#92E82A` · Stand `#1EE4E1`
 
 **Veredito:** _(preencher após feedback)_

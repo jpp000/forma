@@ -50,7 +50,7 @@ export default function IndexScreen() {
           accessibilityRole="button"
           onPress={() => router.push('/prototype/home?variant=A')}
         >
-          <Text style={afTypography.button}>
+          <Text style={[afTypography.button, { color: afColors.onPrimary }]}>
             {locale === 'pt-BR' ? 'Abrir Summary' : 'Open Summary'}
           </Text>
         </Pressable>
