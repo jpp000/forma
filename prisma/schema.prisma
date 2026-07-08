@@ -238,3 +238,66 @@ model ProgressStreak {
   @@unique([userId, streakType])
   @@map("progress_streaks")
 }
+
+model CoachingProfessionalProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique @map("user_id")
+  type        String
+  credentials String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("coaching_professional_profiles")
+}
+
+model CoachingInvite {
+  id                 String    @id @default(cuid())
+  professionalUserId String    @map("professional_user_id")
+  studentEmail       String    @map("student_email")
+  token              String    @unique
+  expiresAt          DateTime  @map("expires_at")
+  acceptedAt         DateTime? @map("accepted_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  @@index([studentEmail])
+  @@map("coaching_invites")
+}
+
+model CoachingLink {
+  id                 String   @id @default(cuid())
+  professionalUserId String   @map("professional_user_id")
+  studentUserId      String   @map("student_user_id")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@unique([professionalUserId, studentUserId])
+  @@index([professionalUserId])
+  @@map("coaching_links")
+}
+
+model BillingPlan {
+  id         String @id @default(cuid())
+  slug       String @unique
+  name       String
+  priceCents Int    @map("price_cents")
+  features   Json
+
+  subscriptions BillingSubscription[]
+
+  @@map("billing_plans")
+}
+
+model BillingSubscription {
+  id                   String    @id @default(cuid())
+  userId               String    @unique @map("user_id")
+  planId               String    @map("plan_id")
+  status               String
+  stripeSubscriptionId String?   @map("stripe_subscription_id")
+  stripeCustomerId     String?   @map("stripe_customer_id")
+  currentPeriodEnd     DateTime? @map("current_period_end")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  plan BillingPlan @relation(fields: [planId], references: [id])
+
+  @@map("billing_subscriptions")
+}

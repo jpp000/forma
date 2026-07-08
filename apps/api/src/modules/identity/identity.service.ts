@@ -139,6 +139,17 @@ export class IdentityService {
       roles.push(Role.Student);
     }
 
+    const professionalProfile =
+      await this.prisma.coachingProfessionalProfile.findUnique({
+        where: { userId },
+      });
+    if (professionalProfile?.type === 'trainer') {
+      roles.push(Role.Trainer);
+    }
+    if (professionalProfile?.type === 'nutritionist') {
+      roles.push(Role.Nutritionist);
+    }
+
     return roles;
   }
 
