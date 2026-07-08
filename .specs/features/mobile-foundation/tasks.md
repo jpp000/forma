@@ -160,10 +160,10 @@ T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Catalogs cover foundation placeholder keys used by later auth/onboarding (can expand in those tasks)
-- [ ] Default locale `pt-BR`; `en` loads
-- [ ] No user-facing hard-coded strings introduced in this module
-- [ ] Gate: Build
+- [x] Catalogs cover foundation placeholder keys used by later auth/onboarding (can expand in those tasks)
+- [x] Default locale `pt-BR`; `en` loads
+- [x] No user-facing hard-coded strings introduced in this module
+- [x] Gate: Build
 
 **Tests**: none  
 **Gate**: build  

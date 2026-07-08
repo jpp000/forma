@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { I18nProvider } from '../src/i18n';
 import { ThemeProvider, useFormaTheme } from '../src/theme';
 
 function RootNavigator() {
@@ -21,7 +22,9 @@ function RootNavigator() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <RootNavigator />
+      <I18nProvider>
+        <RootNavigator />
+      </I18nProvider>
     </ThemeProvider>
   );
 }
