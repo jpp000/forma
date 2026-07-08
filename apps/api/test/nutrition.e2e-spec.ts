@@ -42,6 +42,10 @@ describe('Nutrition (e2e)', () => {
     await prisma.nutritionMealItem.deleteMany();
     await prisma.nutritionMealLog.deleteMany();
     await prisma.nutritionPlan.deleteMany();
+    await prisma.coachingLink.deleteMany();
+    await prisma.coachingInvite.deleteMany();
+    await prisma.coachingProfessionalProfile.deleteMany();
+    await prisma.billingSubscription.deleteMany();
     await prisma.studentHealthGoal.deleteMany();
     await prisma.studentProfile.deleteMany();
     await prisma.identitySession.deleteMany();
@@ -206,6 +210,31 @@ describe('Nutrition (e2e)', () => {
   it('POST /api/nutrition/plans stores targets and daily summary shows consumed vs target', async () => {
     const studentToken = await createStudent(studentEmail);
     const proToken = await authenticate(proEmail);
+
+    const proUser = await prisma.identityUser.findFirstOrThrow({
+      where: { email: proEmail },
+    });
+    await request(app.getHttpServer())
+      .post('/api/billing/webhook')
+      .set('stripe-signature', 'mock-signature')
+      .send({
+        type: 'checkout.session.completed',
+        data: { userId: proUser.id, planSlug: 'professional' },
+      });
+
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ type: 'nutritionist', credentials: 'CRN 123' });
+
+    const invite = await request(app.getHttpServer())
+      .post('/api/coaching/invites')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ studentEmail });
+
+    await request(app.getHttpServer())
+      .post(`/api/coaching/invites/${invite.body.token}/accept`)
+      .set('Authorization', `Bearer ${studentToken}`);
 
     const meResponse = await request(app.getHttpServer())
       .get('/api/identity/me')

@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../prisma/prisma.service';
+import { BillingService } from '../billing/billing.service';
+import { CoachingService } from '../coaching/coaching.service';
 import type { CreateNutritionPlanDto } from './dto/create-nutrition-plan.dto';
 import type { LogMealDto } from './dto/log-meal.dto';
 import {
@@ -21,10 +23,18 @@ export class NutritionService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(forwardRef(() => CoachingService))
+    private readonly coachingService: CoachingService,
+    private readonly billingService: BillingService,
   ) {}
 
   async logMeal(userId: string, dto: LogMealDto) {
     const logDate = parseLogDate(dto.date);
+
+    const logsToday = await this.prisma.nutritionMealLog.count({
+      where: { userId, logDate },
+    });
+    await this.billingService.assertMealLogLimit(userId, logsToday);
 
     const mealLog = await this.prisma.nutritionMealLog.upsert({
       where: {
@@ -100,6 +110,11 @@ export class NutritionService {
   }
 
   async prescribePlan(professionalUserId: string, dto: CreateNutritionPlanDto) {
+    await this.coachingService.assertLinked(
+      professionalUserId,
+      dto.studentUserId,
+    );
+
     return this.prisma.nutritionPlan.create({
       data: {
         studentUserId: dto.studentUserId,
