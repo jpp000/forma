@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "check-types": "tsc --noEmit",
-    "test": "jest --passWithNoTests --watchman=false",
+    "test": "jest --passWithNoTests --watchman=false"
   },
   "dependencies": {
     "@forma/types": "workspace:*",
