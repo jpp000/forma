@@ -6,6 +6,8 @@ import { CurrentUser } from '../../common/current-user.decorator';
 import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
 import { LogWeightDto } from './dto/log-weight.dto';
+import { ListTrainingRestDaysQueryDto } from './dto/list-training-rest-days-query.dto';
+import { MarkTrainingRestDayDto } from './dto/mark-training-rest-day.dto';
 import { WeightHistoryQueryDto } from './dto/weight-history-query.dto';
 import { ProgressService } from './progress.service';
 
@@ -39,5 +41,27 @@ export class ProgressController {
   @ApiOperation({ summary: 'Current and longest streaks' })
   async streaks(@CurrentUser() user: { id: string }) {
     return this.progressService.getStreaks(user.id);
+  }
+
+  @Post('training-rest-days')
+  @ApiOperation({ summary: 'Mark a training rest day' })
+  async markTrainingRestDay(
+    @CurrentUser() user: { id: string },
+    @Body() body: MarkTrainingRestDayDto,
+  ) {
+    return this.progressService.markTrainingRestDay(user.id, body);
+  }
+
+  @Get('training-rest-days')
+  @ApiOperation({ summary: 'List training rest days in date range' })
+  async listTrainingRestDays(
+    @CurrentUser() user: { id: string },
+    @Query() query: ListTrainingRestDaysQueryDto,
+  ) {
+    return this.progressService.listTrainingRestDays(
+      user.id,
+      query.from,
+      query.to,
+    );
   }
 }

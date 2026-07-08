@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import type { LogWeightDto } from './dto/log-weight.dto';
+import type { MarkTrainingRestDayDto } from './dto/mark-training-rest-day.dto';
 
 function parseLogDate(date: string): Date {
   return new Date(`${date}T00:00:00.000Z`);
@@ -133,5 +134,47 @@ export class ProgressService {
         longest: nutrition?.longestStreak ?? 0,
       },
     };
+  }
+
+  async markTrainingRestDay(userId: string, dto: MarkTrainingRestDayDto) {
+    const restDate = parseLogDate(dto.date);
+
+    return this.prisma.progressTrainingRestDay.upsert({
+      where: {
+        userId_restDate: { userId, restDate },
+      },
+      create: {
+        userId,
+        restDate,
+        source: 'explicit',
+      },
+      update: {},
+    });
+  }
+
+  async listTrainingRestDays(userId: string, from?: string, to?: string) {
+    const now = new Date();
+    const defaultFrom = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
+    );
+    const rangeFrom = from ? parseLogDate(from) : defaultFrom;
+    const rangeTo = to ? parseLogDate(to) : undefined;
+
+    const restDays = await this.prisma.progressTrainingRestDay.findMany({
+      where: {
+        userId,
+        restDate: {
+          gte: rangeFrom,
+          ...(rangeTo ? { lte: rangeTo } : {}),
+        },
+      },
+      orderBy: { restDate: 'asc' },
+    });
+
+    return restDays.map((day) => ({
+      id: day.id,
+      restDate: day.restDate.toISOString().slice(0, 10),
+      source: day.source,
+    }));
   }
 }
