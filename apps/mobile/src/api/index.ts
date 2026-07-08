@@ -28,6 +28,8 @@ export type {
   WorkoutSet,
 } from './training';
 export { createTrainingApi } from './training';
+export type { NutritionApi } from './nutrition';
+export { createNutritionApi } from './nutrition';
 export type { ProgressApi, TrainingRestDay } from './progress';
 export { createProgressApi } from './progress';
 export {
