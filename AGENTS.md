@@ -95,7 +95,7 @@ Scripts úteis:
 
 ### Auth em dev (sem email/OAuth real)
 
-- `EMAIL_PROVIDER=mock` — OTP via `GET /api/identity/otp/dev-last?email=...`
+- `EMAIL_PROVIDER=mock` — OTP via `GET /api/identity/otp/dev-last?email=...`, depois `POST /api/identity/otp/verify` para obter JWT
 - `OAUTH_MOCK=true` — botão **Dev: entrar rápido (mock)** na tela de login
 - Na tela OTP, **Dev: usar código mock** preenche o código automaticamente
 
