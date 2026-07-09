@@ -13,3 +13,5 @@ npm-debug.*
 *.log
 .DS_Store
 .expo-export-test/
+playwright-report/
+test-results/

@@ -38,6 +38,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: t('tabs.home'),
+          tabBarButtonTestID: 'tab-home',
           tabBarIcon: ({ color }) => <TabIcon color={color} name="home" />,
         }}
       />
@@ -45,6 +46,7 @@ export default function TabsLayout() {
         name="training"
         options={{
           title: t('tabs.training'),
+          tabBarButtonTestID: 'tab-training',
           tabBarIcon: ({ color }) => <TabIcon color={color} name="barbell" />,
         }}
       />
@@ -52,6 +54,7 @@ export default function TabsLayout() {
         name="nutrition"
         options={{
           title: t('tabs.nutrition'),
+          tabBarButtonTestID: 'tab-nutrition',
           tabBarIcon: ({ color }) => <TabIcon color={color} name="nutrition" />,
         }}
       />
@@ -59,6 +62,7 @@ export default function TabsLayout() {
         name="progress"
         options={{
           title: t('tabs.progress'),
+          tabBarButtonTestID: 'tab-progress',
           tabBarIcon: ({ color }) => (
             <TabIcon color={color} name="trending-up" />
           ),

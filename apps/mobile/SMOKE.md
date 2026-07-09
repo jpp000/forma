@@ -67,8 +67,11 @@ Requires `EXPO_PUBLIC_OAUTH_SUCCESS_URL` aligned with API `OAUTH_MOBILE_SUCCESS_
 ```bash
 pnpm --filter @forma/mobile test
 pnpm --filter @forma/mobile check-types
+pnpm --filter @forma/mobile test:e2e   # Playwright web smoke (auth → onboarding → tabs)
 pnpm lint
-pnpm --filter @forma/api test:e2e   # includes OAuth mobile redirect after T19
+pnpm --filter @forma/api test:e2e      # includes OAuth mobile redirect after T19
 ```
+
+**Web E2E** (`test:e2e`) starts Postgres (if needed), migrates, runs API + Expo web on port `19006`, and drives Chromium. See [`AGENTS.md`](../../AGENTS.md) for cloud-agent setup.
 
 **Slice 1** replaces Home placeholder in `app/(tabs)/index.tsx` — do not expect rings or Summary UI in this checklist.

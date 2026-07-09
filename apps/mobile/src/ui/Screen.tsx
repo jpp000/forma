@@ -14,6 +14,7 @@ type ScreenProps = {
   scroll?: boolean;
   style?: ViewStyle;
   refreshControl?: ReactElement<RefreshControlProps>;
+  testID?: string;
 };
 
 export function Screen({
@@ -21,6 +22,7 @@ export function Screen({
   scroll = false,
   style,
   refreshControl,
+  testID,
 }: ScreenProps) {
   const { colors } = useFormaTheme();
 
@@ -28,6 +30,7 @@ export function Screen({
     return (
       <SafeAreaView style={[styles.safe, { backgroundColor: colors.canvas }]}>
         <ScrollView
+          testID={testID}
           contentContainerStyle={[styles.content, style]}
           keyboardShouldPersistTaps="handled"
           refreshControl={refreshControl}
@@ -40,7 +43,9 @@ export function Screen({
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: colors.canvas }]}>
-      <View style={[styles.content, style]}>{children}</View>
+      <View testID={testID} style={[styles.content, style]}>
+        {children}
+      </View>
     </SafeAreaView>
   );
 }
