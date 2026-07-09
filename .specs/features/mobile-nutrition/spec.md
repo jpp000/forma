@@ -117,10 +117,29 @@ No new API endpoints in this slice.
 
 ## Success Criteria
 
-- [ ] Student opens Nutrition → sees today’s macros and streak; pull-to-refresh works
-- [ ] Student logs a meal → hub totals update
-- [ ] Loading, empty, and error states per RULES
-- [ ] Unit tests for macro progress + validation; typecheck + test gates pass
+- [x] Student opens Nutrition → sees today’s macros and streak; pull-to-refresh works
+- [x] Student logs a meal → hub totals update
+- [x] Loading, empty, and error states per RULES
+- [x] Unit tests for macro progress + validation; typecheck + test gates pass
+
+---
+
+## Requirement Traceability
+
+| Requirement ID | Story | Status |
+|----------------|-------|--------|
+| MNUTR-01 | P1-01: Hub title, date, streak, macro summary | Verified |
+| MNUTR-02 | P1-01: Consumed / target progress bars | Verified |
+| MNUTR-03 | P1-01: No-target consumed-only display | Verified |
+| MNUTR-04 | P1-01: Pull-to-refresh | Verified |
+| MNUTR-05 | P1-01: Loading / error / retry | Verified |
+| MNUTR-06 | P1-02: Log meal navigation | Verified |
+| MNUTR-07 | P1-02: Meal type + item form | Verified |
+| MNUTR-08 | P1-02: POST meal + hub refresh | Verified |
+| MNUTR-09 | P1-02: Inline validation errors | Verified |
+| MNUTR-10 | P1-02: 402 upgrade hint | Verified |
+| MNUTR-11 | P1-03: Empty day encouragement | Verified |
+| MNUTR-12 | P1-03: Empty clears after first log | Verified |
 
 ---
 

@@ -114,7 +114,7 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Slice 3 item | Value |
 |--------------|-------|
 | Branch | `cursor/mobile-nutrition-385a` |
-| Gates (2026-07-09) | `pnpm --filter @forma/mobile test` — **78 passed**; `check-types` — **PASS** |
+| Gates (2026-07-09) | `pnpm --filter @forma/mobile test` — **79 passed**; `check-types` — **PASS** |
 | Smoke | Authenticated student opens Nutrition → sees macro summary + streak; tap Log meal → submit manual macros → hub totals update |
 | Slice 4 target | `mobile-progress` — weight log, streaks UI, history |
 
