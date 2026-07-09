@@ -10,8 +10,10 @@ Referência rápida de domínio, linguagem e convenções da API. Para especific
 | [`.specs/ui/RULES.md`](.specs/ui/RULES.md) | Regras UX/UI obrigatórias |
 | [`.specs/ui/`](.specs/ui/) | Referências Apple Fitness (anatomy) |
 | [`.specs/STATE.md`](.specs/STATE.md) | Decisões + handoff |
+| [`AGENTS.md`](AGENTS.md) | Setup Cursor Cloud + testes web/E2E mobile |
+| [`apps/mobile/README.md`](apps/mobile/README.md) | Run local do app Expo |
 
-Não há app Expo no monorepo até uma feature frontend ser especificada/scaffoldada com **tlc-spec-driven**. Backend MVP: API-first NestJS.
+O app Expo do aluno vive em `apps/mobile` (Slices 0–4). Backend MVP: API-first NestJS.
 
 ## O que é o Forma
 

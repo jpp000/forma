@@ -21,7 +21,8 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 | Code Layer | Required Test Type | Coverage Expectation | Location Pattern | Run Command |
 | ---------- | ------------------ | -------------------- | ---------------- | ----------- |
 | Pure client logic (session storage helpers, API header/401 handling, locale → Accept-Language, form field validators) | unit | Branches + edge cases from spec (invalid email, 401 clears session, locale header) | `apps/mobile/src/**/__tests__/*.test.ts` | `pnpm --filter @forma/mobile test` |
-| Expo routes / RN screens | none | Visual/manual smoke — loading/empty/error present per RULES; Verifier checklist | — | Manual + typecheck |
+| Expo routes / RN screens (web smoke) | e2e (Playwright) | Auth mock login, onboarding → tabs, OTP screen entry | `apps/mobile/e2e/*.spec.ts` | `pnpm --filter @forma/mobile test:e2e` |
+| Expo routes / RN screens (native) | manual | Visual smoke — loading/empty/error present per RULES; Verifier checklist | `apps/mobile/SMOKE.md` | Manual + typecheck |
 | Theme / i18n catalogs / app.json | none | Build gate only | — | `check-types` + lint |
 | Optional API OAuth mobile redirect | e2e (API) | Happy path returns redirect with token when `platform=mobile` | `apps/api/test/identity.e2e-spec.ts` | `pnpm --filter @forma/api test:e2e` |
 
@@ -33,6 +34,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 | ---------- | ----------- | ------- |
 | Quick | After tasks with unit tests only | `pnpm --filter @forma/mobile test` |
 | Full | After tasks that also touch API e2e | `pnpm --filter @forma/mobile test && pnpm --filter @forma/api test:e2e` |
+| Web smoke | After UI flow changes (auth, onboarding, tabs) | `pnpm --filter @forma/mobile test:e2e` |
 | Build | After scaffold/config/UI-only or phase end | `pnpm --filter @forma/mobile check-types && pnpm lint` (or biome on mobile paths) |
 
 ---

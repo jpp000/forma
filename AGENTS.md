@@ -113,3 +113,15 @@ pnpm lint && pnpm check-types
 - Expo Web cobre a maior parte da UI, mas gestos nativos, câmera e notificações podem diferir do app nativo.
 - `expo-secure-store` no web usa `localStorage` (já tratado em `tokenStorage.ts`).
 - Validação nativa em simulador/dispositivo continua sendo feita fora do cloud VM.
+- `expo doctor` pode avisar sobre versões de `babel-preset-expo` / `typescript` — não bloqueia dev web.
+- API em dev expõe CORS (`PUT`/`PATCH`/`DELETE` inclusos) para o browser em `localhost:19006`.
+
+### Docker (Mac / CI com Docker)
+
+`docker compose up` sobe Postgres + API + mobile (Metro). Para UI web no host, rode API via compose e `pnpm dev:web` no Mac apontando `EXPO_PUBLIC_API_URL=http://localhost:3000`.
+
+### Notas de ambiente
+
+- `pnpm db:generate` roda automaticamente no stack E2E (`scripts/e2e-stack.mjs`) antes das migrations.
+- Testes API e2e precisam de `DATABASE_URL` exportado (Jest não carrega `.env` da API).
+- Playwright Chromium: primeira vez → `pnpm --filter @forma/mobile test:e2e:install`.

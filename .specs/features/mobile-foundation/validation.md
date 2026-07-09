@@ -161,7 +161,8 @@ Sensor: **3/3 killed** ✅
 
 ## Residual Notes (non-blocking)
 
-- Mobile screen UI remains smoke/manual per approved test matrix (no Detox/Maestro in Slice 0).
+- Native screen UI remains smoke/manual per approved test matrix (no Detox/Maestro in Slice 0).
+- **2026-07-09:** Expo Web + Playwright smoke added (`pnpm --filter @forma/mobile test:e2e`) — auth, onboarding, tabs in Chromium; see `AGENTS.md` and AD-031 in `STATE.md`.
 - `sessionStore.test.ts` triggers Jest open-handle warning (AccessibilityInfo subscription in unrelated imports); tests pass.
 - Generated Prisma client is gitignored; CI/dev must run `pnpm db:generate` after schema pull.
 
@@ -169,6 +170,6 @@ Sensor: **3/3 killed** ✅
 
 ## Summary
 
-**What works**: Expo mobile foundation — auth (OTP + OAuth mobile handoff), onboarding, tab shell, i18n, light/dark tokens, secure session, API client. Automated gates: **28 mobile unit**, **58 API e2e**, **check-types**.
+**What works**: Expo mobile foundation — auth (OTP + OAuth mobile handoff), onboarding, tab shell, i18n, light/dark tokens, secure session, API client. Automated gates: **mobile unit (Jest)**, **mobile web smoke (Playwright)**, **API e2e (Supertest)**, **check-types**.
 
 **Handoff**: Proceed to `mobile-home-summary` on `(tabs)/index`.

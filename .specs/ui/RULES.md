@@ -55,6 +55,12 @@ When writing `spec.md` / `design.md` / `tasks.md` for UI:
 - **No React Context** for app state. Theme follows system via `useFormaTheme()` + `useColorScheme`.
 - New slices: one `create()` store per feature domain (e.g. `homeSummaryStore`); wire API via `getWired*Api()` or `wireApiStores`.
 
+## E2E testability (mobile web, AD-031)
+
+- Fluxos P0 (auth, onboarding, tabs) expõem `testID` em controles interativos — vira `data-testid` no Expo Web.
+- Smoke automatizado: `pnpm --filter @forma/mobile test:e2e` (Playwright). Setup: [`AGENTS.md`](../../AGENTS.md).
+- Agentes sem simulador usam `pnpm dev:web` → `http://localhost:19006`.
+
 ## Scaffold note
 
 `apps/mobile` is scaffolded via `mobile-foundation`. New UI slices follow this file + `DESIGN.md` — do not resurrect Wise/Shopify prototypes.

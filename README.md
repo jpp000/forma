@@ -5,6 +5,7 @@ Plataforma integrada de saúde, treino e nutrição.
 ## Stack
 
 - **API:** NestJS + Fastify + Prisma
+- **Mobile:** Expo / React Native (aluno) — Metro + **Expo Web** para testes no navegador
 - **Worker:** NestJS + BullMQ
 - **Banco:** PostgreSQL
 - **Cache/Filas:** Redis
@@ -27,7 +28,7 @@ docker compose up
 ```
 
 - API: `http://localhost:3000`
-- No terminal do `mobile`: `i` (iOS) ou `a` (Android)
+- Mobile (Metro): terminal do serviço `mobile` → `i` (iOS) ou `a` (Android)
 
 Se mudou dependências: `docker compose build --no-cache && docker compose up`
 
@@ -37,11 +38,44 @@ Se mudou dependências: `docker compose build --no-cache && docker compose up`
 docker compose up -d postgres
 pnpm install
 cp .env.example .env
-pnpm db:migrate
+pnpm db:migrate:deploy
 pnpm --filter @forma/api dev
-# outro terminal
+# outro terminal — simulador / Expo Go
 pnpm --filter @forma/mobile dev
 ```
+
+### Mobile — UI web e testes (sem simulador)
+
+Útil para agentes no cloud e para smoke visual rápido no navegador:
+
+```bash
+# API mock (outro terminal)
+export DATABASE_URL=postgresql://forma:forma@localhost:5432/forma
+export EMAIL_PROVIDER=mock OAUTH_MOCK=true JWT_SECRET=dev-secret
+pnpm --filter @forma/api dev
+
+# Expo Web → http://localhost:19006
+cd apps/mobile && EXPO_PUBLIC_API_URL=http://localhost:3000 pnpm dev:web
+```
+
+**E2E automatizado** (Postgres + API + web + Playwright):
+
+```bash
+pnpm --filter @forma/mobile test:e2e
+```
+
+Detalhes para Cursor Cloud e seletores `testID`: [`AGENTS.md`](AGENTS.md).  
+Smoke manual: [`apps/mobile/SMOKE.md`](apps/mobile/SMOKE.md).
+
+## Qualidade (gates)
+
+| Comando | Escopo |
+|---------|--------|
+| `pnpm lint` | Biome (repo) |
+| `pnpm check-types` | TypeScript (Turbo) |
+| `pnpm --filter @forma/api test:e2e` | API integration (Supertest) |
+| `pnpm --filter @forma/mobile test` | Mobile unit (Jest) |
+| `pnpm --filter @forma/mobile test:e2e` | Mobile web smoke (Playwright) |
 
 ## Deploy no Render
 
@@ -96,10 +130,12 @@ Use quando implementarmos:
 ```
 apps/
   api/       # HTTP API (NestJS)
+  mobile/    # App Expo (aluno) — ver apps/mobile/README.md
   worker/    # Jobs assíncronos (BullMQ)
 docker/      # Dockerfiles e entrypoints
 prisma/      # Schema e migrations
 render.yaml  # Infraestrutura como código (Render)
+AGENTS.md    # Setup Cursor Cloud + testes web mobile
 ```
 
 ## Scripts
@@ -111,3 +147,5 @@ render.yaml  # Infraestrutura como código (Render)
 | `pnpm db:migrate` | Migration dev |
 | `pnpm db:migrate:deploy` | Migration produção |
 | `pnpm db:studio` | Prisma Studio |
+| `pnpm --filter @forma/mobile dev:web` | Expo Web (porta 19006) |
+| `pnpm --filter @forma/mobile test:e2e` | Playwright — auth/onboarding/tabs |
