@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import type { MeResponse } from '../api/identity';
 import { getWiredIdentityApi, wireApiStores } from '../api/wired';
+import { useHomeStore } from '../features/home/homeStore';
+import { useTrainingStore } from '../features/training/trainingStore';
 import {
   clearAccessToken,
   getAccessToken,
@@ -31,6 +33,8 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   isLoading: true,
 
   signOut: async () => {
+    useHomeStore.getState().reset();
+    useTrainingStore.getState().reset();
     set({ token: null, user: null });
     await clearAccessToken();
   },

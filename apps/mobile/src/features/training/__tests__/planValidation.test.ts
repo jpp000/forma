@@ -105,6 +105,25 @@ describe('buildSessionPayload', () => {
     expect(result).toEqual({ ok: false, error: 'session_completed_not_today' });
   });
 
+  it('rejects partial numeric strings in sets', () => {
+    global.Date = class extends Date {
+      constructor() {
+        super('2026-07-08T12:00:00.000Z');
+      }
+    } as DateConstructor;
+
+    const result = buildSessionPayload({
+      completedAt: '2026-07-08T18:00:00.000Z',
+      exercises: [
+        {
+          exerciseId: 'ex1',
+          sets: [{ reps: '10abc', weightKg: '60' }],
+        },
+      ],
+    });
+    expect(result).toEqual({ ok: false, error: 'session_invalid_set' });
+  });
+
   it('builds payload with planId and parsed sets', () => {
     global.Date = class extends Date {
       constructor() {

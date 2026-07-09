@@ -1,5 +1,5 @@
-import type { CreateWorkoutSessionInput } from './types';
 import { todayUtcDate } from './todayStatus';
+import type { CreateWorkoutSessionInput } from './types';
 
 export type SessionSetInput = {
   reps: string;
@@ -26,6 +26,24 @@ export type SessionBuildResult =
   | { ok: true; payload: CreateWorkoutSessionInput }
   | { ok: false; error: SessionValidationErrorCode };
 
+function parsePositiveInt(value: string): number | null {
+  const trimmed = value.trim();
+  if (!/^\d+$/.test(trimmed)) {
+    return null;
+  }
+  const parsed = Number.parseInt(trimmed, 10);
+  return parsed >= 1 ? parsed : null;
+}
+
+function parseNonNegativeFloat(value: string): number | null {
+  const trimmed = value.trim();
+  if (!/^\d+(\.\d+)?$/.test(trimmed)) {
+    return null;
+  }
+  const parsed = Number.parseFloat(trimmed);
+  return Number.isNaN(parsed) || parsed < 0 ? null : parsed;
+}
+
 export function buildSessionPayload(
   input: SessionFormInput,
 ): SessionBuildResult {
@@ -47,9 +65,9 @@ export function buildSessionPayload(
     }
 
     const sets = exercise.sets.map((set) => {
-      const reps = Number.parseInt(set.reps, 10);
-      const weightKg = Number.parseFloat(set.weightKg);
-      if (Number.isNaN(reps) || reps < 1 || Number.isNaN(weightKg) || weightKg < 0) {
+      const reps = parsePositiveInt(set.reps);
+      const weightKg = parseNonNegativeFloat(set.weightKg);
+      if (reps === null || weightKg === null) {
         return null;
       }
       return { reps, weightKg };

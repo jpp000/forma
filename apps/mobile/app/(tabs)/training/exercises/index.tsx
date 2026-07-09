@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import {
@@ -19,14 +19,14 @@ export default function ExercisesScreen() {
   const router = useRouter();
   const t = useT();
   const { colors, typography } = useFormaTheme();
-  const { exercises, listLoading, listError, fetchExercises } =
+  const { exercises, exercisesLoading, listError, fetchExercises } =
     useTrainingStore();
 
   useEffect(() => {
     void fetchExercises();
   }, [fetchExercises]);
 
-  if (listLoading && exercises.length === 0) {
+  if (exercisesLoading && exercises.length === 0) {
     return (
       <Screen>
         <LoadingState />
@@ -49,7 +49,9 @@ export default function ExercisesScreen() {
           </Text>
           <PrimaryButton
             label={t('training.exercises.new')}
-            onPress={() => router.push('/(tabs)/training/exercises/new' as Href)}
+            onPress={() =>
+              router.push('/(tabs)/training/exercises/new' as Href)
+            }
           />
         </View>
       ) : (

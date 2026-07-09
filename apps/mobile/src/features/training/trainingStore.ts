@@ -9,8 +9,8 @@ import type {
 import { getWiredProgressApi, getWiredTrainingApi } from '../../api/wired';
 import {
   resolveTodayStatus,
-  todayUtcDate,
   type TodayTrainingStatus,
+  todayUtcDate,
 } from './todayStatus';
 import type {
   TrainingExercise,
@@ -35,7 +35,8 @@ type TrainingState = {
   plans: WorkoutPlan[];
   hubLoading: boolean;
   hubErrors: HubErrors;
-  listLoading: boolean;
+  exercisesLoading: boolean;
+  plansLoading: boolean;
   listError: string | null;
   submitLoading: boolean;
   submitError: string | null;
@@ -47,26 +48,40 @@ type TrainingState = {
   logSession: (input: CreateWorkoutSessionInput) => Promise<void>;
   markRestDay: (date?: string) => Promise<void>;
   clearSubmitError: () => void;
+  reset: () => void;
 };
 
-export const useTrainingStore = create<TrainingState>((set, get) => ({
+const initialTrainingState = {
   streaks: null,
-  todayStatus: 'pending',
+  todayStatus: 'pending' as TodayTrainingStatus,
   todayUtc: todayUtcDate(),
-  sessions: [],
-  restDays: [],
-  exercises: [],
-  plans: [],
+  sessions: [] as WorkoutSession[],
+  restDays: [] as TrainingRestDay[],
+  exercises: [] as TrainingExercise[],
+  plans: [] as WorkoutPlan[],
   hubLoading: false,
-  hubErrors: {},
-  listLoading: false,
-  listError: null,
+  hubErrors: {} as HubErrors,
+  exercisesLoading: false,
+  plansLoading: false,
+  listError: null as string | null,
   submitLoading: false,
-  submitError: null,
+  submitError: null as string | null,
+};
+
+let hubFetchGeneration = 0;
+
+export const useTrainingStore = create<TrainingState>((set, get) => ({
+  ...initialTrainingState,
 
   clearSubmitError: () => set({ submitError: null }),
 
+  reset: () => {
+    hubFetchGeneration += 1;
+    set({ ...initialTrainingState, todayUtc: todayUtcDate() });
+  },
+
   fetchHub: async () => {
+    const generation = ++hubFetchGeneration;
     const todayUtc = todayUtcDate();
     set({ hubLoading: true, hubErrors: {}, todayUtc });
 
@@ -100,6 +115,10 @@ export const useTrainingStore = create<TrainingState>((set, get) => ({
       hubErrors.restDays = mapApiError(restDaysResult.reason);
     }
 
+    if (generation !== hubFetchGeneration) {
+      return;
+    }
+
     set({
       hubLoading: false,
       hubErrors,
@@ -111,22 +130,22 @@ export const useTrainingStore = create<TrainingState>((set, get) => ({
   },
 
   fetchExercises: async () => {
-    set({ listLoading: true, listError: null });
+    set({ exercisesLoading: true, listError: null });
     try {
       const result = await getWiredTrainingApi().listExercises();
-      set({ exercises: result.items, listLoading: false });
+      set({ exercises: result.items, exercisesLoading: false });
     } catch (error) {
-      set({ listLoading: false, listError: mapApiError(error) });
+      set({ exercisesLoading: false, listError: mapApiError(error) });
     }
   },
 
   fetchPlans: async () => {
-    set({ listLoading: true, listError: null });
+    set({ plansLoading: true, listError: null });
     try {
       const result = await getWiredTrainingApi().listPlans();
-      set({ plans: result.items, listLoading: false });
+      set({ plans: result.items, plansLoading: false });
     } catch (error) {
-      set({ listLoading: false, listError: mapApiError(error) });
+      set({ plansLoading: false, listError: mapApiError(error) });
     }
   },
 

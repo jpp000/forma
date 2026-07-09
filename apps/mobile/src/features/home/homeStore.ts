@@ -73,9 +73,16 @@ function toWorkoutSessions(
   }));
 }
 
+let fetchGeneration = 0;
+
+function isStaleFetch(generation: number): boolean {
+  return generation !== fetchGeneration;
+}
+
 async function loadSummary(
   deps: HomeApiDeps,
   mode: 'loading' | 'refreshing',
+  generation: number,
   set: (
     partial:
       | Partial<HomeStoreState>
@@ -108,6 +115,9 @@ async function loadSummary(
   ].filter((result) => result.status === 'rejected');
 
   if (rejections.length === 4) {
+    if (isStaleFetch(generation)) {
+      return;
+    }
     const firstError = rejections[0];
     set({
       status: 'error',
@@ -183,6 +193,10 @@ async function loadSummary(
     daily: dailyResult.status === 'rejected',
   });
 
+  if (isStaleFetch(generation)) {
+    return;
+  }
+
   set({
     status: 'ready',
     today,
@@ -200,12 +214,15 @@ async function loadSummary(
 export const useHomeStore = create<HomeStoreState>((set) => ({
   ...initialState,
   fetchSummary: async (deps) => {
-    await loadSummary(deps, 'loading', set);
+    const generation = ++fetchGeneration;
+    await loadSummary(deps, 'loading', generation, set);
   },
   refresh: async (deps) => {
-    await loadSummary(deps, 'refreshing', set);
+    const generation = ++fetchGeneration;
+    await loadSummary(deps, 'refreshing', generation, set);
   },
   reset: () => {
+    fetchGeneration += 1;
     set({ ...initialState, today: todayUtcDate() });
   },
 }));

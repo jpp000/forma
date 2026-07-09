@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SessionExerciseEditor } from '../../../../src/features/training/components/SessionExerciseEditor';
@@ -9,11 +9,7 @@ import {
 import { useTrainingStore } from '../../../../src/features/training/trainingStore';
 import { useT } from '../../../../src/i18n';
 import { useFormaTheme } from '../../../../src/theme';
-import {
-  InlineError,
-  PrimaryButton,
-  Screen,
-} from '../../../../src/ui';
+import { InlineError, PrimaryButton, Screen } from '../../../../src/ui';
 
 export default function NewSessionScreen() {
   const router = useRouter();
@@ -118,15 +114,17 @@ export default function NewSessionScreen() {
         ))}
       </View>
 
-      {rows.map((row, index) => (
+      {rows.map((row) => (
         <SessionExerciseEditor
-          key={`${row.exerciseId}-${index}`}
+          key={row.exerciseId}
           exercise={exercises.find((item) => item.id === row.exerciseId)}
           row={row}
           onChangeRow={(next) => {
-            const copy = [...rows];
-            copy[index] = next;
-            setRows(copy);
+            setRows((current) =>
+              current.map((item) =>
+                item.exerciseId === row.exerciseId ? next : item,
+              ),
+            );
           }}
         />
       ))}

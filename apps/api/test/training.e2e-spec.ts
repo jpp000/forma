@@ -212,6 +212,7 @@ describe('Training (e2e)', () => {
 
   it('POST /api/training/sessions logs session and GET returns history ordered by date desc', async () => {
     const token = await createStudent(testEmail);
+    const today = new Date().toISOString().slice(0, 10);
 
     const exerciseResponse = await request(app.getHttpServer())
       .post('/api/training/exercises')
@@ -226,7 +227,7 @@ describe('Training (e2e)', () => {
       .post('/api/training/sessions')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        completedAt: '2026-07-05T10:00:00.000Z',
+        completedAt: `${today}T08:00:00.000Z`,
         exercises: [
           {
             exerciseId: exerciseResponse.body.id,
@@ -239,7 +240,7 @@ describe('Training (e2e)', () => {
       .post('/api/training/sessions')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        completedAt: '2026-07-07T10:00:00.000Z',
+        completedAt: `${today}T14:00:00.000Z`,
         exercises: [
           {
             exerciseId: exerciseResponse.body.id,
@@ -266,5 +267,39 @@ describe('Training (e2e)', () => {
     expect(history.body.items).toHaveLength(2);
     expect(history.body.items[0].id).toBe(newerSession.body.id);
     expect(history.body.items[1].id).toBe(olderSession.body.id);
+  });
+
+  it('POST /api/training/sessions rejects completedAt before today UTC', async () => {
+    const token = await createStudent(testEmail);
+    const yesterday = new Date(Date.now() - 86_400_000)
+      .toISOString()
+      .slice(0, 10);
+
+    const exerciseResponse = await request(app.getHttpServer())
+      .post('/api/training/exercises')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Lat Pulldown',
+        muscleGroup: 'back',
+        equipment: 'cable',
+      });
+
+    const response = await request(app.getHttpServer())
+      .post('/api/training/sessions')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        completedAt: `${yesterday}T10:00:00.000Z`,
+        exercises: [
+          {
+            exerciseId: exerciseResponse.body.id,
+            sets: [{ reps: 10, weightKg: 50 }],
+          },
+        ],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe(
+      'Só é possível registrar treinos do dia atual',
+    );
   });
 });

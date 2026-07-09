@@ -10,6 +10,8 @@
     "forbidden": "Acesso negado",
     "student_profile_required": "Perfil de aluno necessário",
     "invalid_exercise_reference": "Referência de exercício inválida",
+    "invalid_plan_reference": "Referência de plano de treino inválida",
+    "session_completed_not_today": "Só é possível registrar treinos do dia atual",
     "invite_not_found": "Convite não encontrado",
     "invite_expired": "Convite expirado",
     "invite_already_accepted": "Convite já aceito",

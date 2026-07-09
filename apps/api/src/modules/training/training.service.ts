@@ -130,6 +130,11 @@ export class TrainingService {
     }
 
     const completedAt = new Date(dto.completedAt);
+    const todayUtc = new Date().toISOString().slice(0, 10);
+    const completedDate = completedAt.toISOString().slice(0, 10);
+    if (completedDate !== todayUtc) {
+      throw new BadRequestException('errors.session_completed_not_today');
+    }
 
     const session = await this.prisma.trainingWorkoutSession.create({
       data: {

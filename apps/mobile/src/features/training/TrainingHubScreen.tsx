@@ -1,14 +1,9 @@
-import { useFocusEffect, useRouter, type Href } from 'expo-router';
+import { type Href, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useT } from '../../i18n';
 import { useFormaTheme } from '../../theme';
-import {
-  InlineError,
-  LoadingState,
-  PrimaryButton,
-  Screen,
-} from '../../ui';
+import { InlineError, LoadingState, PrimaryButton, Screen } from '../../ui';
 import { TrainingStatusChip } from './components/TrainingStatusChip';
 import { useTrainingStore } from './trainingStore';
 
@@ -77,9 +72,7 @@ export function TrainingHubScreen() {
       )}
 
       {hubErrors.sessions || hubErrors.restDays ? (
-        <InlineError
-          message={hubErrors.sessions ?? hubErrors.restDays ?? ''}
-        />
+        <InlineError message={hubErrors.sessions ?? hubErrors.restDays ?? ''} />
       ) : (
         <TrainingStatusChip status={todayStatus} />
       )}
@@ -96,9 +89,7 @@ export function TrainingHubScreen() {
       <View style={styles.actions}>
         <PrimaryButton
           label={t('training.hub.startWorkout')}
-          onPress={() =>
-            router.push('/(tabs)/training/session/new' as Href)
-          }
+          onPress={() => router.push('/(tabs)/training/session/new' as Href)}
         />
         <PrimaryButton
           label={restLabel}
@@ -118,11 +109,11 @@ export function TrainingHubScreen() {
       <View style={[styles.navGroup, { backgroundColor: colors.grouped }]}>
         <NavRow
           label={t('training.exercises.title')}
-          onPress={() =>
-            router.push('/(tabs)/training/exercises' as Href)
-          }
+          onPress={() => router.push('/(tabs)/training/exercises' as Href)}
         />
-        <View style={[styles.separator, { backgroundColor: colors.separator }]} />
+        <View
+          style={[styles.separator, { backgroundColor: colors.separator }]}
+        />
         <NavRow
           label={t('training.plans.title')}
           onPress={() => router.push('/(tabs)/training/plans' as Href)}

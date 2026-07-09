@@ -96,13 +96,8 @@ export function createTrainingApi(api: ApiClient) {
       });
     },
 
-    listExercises(
-      page = 1,
-      limit = 20,
-    ): Promise<Paginated<TrainingExercise>> {
-      return api.request(
-        `/api/training/exercises?page=${page}&limit=${limit}`,
-      );
+    listExercises(page = 1, limit = 20): Promise<Paginated<TrainingExercise>> {
+      return api.request(`/api/training/exercises?page=${page}&limit=${limit}`);
     },
 
     createPlan(input: CreateWorkoutPlanInput): Promise<WorkoutPlan> {
@@ -123,13 +118,8 @@ export function createTrainingApi(api: ApiClient) {
       });
     },
 
-    listSessions(
-      page = 1,
-      limit = 20,
-    ): Promise<Paginated<WorkoutSession>> {
-      return api.request(
-        `/api/training/sessions?page=${page}&limit=${limit}`,
-      );
+    listSessions(page = 1, limit = 20): Promise<Paginated<WorkoutSession>> {
+      return api.request(`/api/training/sessions?page=${page}&limit=${limit}`);
     },
   };
 }

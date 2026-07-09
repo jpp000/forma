@@ -1,6 +1,6 @@
 import type { TrainingRestDay } from '../../../api/progress';
-import type { WorkoutSession } from '../types';
 import { resolveTodayStatus, todayUtcDate } from '../todayStatus';
+import type { WorkoutSession } from '../types';
 
 const today = '2026-07-08';
 

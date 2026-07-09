@@ -1,3 +1,4 @@
+export type { TrainingRestDay } from '../../api/progress';
 export type {
   CreateWorkoutSessionInput,
   SessionExerciseInput,
@@ -7,5 +8,3 @@ export type {
   WorkoutSession,
   WorkoutSet,
 } from '../../api/training';
-
-export type { TrainingRestDay } from '../../api/progress';

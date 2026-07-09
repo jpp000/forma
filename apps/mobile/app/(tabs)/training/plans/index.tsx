@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { GroupedList } from '../../../../src/features/training/components/ExerciseListRow';
@@ -20,7 +20,7 @@ export default function PlansScreen() {
   const {
     plans,
     exercises,
-    listLoading,
+    plansLoading,
     listError,
     fetchPlans,
     fetchExercises,
@@ -33,7 +33,7 @@ export default function PlansScreen() {
 
   const canCreatePlan = exercises.length > 0;
 
-  if (listLoading && plans.length === 0) {
+  if (plansLoading && plans.length === 0) {
     return (
       <Screen>
         <LoadingState />
@@ -64,7 +64,9 @@ export default function PlansScreen() {
           ) : (
             <PrimaryButton
               label={t('training.exercises.new')}
-              onPress={() => router.push('/(tabs)/training/exercises/new' as Href)}
+              onPress={() =>
+                router.push('/(tabs)/training/exercises/new' as Href)
+              }
             />
           )}
         </View>

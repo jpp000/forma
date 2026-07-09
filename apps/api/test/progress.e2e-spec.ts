@@ -8,11 +8,13 @@ import request from 'supertest';
 import { configureApp } from '../src/app.configure';
 import { AppModule } from '../src/app.module';
 import { MockEmailProvider } from '../src/modules/identity/email/mock-email.provider';
+import { ProgressService } from '../src/modules/progress/progress.service';
 import { PrismaService } from '../src/prisma/prisma.service';
 
 describe('Progress (e2e)', () => {
   let app: NestFastifyApplication;
   let prisma: PrismaService;
+  let progressService: ProgressService;
   let mockEmail: MockEmailProvider;
 
   const testEmail = 'progress-user@example.com';
@@ -33,6 +35,7 @@ describe('Progress (e2e)', () => {
     await app.getHttpAdapter().getInstance().ready();
 
     prisma = app.get(PrismaService);
+    progressService = app.get(ProgressService);
     mockEmail = app.get(MockEmailProvider);
   });
 
@@ -81,31 +84,11 @@ describe('Progress (e2e)', () => {
     return token;
   }
 
-  async function createExercise(token: string) {
-    const response = await request(app.getHttpServer())
-      .post('/api/training/exercises')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        name: 'Squat',
-        muscleGroup: 'legs',
-        equipment: 'barbell',
-      });
-    return response.body.id as string;
-  }
-
-  function logSession(token: string, exerciseId: string, date: string) {
-    return request(app.getHttpServer())
-      .post('/api/training/sessions')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        completedAt: `${date}T10:00:00.000Z`,
-        exercises: [
-          {
-            exerciseId,
-            sets: [{ reps: 5, weightKg: 100 }],
-          },
-        ],
-      });
+  async function seedTrainingActivity(date: string) {
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email: testEmail },
+    });
+    await progressService.applyTrainingActivity(user.id, date);
   }
 
   function markRestDay(token: string, date: string) {
@@ -115,7 +98,7 @@ describe('Progress (e2e)', () => {
       .send({ date });
   }
 
-  async function getTrainingStreak(token: string) {
+  async function getTrainingStreak() {
     const user = await prisma.identityUser.findFirstOrThrow({
       where: { email: testEmail },
     });
@@ -184,42 +167,37 @@ describe('Progress (e2e)', () => {
   });
 
   it('uses grace gap once per week then continues training streak', async () => {
-    const token = await createStudent();
-    const exerciseId = await createExercise(token);
+    await createStudent();
 
-    await logSession(token, exerciseId, '2026-07-05');
-    await logSession(token, exerciseId, '2026-07-06');
-    await logSession(token, exerciseId, '2026-07-08');
+    await seedTrainingActivity('2026-07-05');
+    await seedTrainingActivity('2026-07-06');
+    await seedTrainingActivity('2026-07-08');
 
-    const streak = await getTrainingStreak(token);
-
+    const streak = await getTrainingStreak();
     expect(streak?.currentStreak).toBe(3);
     expect(streak?.longestStreak).toBe(3);
     expect(streak?.graceGapsUsed).toBe(1);
   });
 
   it('resets training streak after two unexplained gap days in same week', async () => {
-    const token = await createStudent();
-    const exerciseId = await createExercise(token);
+    await createStudent();
 
-    await logSession(token, exerciseId, '2026-07-06');
-    await logSession(token, exerciseId, '2026-07-09');
+    await seedTrainingActivity('2026-07-06');
+    await seedTrainingActivity('2026-07-09');
 
-    const streak = await getTrainingStreak(token);
-
+    const streak = await getTrainingStreak();
     expect(streak?.currentStreak).toBe(1);
     expect(streak?.longestStreak).toBe(1);
   });
 
   it('continues streak when rest day covers gap between workouts', async () => {
     const token = await createStudent();
-    const exerciseId = await createExercise(token);
 
-    await logSession(token, exerciseId, '2026-07-06');
+    await seedTrainingActivity('2026-07-06');
     await markRestDay(token, '2026-07-07');
-    await logSession(token, exerciseId, '2026-07-08');
+    await seedTrainingActivity('2026-07-08');
 
-    const streak = await getTrainingStreak(token);
+    const streak = await getTrainingStreak();
 
     expect(streak?.currentStreak).toBe(3);
     expect(streak?.longestStreak).toBe(3);
@@ -227,13 +205,12 @@ describe('Progress (e2e)', () => {
 
   it('combines rest day and grace gap in same week', async () => {
     const token = await createStudent();
-    const exerciseId = await createExercise(token);
 
-    await logSession(token, exerciseId, '2026-07-06');
+    await seedTrainingActivity('2026-07-06');
     await markRestDay(token, '2026-07-07');
-    await logSession(token, exerciseId, '2026-07-09');
+    await seedTrainingActivity('2026-07-09');
 
-    const streak = await getTrainingStreak(token);
+    const streak = await getTrainingStreak();
 
     expect(streak?.currentStreak).toBe(3);
     expect(streak?.graceGapsUsed).toBe(1);
@@ -245,7 +222,7 @@ describe('Progress (e2e)', () => {
     const response = await markRestDay(token, '2026-07-07');
     expect(response.status).toBe(201);
 
-    const streak = await getTrainingStreak(token);
+    const streak = await getTrainingStreak();
 
     expect(streak?.currentStreak).toBe(1);
     expect(streak?.longestStreak).toBe(1);
@@ -284,16 +261,14 @@ describe('Progress (e2e)', () => {
   });
 
   it('increments training streak on session and resets after skipped day', async () => {
-    const token = await createStudent();
-    const exerciseId = await createExercise(token);
+    await createStudent();
 
-    await logSession(token, exerciseId, '2026-07-05');
-    await logSession(token, exerciseId, '2026-07-06');
-    await logSession(token, exerciseId, '2026-07-08');
-    await logSession(token, exerciseId, '2026-07-10');
+    await seedTrainingActivity('2026-07-05');
+    await seedTrainingActivity('2026-07-06');
+    await seedTrainingActivity('2026-07-08');
+    await seedTrainingActivity('2026-07-10');
 
-    const streak = await getTrainingStreak(token);
-
+    const streak = await getTrainingStreak();
     expect(streak?.currentStreak).toBe(1);
     expect(streak?.longestStreak).toBe(3);
   });

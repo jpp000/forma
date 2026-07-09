@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { createGuidanceApi } from '../../api/guidance';
 import { createNutritionApi } from '../../api/nutrition';
@@ -55,18 +55,27 @@ export function useHomeSummary() {
   );
 
   const token = useSessionStore((state) => state.token);
-
-  useEffect(() => {
-    if (status === 'idle' && token) {
-      void fetchSummary(deps);
-    }
-  }, [deps, fetchSummary, status, token]);
+  const userId = useSessionStore((state) => state.user?.id ?? null);
+  const activeUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!token) {
+      activeUserIdRef.current = null;
       reset();
+      return;
     }
-  }, [reset, token]);
+
+    if (userId && userId !== activeUserIdRef.current) {
+      activeUserIdRef.current = userId;
+      reset();
+      void fetchSummary(deps);
+      return;
+    }
+
+    if (status === 'idle') {
+      void fetchSummary(deps);
+    }
+  }, [deps, fetchSummary, reset, status, token, userId]);
 
   const handleRefresh = useCallback(() => refresh(deps), [deps, refresh]);
 

@@ -10,6 +10,8 @@
     "forbidden": "Access denied",
     "student_profile_required": "Student profile required",
     "invalid_exercise_reference": "Invalid exercise reference",
+    "invalid_plan_reference": "Invalid workout plan reference",
+    "session_completed_not_today": "Workout sessions can only be logged for today",
     "invite_not_found": "Invite not found",
     "invite_expired": "Invite expired",
     "invite_already_accepted": "Invite already accepted",

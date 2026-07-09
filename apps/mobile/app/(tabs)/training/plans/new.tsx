@@ -1,4 +1,4 @@
-import { useRouter, type Href } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { validatePlanForm } from '../../../../src/features/training/planValidation';
@@ -12,6 +12,26 @@ import {
   TextField,
 } from '../../../../src/ui';
 
+type PlanItemDraft = {
+  clientId: string;
+  exerciseId: string;
+  sets: string;
+  reps: string;
+  restSeconds: string;
+};
+
+let nextPlanItemId = 1;
+
+function createPlanItem(): PlanItemDraft {
+  return {
+    clientId: `plan-item-${nextPlanItemId++}`,
+    exerciseId: '',
+    sets: '3',
+    reps: '10',
+    restSeconds: '60',
+  };
+}
+
 export default function NewPlanScreen() {
   const router = useRouter();
   const t = useT();
@@ -20,9 +40,7 @@ export default function NewPlanScreen() {
     useTrainingStore();
 
   const [name, setName] = useState('');
-  const [items, setItems] = useState([
-    { exerciseId: '', sets: '3', reps: '10', restSeconds: '60' },
-  ]);
+  const [items, setItems] = useState<PlanItemDraft[]>([createPlanItem()]);
   const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,7 +76,7 @@ export default function NewPlanScreen() {
 
       {items.map((item, index) => (
         <View
-          key={`item-${index}`}
+          key={item.clientId}
           style={[styles.card, { backgroundColor: colors.grouped }]}
         >
           <Text style={[typography.footnote, { color: colors.labelSecondary }]}>
@@ -125,10 +143,7 @@ export default function NewPlanScreen() {
       <PrimaryButton
         label={t('training.plans.addItem')}
         onPress={() => {
-          setItems([
-            ...items,
-            { exerciseId: '', sets: '3', reps: '10', restSeconds: '60' },
-          ]);
+          setItems([...items, createPlanItem()]);
         }}
       />
 

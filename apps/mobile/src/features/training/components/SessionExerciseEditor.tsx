@@ -22,19 +22,21 @@ export function SessionExerciseEditor({
       <Text style={[typography.title, { color: colors.exercise }]}>
         {exercise?.name ?? row.exerciseId}
       </Text>
-      {row.sets.map((set, index) => (
+      {row.sets.map((set) => (
         <SetRowInput
-          key={`set-${index}`}
+          key={`${row.exerciseId}-${set.reps}-${set.weightKg}`}
           reps={set.reps}
           weightKg={set.weightKg}
           onChangeReps={(value) => {
-            const sets = [...row.sets];
-            sets[index] = { ...sets[index], reps: value };
+            const sets = row.sets.map((item) =>
+              item === set ? { ...item, reps: value } : item,
+            );
             onChangeRow({ ...row, sets });
           }}
           onChangeWeight={(value) => {
-            const sets = [...row.sets];
-            sets[index] = { ...sets[index], weightKg: value };
+            const sets = row.sets.map((item) =>
+              item === set ? { ...item, weightKg: value } : item,
+            );
             onChangeRow({ ...row, sets });
           }}
         />
