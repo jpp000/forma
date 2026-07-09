@@ -96,11 +96,16 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Run | `pnpm install` → `pnpm --filter @forma/mobile start` (API: `pnpm --filter @forma/api dev`) |
 | Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`); `EXPO_PUBLIC_OAUTH_SUCCESS_URL` (default `forma://oauth`); API `OAUTH_MOCK=true` + `OAUTH_MOBILE_SUCCESS_URL=forma://oauth` for OAuth on device |
 | Auth entry | `app/(auth)/index.tsx` — email OTP or OAuth (Google/Apple/Facebook) |
-| Gates | `pnpm --filter @forma/mobile test` (51 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
+| Gates | `pnpm --filter @forma/mobile test` (63 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
 | Smoke | Authenticated student opens Home → Summary anatomy (header, rings, 2×2 tiles, guidance, green CTA); pull-to-refresh; partial errors when one endpoint fails |
 | Slice 2 target | `mobile-training` — `.specs/features/mobile-training/` (exercises, plans, session log, rest day) |
 
-**Slice 2:** `mobile-training` — start **new chat** with `/tlc-spec-driven implement mobile-training` after merging `feature/home-summary`.
+**Slice 2:** `mobile-training` — **integrated on `main`** (merge `baf3a2e`); branch `feature/mobile-training` rebased onto `origin/main` (no conflicts). Training hub, exercises/plans/session flows, `trainingStore`, API clients, i18n `training.*` alongside home summary. See `.specs/features/mobile-training/validation.md`.
+
+| Slice 2 item | Value |
+|--------------|-------|
+| Branch | `feature/mobile-training` (tracks `origin/main` at `baf3a2e`) |
+| Gates (2026-07-08) | `pnpm --filter @forma/mobile test` — **63 passed**; `check-types` — **PASS**; `pnpm lint` — **FAIL** (Biome: 18 issues on `main`, mostly training format/import order + `noArrayIndexKey`; `pnpm` wrapper also OOM in this env — direct `biome check .` exits 1) |
 
 ---
 
