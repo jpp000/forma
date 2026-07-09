@@ -49,7 +49,7 @@ export type SessionExercise = {
   exercise?: TrainingExercise;
 };
 
-export type TrainingWorkoutSession = {
+export type WorkoutSession = {
   id: string;
   userId: string;
   planId: string | null;
@@ -64,23 +64,27 @@ export type CreateExerciseInput = {
   equipment: string;
 };
 
+export type WorkoutPlanItemInput = {
+  exerciseId: string;
+  sets: number;
+  reps: number;
+  restSeconds: number;
+};
+
 export type CreateWorkoutPlanInput = {
   name: string;
-  items: Array<{
-    exerciseId: string;
-    sets: number;
-    reps: number;
-    restSeconds: number;
-  }>;
+  items: WorkoutPlanItemInput[];
+};
+
+export type SessionExerciseInput = {
+  exerciseId: string;
+  sets: WorkoutSet[];
 };
 
 export type CreateWorkoutSessionInput = {
   planId?: string;
   completedAt: string;
-  exercises: Array<{
-    exerciseId: string;
-    sets: WorkoutSet[];
-  }>;
+  exercises: SessionExerciseInput[];
 };
 
 export function createTrainingApi(api: ApiClient) {
@@ -92,8 +96,13 @@ export function createTrainingApi(api: ApiClient) {
       });
     },
 
-    listExercises(page = 1, limit = 20): Promise<Paginated<TrainingExercise>> {
-      return api.request(`/api/training/exercises?page=${page}&limit=${limit}`);
+    listExercises(
+      page = 1,
+      limit = 20,
+    ): Promise<Paginated<TrainingExercise>> {
+      return api.request(
+        `/api/training/exercises?page=${page}&limit=${limit}`,
+      );
     },
 
     createPlan(input: CreateWorkoutPlanInput): Promise<WorkoutPlan> {
@@ -107,9 +116,7 @@ export function createTrainingApi(api: ApiClient) {
       return api.request(`/api/training/plans?page=${page}&limit=${limit}`);
     },
 
-    logSession(
-      input: CreateWorkoutSessionInput,
-    ): Promise<TrainingWorkoutSession> {
+    logSession(input: CreateWorkoutSessionInput): Promise<WorkoutSession> {
       return api.request('/api/training/sessions', {
         method: 'POST',
         body: input,
@@ -119,8 +126,10 @@ export function createTrainingApi(api: ApiClient) {
     listSessions(
       page = 1,
       limit = 20,
-    ): Promise<Paginated<TrainingWorkoutSession>> {
-      return api.request(`/api/training/sessions?page=${page}&limit=${limit}`);
+    ): Promise<Paginated<WorkoutSession>> {
+      return api.request(
+        `/api/training/sessions?page=${page}&limit=${limit}`,
+      );
     },
   };
 }

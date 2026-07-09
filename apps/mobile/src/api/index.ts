@@ -12,7 +12,7 @@ export { createIdentityApi } from './identity';
 export { mapApiError } from './mapApiError';
 export type { NutritionApi } from './nutrition';
 export { createNutritionApi } from './nutrition';
-export type { ProgressApi, TrainingRestDay } from './progress';
+export type { ProgressApi, StreaksResponse, TrainingRestDay } from './progress';
 export { createProgressApi } from './progress';
 export type {
   SetHealthGoalInput,
@@ -26,11 +26,13 @@ export type {
   CreateWorkoutSessionInput,
   Paginated,
   SessionExercise,
+  SessionExerciseInput,
   TrainingApi,
   TrainingExercise,
-  TrainingWorkoutSession,
   WorkoutPlan,
   WorkoutPlanItem,
+  WorkoutPlanItemInput,
+  WorkoutSession,
   WorkoutSet,
 } from './training';
 export { createTrainingApi } from './training';
