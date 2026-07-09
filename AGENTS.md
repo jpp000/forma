@@ -3,6 +3,20 @@
 Forma — plataforma integrada de saúde, treino e nutrição. Monorepo pnpm + Turbo.
 Veja [`README.md`](README.md) e [`CONTEXT.md`](CONTEXT.md) para domínio e comandos padrão.
 
+## Git workflow
+
+**Trabalhe sempre a partir de `dev`.** Apenas `dev` mergeia em `main`.
+
+```bash
+git fetch origin && git checkout dev && git pull --ff-only origin dev
+./scripts/git/new-feature-branch.sh feature/minha-task
+# antes do PR:
+./scripts/git/sync-with-dev.sh
+```
+
+Regras completas, tasks paralelas e hotfix: [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md).  
+Hooks locais (uma vez por clone): `./scripts/setup-git-hooks.sh`
+
 ## Serviços
 
 | Serviço | Path | Papel | Runtime / porta |

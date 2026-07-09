@@ -1,0 +1,41 @@
+name: Branch Policy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR branch flow
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          echo "PR: ${HEAD} → ${BASE}"
+
+          if [ "$BASE" = "main" ] && [ "$HEAD" != "dev" ]; then
+            echo "::error::PRs targeting main must come from dev only (got: ${HEAD})."
+            echo "Merge your feature branch into dev first, then open dev → main."
+            exit 1
+          fi
+
+          if [ "$BASE" = "dev" ] && [ "$HEAD" = "main" ]; then
+            echo "::error::Cannot merge main into dev. Sync dev from main only via documented hotfix/release flow."
+            exit 1
+          fi
+
+          if [ "$BASE" = "dev" ] && [ "$HEAD" = "dev" ]; then
+            echo "::error::dev cannot PR into itself."
+            exit 1
+          fi
+
+          if [ "$BASE" = "main" ] && [ "$HEAD" = "dev" ]; then
+            echo "✅ Release PR: dev → main"
+          elif [ "$BASE" = "dev" ]; then
+            echo "✅ Integration PR: ${HEAD} → dev"
+          else
+            echo "ℹ️ PR targets ${BASE} (no extra policy)"
+          fi

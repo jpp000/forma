@@ -1,0 +1,27 @@
+---
+description: Git branch workflow — dev integration, main release only
+alwaysApply: true
+---
+
+# Git workflow (Forma)
+
+**Branch ativa para trabalho:** `dev`. **Release:** `main`.
+
+## Regras
+
+1. Crie **sempre** branches de task a partir de `dev` atualizada — nunca de `main`.
+2. Merge feature → `dev`. Nunca feature → `main`.
+3. Apenas `dev` mergeia em `main` (release).
+4. Antes de PR, sincronize: `./scripts/git/sync-with-dev.sh`
+5. Nova branch: `./scripts/git/new-feature-branch.sh feature/nome-da-task`
+
+## Comandos
+
+```bash
+git fetch origin && git checkout dev && git pull --ff-only origin dev
+./scripts/git/new-feature-branch.sh feature/minha-task
+# ... trabalho ...
+./scripts/git/sync-with-dev.sh   # antes do PR
+```
+
+Detalhes, tasks paralelas e hotfix: [`docs/GIT_WORKFLOW.md`](../../docs/GIT_WORKFLOW.md)

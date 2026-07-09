@@ -113,7 +113,9 @@ Cada contexto = um módulo NestJS em `apps/api/src/modules/[context]/`. Tabelas 
 
 | Item | Valor |
 |------|-------|
-| Branch ativa (MVP backend) | `feat-platform-foundation` |
+| Branch de integração | **`dev`** — base para toda task |
+| Branch de release | **`main`** — só recebe merge de `dev` |
+| Fluxo git | [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md) |
 | Specs e decisões | `.specs/` — estado em [`.specs/STATE.md`](.specs/STATE.md) |
 | Feature spec | [`.specs/features/platform-foundation/spec.md`](.specs/features/platform-foundation/spec.md) |
 | Design técnico | [`.specs/features/platform-foundation/design.md`](.specs/features/platform-foundation/design.md) |

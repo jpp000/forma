@@ -67,6 +67,10 @@ pnpm --filter @forma/mobile test:e2e
 Detalhes para Cursor Cloud e seletores `testID`: [`AGENTS.md`](AGENTS.md).  
 Smoke manual: [`apps/mobile/SMOKE.md`](apps/mobile/SMOKE.md).
 
+### Git (branches)
+
+Monorepo usa **`dev`** para integração e **`main`** para release. Ver [`docs/GIT_WORKFLOW.md`](docs/GIT_WORKFLOW.md).
+
 ## Qualidade (gates)
 
 | Comando | Escopo |

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Block feature branches from pushing directly to origin/main.
+# Only dev may update main (release flow).
+
+set -euo pipefail
+
+current_branch="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -z "${remote_ref:-}" ] && continue
+
+  if [[ "$remote_ref" == "refs/heads/main" ]]; then
+    if [[ "$current_branch" != "dev" ]]; then
+      echo "❌ Git policy: only branch 'dev' may push to origin/main."
+      echo "   Current branch: ${current_branch:-detached}"
+      echo "   Merge your work into dev first, then release dev → main."
+      echo "   See docs/GIT_WORKFLOW.md"
+      exit 1
+    fi
+  fi
+done
+
+exit 0

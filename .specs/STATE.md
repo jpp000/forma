@@ -35,6 +35,7 @@
 | AD-029 | **Mobile API client** = thin `fetch` + `EXPO_PUBLIC_API_URL`; onboarding gate = `student` role from `GET /identity/me` | Simple; matches MeResponseDto roles | 2026-07-08 |
 | AD-030 | **Mobile client state = Zustand** — session, locale, and per-slice feature state live in Zustand stores under `apps/mobile/src/stores/`; thin hooks (`useSession`, `useLocale`) read stores; **no React Context** for app state | Session + locale migrated from Context; theme follows system via `useColorScheme` in `useFormaTheme()` (no store until user override); `SessionBootstrap` runs SecureStore restore on mount; API client wired via `wireApiStores` | 2026-07-08 |
 | AD-031 | **Mobile web testing = Expo Web + Playwright** — agents and CI smoke the student UI in Chromium at `http://localhost:19006`; `testID` on auth/onboarding/tabs; API dev CORS enables browser `PUT` (student goal); SecureStore → `localStorage` on web | No iOS/Android simulator in Cursor Cloud; `pnpm --filter @forma/mobile test:e2e` boots Postgres + API mock + Expo web; see `AGENTS.md` | 2026-07-09 |
+| AD-032 | **Git: `dev` integration, `main` release** — feature branches from `dev`; only `dev` merges to `main`; CI branch-policy + local pre-push hook | Parallel tasks merge to `dev` first; avoids direct feature→main conflicts; see `docs/GIT_WORKFLOW.md` | 2026-07-09 |
 
 ## Mobile slice roadmap (student)
 
@@ -109,11 +110,11 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Branch | `feature/mobile-training` (tracks `origin/main` at `baf3a2e`) |
 | Gates (2026-07-08) | `pnpm --filter @forma/mobile test` — **63 passed**; `check-types` — **PASS**; `pnpm lint` — **FAIL** (Biome: 18 issues on `main`, mostly training format/import order + `noArrayIndexKey`; `pnpm` wrapper also OOM in this env — direct `biome check .` exits 1) |
 
-**Slice 3:** `mobile-nutrition` — **Execute complete** on `cursor/mobile-nutrition-385a`. Nutrition hub (daily macro summary vs plan, streak, pull-to-refresh), meal log form (`POST /api/nutrition/meals`), `nutritionStore`, extended `nutrition` API client, i18n `nutrition.*`. **Verifier PASS** — see `.specs/features/mobile-nutrition/validation.md`.
+**Slice 3:** `mobile-nutrition` — **Execute complete**, merged to `main` and `dev`. Nutrition hub (daily macro summary vs plan, streak, pull-to-refresh), meal log form (`POST /api/nutrition/meals`), `nutritionStore`, extended `nutrition` API client, i18n `nutrition.*`. **Verifier PASS** — see `.specs/features/mobile-nutrition/validation.md`.
 
 | Slice 3 item | Value |
 |--------------|-------|
-| Branch | `cursor/mobile-nutrition-385a` |
+| Branch | merged — use `dev` for new work (`docs/GIT_WORKFLOW.md`) |
 | Gates (2026-07-09) | `pnpm --filter @forma/mobile test` — **79 passed**; `check-types` — **PASS** |
 | Smoke | Authenticated student opens Nutrition → sees macro summary + streak; tap Log meal → submit manual macros → hub totals update |
 | Slice 4 target | `mobile-progress` — weight log, streaks UI, history |
