@@ -11,6 +11,7 @@ Veja [`README.md`](README.md) e [`CONTEXT.md`](CONTEXT.md) para domínio e coman
 | `@forma/mobile` | `apps/mobile` | App Expo / React Native (aluno) | Metro `8081`, **web E2E** `19006` |
 | `@forma/worker` | `apps/worker` | Jobs BullMQ (fora do MVP) | Requer Redis |
 | PostgreSQL 16 | — | Banco da API (obrigatório) | `localhost:5432` |
+| Redis | — | Filas do worker (opcional, fora do MVP) | `localhost:6379` |
 
 ## Cursor Cloud — setup por sessão
 
@@ -24,7 +25,14 @@ Obrigatório para API e testes E2E mobile. Inicie a cada sessão:
 sudo pg_ctlcluster 16 main start
 ```
 
-Credenciais padrão: `postgresql://forma:forma@localhost:5432/forma`
+Credenciais padrão: `postgresql://forma:forma@localhost:5432/forma` (role `forma`, superuser).
+
+Se role/DB não existirem:
+
+```bash
+sudo -u postgres psql -c "CREATE ROLE forma WITH LOGIN PASSWORD 'forma' SUPERUSER;"
+sudo -u postgres psql -c "CREATE DATABASE forma OWNER forma;"
+```
 
 ### Variáveis de ambiente da API
 
@@ -37,7 +45,7 @@ export JWT_SECRET=dev-secret-change-in-production
 export OAUTH_MOCK=true OAUTH_MOBILE_SUCCESS_URL=forma://oauth
 ```
 
-`prisma.config.ts` usa dotenv, então `pnpm db:*` lê `.env` na raiz.
+`prisma.config.ts` usa dotenv, então `pnpm db:*` lê `.env` na raiz. Um `.env` gitignored na raiz pode servir de referência; a API em dev **não** o carrega automaticamente.
 
 ### Migrações
 
@@ -108,6 +116,16 @@ cd apps/api && DATABASE_URL=postgresql://forma:forma@localhost:5432/forma pnpm t
 pnpm lint && pnpm check-types
 ```
 
+### Validação Metro sem simulador (alternativa)
+
+Se não for usar Expo Web, valide o bundle via manifest Metro:
+
+```bash
+cd apps/mobile && EXPO_PUBLIC_API_URL=http://localhost:3000 pnpm exec expo start
+```
+
+Busque `http://localhost:8081/` com header `expo-platform: ios` e requisite a URL `launchAsset` do manifest. Um payload JS grande sem `UnableToResolveError` indica que o app compila.
+
 ### Limitações conhecidas
 
 - Expo Web cobre a maior parte da UI, mas gestos nativos, câmera e notificações podem diferir do app nativo.
@@ -120,8 +138,11 @@ pnpm lint && pnpm check-types
 
 `docker compose up` sobe Postgres + API + mobile (Metro). Para UI web no host, rode API via compose e `pnpm dev:web` no Mac apontando `EXPO_PUBLIC_API_URL=http://localhost:3000`.
 
+Docker **não** vem instalado na cloud VM por padrão; o fluxo nativo acima é o caminho suportado no Cursor Cloud.
+
 ### Notas de ambiente
 
 - `pnpm db:generate` roda automaticamente no stack E2E (`scripts/e2e-stack.mjs`) antes das migrations.
 - Testes API e2e precisam de `DATABASE_URL` exportado (Jest não carrega `.env` da API).
 - Playwright Chromium: primeira vez → `pnpm --filter @forma/mobile test:e2e:install`.
+- `pnpm lint` (Biome) pode imprimir um aviso *info* sobre o campo `recommended` deprecado — não é erro.
