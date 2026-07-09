@@ -37,3 +37,6 @@ generated/
 
 # Misc
 *.tsbuildinfo
+
+# Figma MCP scratch scripts (agent-generated)
+.figma-scripts/
