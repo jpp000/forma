@@ -6,10 +6,9 @@ import type { MacroRowModel } from '../types';
 
 type MacroRowProps = {
   row: MacroRowModel;
-  showNoTarget: boolean;
 };
 
-export function MacroRow({ row, showNoTarget }: MacroRowProps) {
+export function MacroRow({ row }: MacroRowProps) {
   const t = useT();
   const { colors, typography } = useFormaTheme();
   const display = formatMacroDisplay(row.consumed, row.target);
@@ -50,10 +49,6 @@ export function MacroRow({ row, showNoTarget }: MacroRowProps) {
             ]}
           />
         </View>
-      ) : showNoTarget ? (
-        <Text style={[typography.footnote, { color: colors.labelTertiary }]}>
-          {t('nutrition.hub.noTarget')}
-        </Text>
       ) : null}
     </View>
   );

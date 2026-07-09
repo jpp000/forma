@@ -29,7 +29,7 @@ export function NutritionHubScreen() {
 
   if (hubLoading && !dailySummary) {
     return (
-      <Screen>
+      <Screen testID="nutrition-screen">
         <LoadingState />
       </Screen>
     );
@@ -37,9 +37,13 @@ export function NutritionHubScreen() {
 
   if (hubErrors.daily && !dailySummary) {
     return (
-      <Screen style={styles.centered}>
+      <Screen style={styles.centered} testID="nutrition-screen">
         <InlineError message={hubErrors.daily} />
-        <PrimaryButton label={t('common.retry')} onPress={onRefresh} />
+        <PrimaryButton
+          label={t('common.retry')}
+          onPress={onRefresh}
+          testID="nutrition-retry-button"
+        />
       </Screen>
     );
   }
@@ -50,6 +54,7 @@ export function NutritionHubScreen() {
     <Screen
       scroll
       style={styles.content}
+      testID="nutrition-screen"
       refreshControl={
         <RefreshControl
           refreshing={hubLoading}
@@ -91,6 +96,7 @@ export function NutritionHubScreen() {
         <PrimaryButton
           label={t('nutrition.hub.logMeal')}
           onPress={() => router.push('/(tabs)/nutrition/meal/new')}
+          testID="nutrition-log-meal-button"
         />
       </View>
     </Screen>

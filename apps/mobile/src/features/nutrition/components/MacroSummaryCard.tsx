@@ -20,13 +20,14 @@ export function MacroSummaryCard({ summary }: MacroSummaryCardProps) {
       <Text style={[typography.title, { color: colors.labelPrimary }]}>
         {t('nutrition.hub.summaryTitle')}
       </Text>
+      {!hasTarget ? (
+        <Text style={[typography.footnote, { color: colors.labelTertiary }]}>
+          {t('nutrition.hub.noTarget')}
+        </Text>
+      ) : null}
       <View style={styles.rows}>
         {rows.map((row) => (
-          <MacroRow
-            key={row.key}
-            row={row}
-            showNoTarget={!hasTarget && row.key === 'calories'}
-          />
+          <MacroRow key={row.key} row={row} />
         ))}
       </View>
     </View>

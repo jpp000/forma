@@ -26,6 +26,13 @@ describe('mapApiError', () => {
     );
   });
 
+  it('maps billing upgrade required to localized nutrition message', () => {
+    const error = new ApiError(402, 'billing.upgrade_required');
+    expect(mapApiError(error)).toBe(
+      'Limite diário de refeições atingido. Faça upgrade para registrar mais.',
+    );
+  });
+
   it('falls back to generic message for unknown errors', () => {
     expect(mapApiError(new Error('unexpected'))).toBe(
       'Algo deu errado. Tente de novo.',

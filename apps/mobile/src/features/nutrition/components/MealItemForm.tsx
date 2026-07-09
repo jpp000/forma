@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useT } from '../../../i18n';
 import { useFormaTheme } from '../../../theme';
 import { TextField } from '../../../ui';
+import { parseMacroInput } from '../mealValidation';
 import type { MealItemDraft, MealItemInput } from '../types';
 
 type MealItemFormProps = {
@@ -25,8 +26,7 @@ export function MealItemForm({
       onChange({ ...item, name: raw });
       return;
     }
-    const parsed = raw.trim() === '' ? Number.NaN : Number.parseFloat(raw);
-    onChange({ ...item, [key]: parsed });
+    onChange({ ...item, [key]: parseMacroInput(raw) });
   };
 
   return (

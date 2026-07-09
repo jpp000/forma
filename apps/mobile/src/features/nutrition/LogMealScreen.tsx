@@ -1,6 +1,6 @@
 import { MealType } from '@forma/types';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { useT } from '../../i18n';
 import { useFormaTheme } from '../../theme';
@@ -19,12 +19,19 @@ export function LogMealScreen() {
   const router = useRouter();
   const t = useT();
   const { colors, typography } = useFormaTheme();
-  const { logMeal, submitLoading, submitError } = useNutritionStore();
+  const { logMeal, submitLoading, submitError, clearSubmitError } =
+    useNutritionStore();
 
   const [mealType, setMealType] = useState<MealType>(MealType.Breakfast);
   const [items, setItems] = useState<MealItemDraft[]>([createEmptyMealItem()]);
   const [validationErrors, setValidationErrors] =
     useState<MealValidationErrors | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      clearSubmitError();
+    }, [clearSubmitError]),
+  );
 
   const onSubmit = async () => {
     const errors = validateMealItems(
@@ -53,7 +60,7 @@ export function LogMealScreen() {
   };
 
   return (
-    <Screen scroll style={styles.content}>
+    <Screen scroll style={styles.content} testID="nutrition-meal-screen">
       <Text style={[typography.largeTitle, { color: colors.labelPrimary }]}>
         {t('nutrition.meal.title')}
       </Text>
@@ -97,6 +104,7 @@ export function LogMealScreen() {
         loading={submitLoading}
         disabled={submitLoading}
         onPress={onSubmit}
+        testID="nutrition-meal-save-button"
       />
     </Screen>
   );

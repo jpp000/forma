@@ -1,13 +1,9 @@
 import { create } from 'zustand';
-import { ApiError } from '../../api/client';
 import { mapApiError } from '../../api/mapApiError';
 import type { StreaksResponse } from '../../api/progress';
 import { getWiredNutritionApi, getWiredProgressApi } from '../../api/wired';
+import { todayUtcDate } from '../home/summaryMappers';
 import type { DailySummary, LogMealInput } from './types';
-
-function todayUtcDate(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 type HubErrors = {
   daily?: string;
@@ -104,18 +100,9 @@ export const useNutritionStore = create<NutritionState>((set, get) => ({
     } catch (error) {
       set({
         submitLoading: false,
-        submitError: mapNutritionSubmitError(error),
+        submitError: mapApiError(error),
       });
       throw error;
     }
   },
 }));
-
-function mapNutritionSubmitError(error: unknown): string {
-  if (error instanceof ApiError && error.status === 402) {
-    if (error.message === 'billing.upgrade_required') {
-      return mapApiError(error);
-    }
-  }
-  return mapApiError(error);
-}
