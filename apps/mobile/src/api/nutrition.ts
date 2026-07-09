@@ -1,7 +1,11 @@
 import type { DailySummary } from '../features/home/types';
+import type {
+  LogMealInput,
+  MealLogResponse,
+} from '../features/nutrition/types';
 import type { ApiClient } from './client';
 
-export type { DailySummary };
+export type NutritionApi = ReturnType<typeof createNutritionApi>;
 
 export function createNutritionApi(api: ApiClient) {
   return {
@@ -10,7 +14,12 @@ export function createNutritionApi(api: ApiClient) {
         `/api/nutrition/daily?date=${encodeURIComponent(date)}`,
       );
     },
+
+    logMeal(input: LogMealInput): Promise<MealLogResponse> {
+      return api.request('/api/nutrition/meals', {
+        method: 'POST',
+        body: input,
+      });
+    },
   };
 }
-
-export type NutritionApi = ReturnType<typeof createNutritionApi>;

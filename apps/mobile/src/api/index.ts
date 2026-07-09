@@ -39,6 +39,7 @@ export { createTrainingApi } from './training';
 export { useApiClient } from './useApiClient';
 export {
   getWiredIdentityApi,
+  getWiredNutritionApi,
   getWiredProgressApi,
   getWiredStudentApi,
   getWiredTrainingApi,

@@ -7,6 +7,7 @@ const API_CODE_TO_KEY: Record<string, TranslationKey> = {
   'errors.otp_rate_limit': 'auth.otpRateLimit',
   'errors.oauth_invalid': 'auth.oauthFailed',
   'errors.unauthorized': 'auth.otpInvalid',
+  'billing.upgrade_required': 'nutrition.errors.upgrade_required',
 };
 
 export function mapApiError(error: unknown): string {

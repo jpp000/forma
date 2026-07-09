@@ -107,6 +107,15 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Branch | `feature/mobile-training` (tracks `origin/main` at `baf3a2e`) |
 | Gates (2026-07-08) | `pnpm --filter @forma/mobile test` — **63 passed**; `check-types` — **PASS**; `pnpm lint` — **FAIL** (Biome: 18 issues on `main`, mostly training format/import order + `noArrayIndexKey`; `pnpm` wrapper also OOM in this env — direct `biome check .` exits 1) |
 
+**Slice 3:** `mobile-nutrition` — **Execute complete** on `cursor/mobile-nutrition-385a`. Nutrition hub (daily macro summary vs plan, streak, pull-to-refresh), meal log form (`POST /api/nutrition/meals`), `nutritionStore`, extended `nutrition` API client, i18n `nutrition.*`. **Verifier PASS** — see `.specs/features/mobile-nutrition/validation.md`.
+
+| Slice 3 item | Value |
+|--------------|-------|
+| Branch | `cursor/mobile-nutrition-385a` |
+| Gates (2026-07-09) | `pnpm --filter @forma/mobile test` — **78 passed**; `check-types` — **PASS** |
+| Smoke | Authenticated student opens Nutrition → sees macro summary + streak; tap Log meal → submit manual macros → hub totals update |
+| Slice 4 target | `mobile-progress` — weight log, streaks UI, history |
+
 ---
 
 **Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before.
