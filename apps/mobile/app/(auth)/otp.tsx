@@ -109,7 +109,7 @@ export default function OtpScreen() {
   }
 
   return (
-    <Screen scroll style={styles.content}>
+    <Screen scroll style={styles.content} testID="auth-otp-screen">
       <View style={styles.header}>
         <Text style={[typography.title, { color: colors.labelPrimary }]}>
           {t('auth.otpTitle')}
@@ -122,6 +122,7 @@ export default function OtpScreen() {
       {isSubmitting ? <LoadingState /> : null}
 
       <TextField
+        testID="auth-otp-input"
         label={t('auth.otpLabel')}
         value={code}
         onChangeText={handleCodeChange}
@@ -134,6 +135,7 @@ export default function OtpScreen() {
       {formError ? <InlineError message={formError} /> : null}
 
       <PrimaryButton
+        testID="auth-otp-submit-button"
         label={t('auth.otpSubmit')}
         onPress={() => void handleVerify()}
         loading={isSubmitting}
@@ -153,6 +155,7 @@ export default function OtpScreen() {
 
       {__DEV__ ? (
         <Pressable
+          testID="auth-dev-otp-fill"
           accessibilityRole="button"
           disabled={isSubmitting || isResending}
           onPress={() => void handleDevOtpFill()}

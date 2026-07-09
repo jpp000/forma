@@ -27,13 +27,21 @@ type GoalOptionProps = {
   selected: boolean;
   onPress: () => void;
   disabled?: boolean;
+  testID?: string;
 };
 
-function GoalOption({ label, selected, onPress, disabled }: GoalOptionProps) {
+function GoalOption({
+  label,
+  selected,
+  onPress,
+  disabled,
+  testID,
+}: GoalOptionProps) {
   const { colors, typography } = useFormaTheme();
 
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
@@ -86,7 +94,7 @@ export default function OnboardingGoalScreen() {
   }
 
   return (
-    <Screen scroll style={styles.content}>
+    <Screen scroll style={styles.content} testID="onboarding-goal-screen">
       <View style={styles.header}>
         <Text style={[typography.title, { color: colors.labelPrimary }]}>
           {t('onboarding.goalTitle')}
@@ -102,6 +110,7 @@ export default function OnboardingGoalScreen() {
         {GOAL_OPTIONS.map((goal) => (
           <GoalOption
             key={goal}
+            testID={`onboarding-goal-${goal}`}
             label={t(GOAL_LABEL_KEYS[goal])}
             selected={selectedGoal === goal}
             onPress={() => {
@@ -118,6 +127,7 @@ export default function OnboardingGoalScreen() {
       {formError ? <InlineError message={formError} /> : null}
 
       <PrimaryButton
+        testID="onboarding-goal-submit"
         label={t('onboarding.submitGoal')}
         onPress={() => void handleSubmit()}
         loading={isSubmitting}

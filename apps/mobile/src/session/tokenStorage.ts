@@ -8,7 +8,23 @@ export type TokenStore = {
   deleteItemAsync: (key: string) => Promise<void>;
 };
 
-const defaultStore: TokenStore = SecureStore;
+function isWebRuntime(): boolean {
+  return typeof localStorage !== 'undefined';
+}
+
+const webStore: TokenStore = {
+  async getItemAsync(key) {
+    return localStorage.getItem(key);
+  },
+  async setItemAsync(key, value) {
+    localStorage.setItem(key, value);
+  },
+  async deleteItemAsync(key) {
+    localStorage.removeItem(key);
+  },
+};
+
+const defaultStore: TokenStore = isWebRuntime() ? webStore : SecureStore;
 
 export async function getAccessToken(
   store: TokenStore = defaultStore,

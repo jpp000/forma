@@ -10,6 +10,7 @@ type TextFieldProps = {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   secureTextEntry?: boolean;
   error?: string;
+  testID?: string;
 };
 
 export function TextField({
@@ -21,6 +22,7 @@ export function TextField({
   autoCapitalize = 'sentences',
   secureTextEntry,
   error,
+  testID,
 }: TextFieldProps) {
   const { colors, typography } = useFormaTheme();
 
@@ -30,6 +32,7 @@ export function TextField({
         {label}
       </Text>
       <TextInput
+        testID={testID}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}

@@ -13,6 +13,7 @@ type PrimaryButtonProps = {
   onPress: (event: GestureResponderEvent) => void;
   disabled?: boolean;
   loading?: boolean;
+  testID?: string;
 };
 
 export function PrimaryButton({
@@ -20,6 +21,7 @@ export function PrimaryButton({
   onPress,
   disabled = false,
   loading = false,
+  testID,
 }: PrimaryButtonProps) {
   const { colors, typography } = useFormaTheme();
   const reduceMotion = useReduceMotion();
@@ -29,6 +31,7 @@ export function PrimaryButton({
 
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       disabled={isDisabled}
       onPress={onPress}

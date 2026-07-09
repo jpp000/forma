@@ -12,6 +12,7 @@
     "test:e2e": "jest --config jest.config.js --runInBand"
   },
   "dependencies": {
+    "@fastify/cors": "^11.3.0",
     "@fastify/static": "^9.1.3",
     "@forma/types": "workspace:*",
     "@nestjs/common": "^11.1.3",

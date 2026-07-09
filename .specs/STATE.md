@@ -34,6 +34,7 @@
 | AD-028 | **Mobile navigation** = Expo Router Protected routes (SDK 53+); JWT in SecureStore | Current Expo auth pattern; secure token storage | 2026-07-08 |
 | AD-029 | **Mobile API client** = thin `fetch` + `EXPO_PUBLIC_API_URL`; onboarding gate = `student` role from `GET /identity/me` | Simple; matches MeResponseDto roles | 2026-07-08 |
 | AD-030 | **Mobile client state = Zustand** — session, locale, and per-slice feature state live in Zustand stores under `apps/mobile/src/stores/`; thin hooks (`useSession`, `useLocale`) read stores; **no React Context** for app state | Session + locale migrated from Context; theme follows system via `useColorScheme` in `useFormaTheme()` (no store until user override); `SessionBootstrap` runs SecureStore restore on mount; API client wired via `wireApiStores` | 2026-07-08 |
+| AD-031 | **Mobile web testing = Expo Web + Playwright** — agents and CI smoke the student UI in Chromium at `http://localhost:19006`; `testID` on auth/onboarding/tabs; API dev CORS enables browser `PUT` (student goal); SecureStore → `localStorage` on web | No iOS/Android simulator in Cursor Cloud; `pnpm --filter @forma/mobile test:e2e` boots Postgres + API mock + Expo web; see `AGENTS.md` | 2026-07-09 |
 
 ## Mobile slice roadmap (student)
 
@@ -93,10 +94,11 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 |------|-------|
 | Branch | `feature/home-summary` |
 | Package | `@forma/mobile` → `apps/mobile` |
-| Run | `pnpm install` → `pnpm --filter @forma/mobile start` (API: `pnpm --filter @forma/api dev`) |
+| Run | `pnpm install` → `pnpm --filter @forma/mobile start` (simulador) **ou** `pnpm --filter @forma/mobile dev:web` → `http://localhost:19006` (API: `pnpm --filter @forma/api dev`) |
 | Env | `EXPO_PUBLIC_API_URL` (default `http://localhost:3000`); `EXPO_PUBLIC_OAUTH_SUCCESS_URL` (default `forma://oauth`); API `OAUTH_MOCK=true` + `OAUTH_MOBILE_SUCCESS_URL=forma://oauth` for OAuth on device |
-| Auth entry | `app/(auth)/index.tsx` — email OTP or OAuth (Google/Apple/Facebook) |
-| Gates | `pnpm --filter @forma/mobile test` (63 tests) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
+| Auth entry | `app/(auth)/index.tsx` — email OTP or OAuth (Google/Apple/Facebook); dev mock + OTP mock helpers in `__DEV__` |
+| Gates | `pnpm --filter @forma/mobile test` (unit) · `pnpm --filter @forma/mobile test:e2e` (Playwright web smoke) · `pnpm --filter @forma/mobile check-types && pnpm lint` |
+| Agent setup | [`AGENTS.md`](../../AGENTS.md) — Postgres por sessão, Expo Web, seletores `testID` |
 | Smoke | Authenticated student opens Home → Summary anatomy (header, rings, 2×2 tiles, guidance, green CTA); pull-to-refresh; partial errors when one endpoint fails |
 | Slice 2 target | `mobile-training` — `.specs/features/mobile-training/` (exercises, plans, session log, rest day) |
 

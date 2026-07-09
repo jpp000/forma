@@ -5,14 +5,19 @@
   "main": "expo-router/entry",
   "scripts": {
     "dev": "expo start --host lan",
+    "dev:web": "expo start --web --port 19006",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "check-types": "tsc --noEmit",
-    "test": "jest --passWithNoTests --watchman=false"
+    "test": "jest --passWithNoTests --watchman=false",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:install": "playwright install chromium"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~5.0.5",
     "@expo/vector-icons": "^14.1.0",
     "@forma/types": "workspace:*",
     "expo": "~53.0.27",
@@ -25,16 +30,19 @@
     "expo-status-bar": "~2.2.3",
     "expo-web-browser": "~14.2.0",
     "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-native": "0.79.6",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-svg": "15.11.2",
+    "react-native-web": "^0.20.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@forma/config": "workspace:*",
+    "@playwright/test": "^1.61.1",
     "@types/jest": "^29.5.14",
     "@types/react": "~19.0.10",
     "babel-preset-expo": "~13.2.5",

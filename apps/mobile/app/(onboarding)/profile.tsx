@@ -28,13 +28,21 @@ type OptionChipProps = {
   selected: boolean;
   onPress: () => void;
   disabled?: boolean;
+  testID?: string;
 };
 
-function OptionChip({ label, selected, onPress, disabled }: OptionChipProps) {
+function OptionChip({
+  label,
+  selected,
+  onPress,
+  disabled,
+  testID,
+}: OptionChipProps) {
   const { colors, typography } = useFormaTheme();
 
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
@@ -155,7 +163,7 @@ export default function OnboardingProfileScreen() {
   }
 
   return (
-    <Screen scroll style={styles.content}>
+    <Screen scroll style={styles.content} testID="onboarding-profile-screen">
       <View style={styles.header}>
         <Text style={[typography.title, { color: colors.labelPrimary }]}>
           {t('onboarding.profileTitle')}
@@ -168,6 +176,7 @@ export default function OnboardingProfileScreen() {
       {isSubmitting ? <LoadingState /> : null}
 
       <TextField
+        testID="onboarding-age-input"
         label={t('onboarding.age')}
         value={form.age}
         onChangeText={(value) => updateField('age', value)}
@@ -183,6 +192,7 @@ export default function OnboardingProfileScreen() {
           {PROFILE_SEX_OPTIONS.map((sex) => (
             <OptionChip
               key={sex}
+              testID={`onboarding-sex-${sex}`}
               label={t(SEX_LABEL_KEYS[sex])}
               selected={form.sex === sex}
               onPress={() => updateField('sex', sex)}
@@ -198,6 +208,7 @@ export default function OnboardingProfileScreen() {
       </View>
 
       <TextField
+        testID="onboarding-height-input"
         label={t('onboarding.heightCm')}
         value={form.heightCm}
         onChangeText={(value) => updateField('heightCm', value)}
@@ -213,6 +224,7 @@ export default function OnboardingProfileScreen() {
           {PROFILE_ACTIVITY_OPTIONS.map((level) => (
             <OptionChip
               key={level}
+              testID={`onboarding-activity-${level}`}
               label={t(ACTIVITY_LABEL_KEYS[level])}
               selected={form.activityLevel === level}
               onPress={() => updateField('activityLevel', level)}
@@ -230,6 +242,7 @@ export default function OnboardingProfileScreen() {
       {formError ? <InlineError message={formError} /> : null}
 
       <PrimaryButton
+        testID="onboarding-profile-submit"
         label={t('onboarding.submitProfile')}
         onPress={() => void handleSubmit()}
         loading={isSubmitting}

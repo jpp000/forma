@@ -24,13 +24,15 @@ type OAuthButtonProps = {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  testID?: string;
 };
 
-function OAuthButton({ label, onPress, disabled }: OAuthButtonProps) {
+function OAuthButton({ label, onPress, disabled, testID }: OAuthButtonProps) {
   const { colors, typography } = useFormaTheme();
 
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
@@ -134,7 +136,7 @@ export default function AuthIndexScreen() {
   }
 
   return (
-    <Screen scroll style={styles.content}>
+    <Screen scroll style={styles.content} testID="auth-screen">
       <View style={styles.header}>
         <Text style={[typography.largeTitle, { color: colors.primary }]}>
           {t('brand.name')}
@@ -180,6 +182,7 @@ export default function AuthIndexScreen() {
       </View>
 
       <TextField
+        testID="auth-email-input"
         label={t('auth.emailLabel')}
         value={email}
         onChangeText={handleEmailChange}
@@ -192,6 +195,7 @@ export default function AuthIndexScreen() {
       {formError ? <InlineError message={formError} /> : null}
 
       <PrimaryButton
+        testID="auth-request-otp-button"
         label={t('auth.requestOtp')}
         onPress={() => void handleRequestOtp()}
         loading={isSubmitting}
@@ -200,6 +204,7 @@ export default function AuthIndexScreen() {
 
       {__DEV__ ? (
         <Pressable
+          testID="auth-dev-mock-login"
           accessibilityRole="button"
           disabled={isBusy}
           onPress={() => void handleDevMockLogin()}

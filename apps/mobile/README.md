@@ -38,8 +38,20 @@ In `__DEV__` builds, the login screen shows **Dev: quick sign-in (mock)** — on
 ```bash
 pnpm --filter @forma/mobile test
 pnpm --filter @forma/mobile check-types
+pnpm --filter @forma/mobile test:e2e    # Playwright — API + Expo web (port 19006)
 pnpm lint
 ```
+
+### Web UI (Cursor Cloud / agent testing)
+
+No simulator is required. With the API running in mock mode:
+
+```bash
+cd apps/mobile
+EXPO_PUBLIC_API_URL=http://localhost:3000 pnpm dev:web
+```
+
+Open `http://localhost:19006`. The agent can navigate via browser automation; key controls expose `testID` selectors (see [`AGENTS.md`](../../AGENTS.md)).
 
 Manual smoke: see [`SMOKE.md`](./SMOKE.md).
 
