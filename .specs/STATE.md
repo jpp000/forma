@@ -119,6 +119,16 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Nutrition → sees macro summary + streak; tap Log meal → submit manual macros → hub totals update |
 | Slice 4 target | `mobile-progress` — weight log, streaks UI, history |
 
+**Slice 4:** `mobile-progress` — **Specify + Design + Tasks complete** on `cursor/mobile-progress-spec-f68f`. Spec approved (20 requirements `MPROG-01..20`); 12 tasks in 3 batches. **Execute next.**
+
+| Slice 4 item | Value |
+|--------------|-------|
+| Branch | `cursor/mobile-progress-spec-f68f` |
+| Spec | `.specs/features/mobile-progress/spec.md` |
+| Design | `.specs/features/mobile-progress/design.md` |
+| Tasks | `.specs/features/mobile-progress/tasks.md` (T1–T12) |
+| Execute prompt | `/tlc-spec-driven implement mobile-progress` |
+
 ---
 
 **Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before.

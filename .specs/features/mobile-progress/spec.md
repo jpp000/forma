@@ -1,6 +1,6 @@
 # Mobile Progress Specification
 
-**Status**: Draft — awaiting confirmation
+**Status**: Approved
 
 ## Problem Statement
 
@@ -36,24 +36,24 @@ After Slices 0–3, the Progress tab is still a placeholder. Home Summary alread
 
 | Assumption / decision | Chosen default | Rationale | Confirmed? |
 |-----------------------|----------------|-----------|------------|
-| Actor | **Student only** | AD-024 | n |
-| Depends on | Slice 0 (auth, API client, tabs) + Slice 1 (Home routes guidance CTAs here) | Sequential slices | n |
-| Date for “today” | **UTC date** (`YYYY-MM-DD`, same as training/nutrition/home) | AD-028 / platform-foundation | n |
-| Hub data | Parallel fetch: `GET /api/progress/weight` (default range) + `GET /api/progress/streaks` | Mirrors training/nutrition hub pattern | n |
-| Default history range | **Last 90 days** (`from = today − 89d`, `to = today`) | Enough for trend without huge lists | n |
-| History display | **Chronological list, newest first** — date + weight (1 decimal kg) + optional delta vs previous entry | No chart library; scannable MVP | n |
-| Latest weight on hub | Most recent entry in fetched history (or `—` when empty) | Avoid extra API call; history fetch covers hub | n |
-| Trend cue | Client computes `up` / `down` / `stable` from two most recent entries using API thresholds (> 0.2 kg up, < −0.2 kg down) | Matches `ProgressService.getWeightTrend` without new endpoint | n |
-| Log weight date | Defaults to **today UTC**; student may pick a **past** date within the last **365 days**; future dates blocked | API accepts any valid date; backfill forgotten logs; no future logging | n |
-| Weight input | Decimal kg, ≥ 0, max **500** client-side; 1 decimal place display | API `@Min(0)` only; sanity cap on client | n |
-| Same-day re-log | API **upserts**; hub refreshes after POST | `progress.e2e-spec.ts` upsert behavior | n |
-| Streak display | Two cards/rows: **Training** and **Nutrition**, each showing current + longest (tabular numerals) | `GET /api/progress/streaks` shape | n |
-| Streak zero state | Show `0` with localized encouragement copy (not hidden) | Clear empty streak UX | n |
-| Client state | Zustand `progressStore`; extend `createProgressApi` with `logWeight` + `getWeightHistory` | AD-030; `progress.ts` today lacks weight methods | n |
-| Tests | Unit tests for trend + delta + date validation pure functions; `testID` on hub + log form for Playwright | Slice 0–3 pattern (AD-031) | n |
-| Pull-to-refresh | Hub re-fetches weight history + streaks | Consistent with nutrition/training hubs | n |
+| Actor | **Student only** | AD-024 | y |
+| Depends on | Slice 0 (auth, API client, tabs) + Slice 1 (Home routes guidance CTAs here) | Sequential slices | y |
+| Date for “today” | **UTC date** (`YYYY-MM-DD`, same as training/nutrition/home) | AD-028 / platform-foundation | y |
+| Hub data | Parallel fetch: `GET /api/progress/weight` (default range) + `GET /api/progress/streaks` | Mirrors training/nutrition hub pattern | y |
+| Default history range | **Last 90 days** (`from = today − 89d`, `to = today`) | Enough for trend without huge lists | y |
+| History display | **Chronological list, newest first** — date + weight (1 decimal kg) + optional delta vs previous entry | No chart library; scannable MVP | y |
+| Latest weight on hub | Most recent entry in fetched history (or `—` when empty) | Avoid extra API call; history fetch covers hub | y |
+| Trend cue | Client computes `up` / `down` / `stable` from two most recent entries using API thresholds (> 0.2 kg up, < −0.2 kg down) | Matches `ProgressService.getWeightTrend` without new endpoint | y |
+| Log weight date | Defaults to **today UTC**; student may pick a **past** date within the last **365 days**; future dates blocked | API accepts any valid date; backfill forgotten logs; no future logging | y |
+| Weight input | Decimal kg, ≥ 0, max **500** client-side; 1 decimal place display | API `@Min(0)` only; sanity cap on client | y |
+| Same-day re-log | API **upserts**; hub refreshes after POST | `progress.e2e-spec.ts` upsert behavior | y |
+| Streak display | Two cards/rows: **Training** and **Nutrition**, each showing current + longest (tabular numerals) | `GET /api/progress/streaks` shape | y |
+| Streak zero state | Show `0` with localized encouragement copy (not hidden) | Clear empty streak UX | y |
+| Client state | Zustand `progressStore`; extend `createProgressApi` with `logWeight` + `getWeightHistory` | AD-030; `progress.ts` today lacks weight methods | y |
+| Tests | Unit tests for trend + delta + date validation pure functions; `testID` on hub + log form for Playwright | Slice 0–3 pattern (AD-031) | y |
+| Pull-to-refresh | Hub re-fetches weight history + streaks | Consistent with nutrition/training hubs | y |
 
-**Open questions:** none — defaults above are agent-chosen pending your confirmation.
+**Open questions:** none — all resolved.
 
 **Implicit-requirement dimensions (Large scope):**
 
@@ -184,28 +184,28 @@ No new API endpoints in this slice.
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| MPROG-01 | P1-01: Hub anatomy | Design | Pending |
-| MPROG-02 | P1-01: Latest weight | Design | Pending |
-| MPROG-03 | P1-01: Trend cue rules | Design | Pending |
-| MPROG-04 | P1-01: Pull-to-refresh | Design | Pending |
-| MPROG-05 | P1-01: Partial error UX | Design | Pending |
-| MPROG-06 | P1-01: Full error UX | Design | Pending |
-| MPROG-07 | P1-02: Navigate to form | Design | Pending |
-| MPROG-08 | P1-02: Weight input validation | Design | Pending |
-| MPROG-09 | P1-02: Date bounds | Design | Pending |
-| MPROG-10 | P1-02: POST + refresh | Design | Pending |
-| MPROG-11 | P1-02: Inline validation errors | Design | Pending |
-| MPROG-12 | P1-02: Same-day upsert display | Design | Pending |
-| MPROG-13 | P1-03: History list order | Design | Pending |
-| MPROG-14 | P1-03: Delta display | Design | Pending |
-| MPROG-15 | P1-03: Empty history copy | Design | Pending |
-| MPROG-16 | P1-03: Hide empty when data exists | Design | Pending |
-| MPROG-17 | P1-04: Training streak block | Design | Pending |
-| MPROG-18 | P1-04: Nutrition streak block | Design | Pending |
-| MPROG-19 | P1-04: Zero streak copy | Design | Pending |
-| MPROG-20 | P1-04: Streak fetch error | Design | Pending |
+| MPROG-01 | P1-01: Hub anatomy | Tasks | Pending |
+| MPROG-02 | P1-01: Latest weight | Tasks | Pending |
+| MPROG-03 | P1-01: Trend cue rules | Tasks | Pending |
+| MPROG-04 | P1-01: Pull-to-refresh | Tasks | Pending |
+| MPROG-05 | P1-01: Partial error UX | Tasks | Pending |
+| MPROG-06 | P1-01: Full error UX | Tasks | Pending |
+| MPROG-07 | P1-02: Navigate to form | Tasks | Pending |
+| MPROG-08 | P1-02: Weight input validation | Tasks | Pending |
+| MPROG-09 | P1-02: Date bounds | Tasks | Pending |
+| MPROG-10 | P1-02: POST + refresh | Tasks | Pending |
+| MPROG-11 | P1-02: Inline validation errors | Tasks | Pending |
+| MPROG-12 | P1-02: Same-day upsert display | Tasks | Pending |
+| MPROG-13 | P1-03: History list order | Tasks | Pending |
+| MPROG-14 | P1-03: Delta display | Tasks | Pending |
+| MPROG-15 | P1-03: Empty history copy | Tasks | Pending |
+| MPROG-16 | P1-03: Hide empty when data exists | Tasks | Pending |
+| MPROG-17 | P1-04: Training streak block | Tasks | Pending |
+| MPROG-18 | P1-04: Nutrition streak block | Tasks | Pending |
+| MPROG-19 | P1-04: Zero streak copy | Tasks | Pending |
+| MPROG-20 | P1-04: Streak fetch error | Tasks | Pending |
 
-**Coverage:** 20 total, 0 mapped to tasks, 20 unmapped (expected pre-Design)
+**Coverage:** 20 total, 20 mapped to tasks (T1–T12), 0 unmapped
 
 ---
 
@@ -219,10 +219,10 @@ No new API endpoints in this slice.
 
 ---
 
-## Next phases (after confirmation)
+## Next phases
 
-| Phase | Artifact | Notes |
-|-------|----------|-------|
-| Design | `.specs/features/mobile-progress/design.md` | Hub layout, `progressStore` shape, API client types, i18n keys |
-| Tasks | `.specs/features/mobile-progress/tasks.md` | Atomic tasks + verification (~12–16 tasks estimated) |
-| Execute | Implementation on `cursor/mobile-progress-f68f` | One commit per task; Verifier auto-runs at end |
+| Phase | Artifact | Status |
+|-------|----------|--------|
+| Design | `.specs/features/mobile-progress/design.md` | ✅ Approved |
+| Tasks | `.specs/features/mobile-progress/tasks.md` | ✅ Approved (12 tasks, 3 batches) |
+| Execute | Implementation on `cursor/mobile-progress-spec-f68f` | **Next** — `/tlc-spec-driven implement mobile-progress` |
