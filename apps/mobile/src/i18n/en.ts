@@ -150,6 +150,33 @@ const en: Record<TranslationKey, string> = {
   'nutrition.validation.invalidNumber': 'Enter a valid number (0 or more).',
   'nutrition.errors.upgrade_required':
     'Daily meal limit reached. Upgrade to log more.',
+  'progress.title': 'Progress',
+  'progress.hub.logWeight': 'Log weight',
+  'progress.hub.latestWeight': 'Latest weight',
+  'progress.hub.noWeight': 'No weight logged',
+  'progress.hub.trend.up': 'Trending up',
+  'progress.hub.trend.down': 'Trending down',
+  'progress.hub.trend.stable': 'Stable',
+  'progress.hub.trend.insufficient':
+    'Log at least two entries to see trend',
+  'progress.hub.recentWeight': 'Recent weight',
+  'progress.hub.emptyHistory': 'Log your first weight to start tracking',
+  'progress.streak.training': 'Training streak',
+  'progress.streak.nutrition': 'Nutrition streak',
+  'progress.streak.current': 'Current: {{count}}',
+  'progress.streak.longest': 'Best: {{count}}',
+  'progress.streak.zeroHint': 'Keep your habit going',
+  'progress.weight.title': 'Log weight',
+  'progress.weight.save': 'Save weight',
+  'progress.fields.weightKg': 'Weight (kg)',
+  'progress.fields.date': 'Date',
+  'progress.validation.weightRequired': 'Enter your weight',
+  'progress.validation.weightInvalid': 'Enter a valid number',
+  'progress.validation.weightRange': 'Weight must be between 0 and 500 kg',
+  'progress.validation.dateRequired': 'Enter a date',
+  'progress.validation.dateInvalid': 'Use YYYY-MM-DD',
+  'progress.validation.dateFuture': 'Date cannot be in the future',
+  'progress.validation.dateTooOld': 'Date is too far in the past',
 };
 
 export default en;

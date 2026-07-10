@@ -151,6 +151,33 @@ const ptBR = {
   'nutrition.validation.invalidNumber': 'Informe um número válido (0 ou mais).',
   'nutrition.errors.upgrade_required':
     'Limite diário de refeições atingido. Faça upgrade para registrar mais.',
+  'progress.title': 'Progresso',
+  'progress.hub.logWeight': 'Registrar peso',
+  'progress.hub.latestWeight': 'Peso atual',
+  'progress.hub.noWeight': 'Nenhum peso registrado',
+  'progress.hub.trend.up': 'Em alta',
+  'progress.hub.trend.down': 'Em queda',
+  'progress.hub.trend.stable': 'Estável',
+  'progress.hub.trend.insufficient':
+    'Registre pelo menos dois pesos para ver a tendência',
+  'progress.hub.recentWeight': 'Peso recente',
+  'progress.hub.emptyHistory': 'Registre seu primeiro peso para começar',
+  'progress.streak.training': 'Sequência de treino',
+  'progress.streak.nutrition': 'Sequência de nutrição',
+  'progress.streak.current': 'Atual: {{count}}',
+  'progress.streak.longest': 'Recorde: {{count}}',
+  'progress.streak.zeroHint': 'Mantenha o hábito',
+  'progress.weight.title': 'Registrar peso',
+  'progress.weight.save': 'Salvar peso',
+  'progress.fields.weightKg': 'Peso (kg)',
+  'progress.fields.date': 'Data',
+  'progress.validation.weightRequired': 'Informe o peso',
+  'progress.validation.weightInvalid': 'Número inválido',
+  'progress.validation.weightRange': 'Peso entre 0 e 500 kg',
+  'progress.validation.dateRequired': 'Informe a data',
+  'progress.validation.dateInvalid': 'Use AAAA-MM-DD',
+  'progress.validation.dateFuture': 'Data não pode ser futura',
+  'progress.validation.dateTooOld': 'Data muito antiga',
 } as const;
 
 export type TranslationKey = keyof typeof ptBR;
