@@ -15,13 +15,7 @@ export function WeightHistoryRow({ row }: WeightHistoryRowProps) {
         <Text style={[typography.body, { color: colors.labelPrimary }]}>
           {row.date}
         </Text>
-        <Text
-          style={[
-            typography.body,
-            styles.weight,
-            { color: colors.stand },
-          ]}
-        >
+        <Text style={[typography.body, styles.weight, { color: colors.stand }]}>
           {row.weightLabel}
         </Text>
       </View>

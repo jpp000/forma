@@ -21,9 +21,7 @@ export function createProgressApi(api: ApiClient) {
       if (from) params.set('from', from);
       if (to) params.set('to', to);
       const query = params.toString();
-      return api.request(
-        `/api/progress/weight${query ? `?${query}` : ''}`,
-      );
+      return api.request(`/api/progress/weight${query ? `?${query}` : ''}`);
     },
 
     logWeight(body: LogWeightInput): Promise<WeightEntry> {

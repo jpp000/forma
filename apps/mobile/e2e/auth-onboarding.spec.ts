@@ -47,6 +47,10 @@ test.describe('Mobile web smoke', () => {
     await expect(page.getByTestId('tab-training')).toBeVisible();
     await expect(page.getByTestId('tab-nutrition')).toBeVisible();
     await expect(page.getByTestId('tab-progress')).toBeVisible();
+
+    await page.getByTestId('tab-progress').click();
+    await expect(page.getByTestId('progress-screen')).toBeVisible();
+    await expect(page.getByTestId('progress-log-weight-button')).toBeVisible();
   });
 
   test('email OTP path reaches OTP screen', async ({ page }) => {

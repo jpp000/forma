@@ -48,7 +48,8 @@ describe('sortWeightEntries', () => {
 describe('latestWeight', () => {
   it('returns the most recent entry', () => {
     expect(
-      latestWeight([entry('2026-07-01', 76), entry('2026-07-07', 75)])?.weightKg,
+      latestWeight([entry('2026-07-01', 76), entry('2026-07-07', 75)])
+        ?.weightKg,
     ).toBe(75);
   });
 

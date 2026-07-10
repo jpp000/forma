@@ -32,11 +32,7 @@ export function WeightSnapshotCard({
         {latestWeightLabel}
       </Text>
       <Text
-        style={[
-          typography.title,
-          styles.weightValue,
-          { color: colors.stand },
-        ]}
+        style={[typography.title, styles.weightValue, { color: colors.stand }]}
       >
         {hasWeight ? weightLabel : noWeightLabel}
       </Text>

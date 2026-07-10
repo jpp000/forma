@@ -1,7 +1,4 @@
-import {
-  parseWeightInput,
-  validateLogWeight,
-} from '../weightValidation';
+import { parseWeightInput, validateLogWeight } from '../weightValidation';
 
 const messages = {
   weightRequired: 'required',

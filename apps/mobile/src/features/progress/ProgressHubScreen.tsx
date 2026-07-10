@@ -20,14 +20,8 @@ export function ProgressHubScreen() {
   const t = useT();
   const { colors, typography } = useFormaTheme();
 
-  const {
-    fetchHub,
-    hubLoading,
-    hubErrors,
-    weightEntries,
-    streaks,
-    todayUtc,
-  } = useProgressStore();
+  const { fetchHub, hubLoading, hubErrors, weightEntries, streaks, todayUtc } =
+    useProgressStore();
 
   useFocusEffect(
     useCallback(() => {
@@ -41,9 +35,7 @@ export function ProgressHubScreen() {
 
   const hasAnyData = weightEntries.length > 0 || streaks !== null;
   const bothFailed =
-    Boolean(hubErrors.weight) &&
-    Boolean(hubErrors.streaks) &&
-    !hasAnyData;
+    Boolean(hubErrors.weight) && Boolean(hubErrors.streaks) && !hasAnyData;
 
   if (hubLoading && !hasAnyData) {
     return (
