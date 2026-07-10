@@ -1,4 +1,4 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { type Href, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useT } from '../../i18n';
@@ -95,7 +95,9 @@ export function NutritionHubScreen() {
       <View style={styles.ctaWrap}>
         <PrimaryButton
           label={t('nutrition.hub.logMeal')}
-          onPress={() => router.push('/(tabs)/nutrition/meal/new')}
+          onPress={() =>
+            router.push('/(tabs)/nutrition/meal/new' as Href)
+          }
           testID="nutrition-log-meal-button"
         />
       </View>
