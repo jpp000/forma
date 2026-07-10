@@ -29,7 +29,25 @@ Hooks locais (uma vez por clone): `./scripts/setup-git-hooks.sh`
 
 ## Cursor Cloud — setup por sessão
 
-O script de update instala deps, gera o Prisma client e compila `@forma/types`. **Não inicia serviços.**
+O script de update do ambiente roda `pnpm install`, `pnpm db:generate` e `pnpm --filter @forma/types build`. **Não inicia serviços.**
+
+`prisma.config.ts` usa um fallback de `DATABASE_URL` (mesmo valor de `.env.example`) para que `db:generate` funcione em clones frescos sem `.env`. Para migrações e runtime da API, prefira ter `.env` ou exportar a variável.
+
+### Bootstrap rápido (agente / clone novo)
+
+```bash
+pnpm setup:cloud          # .env se ausente + prisma generate + @forma/types build
+pnpm postgres:dev         # Postgres local (uma vez por sessão)
+pnpm db:migrate:deploy    # schema no banco
+```
+
+Equivalente manual ao install do ambiente:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm db:generate
+pnpm --filter @forma/types build
+```
 
 ### PostgreSQL
 
