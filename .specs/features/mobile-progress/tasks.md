@@ -5,8 +5,7 @@
 Implement with the **`tlc-spec-driven`** skill: follow Execute flow (per-task cycle, batch workers, Verifier).
 
 **Design**: `.specs/features/mobile-progress/design.md`  
-**Spec**: `.specs/features/mobile-progress/spec.md`  
-**Prerequisite:** Slices 0–3 on `dev`. **AD-030:** Zustand store. **AD-031:** `testID` on P0 flows.
+**Status**: Done
 
 ---
 

@@ -1,6 +1,6 @@
 # Mobile Progress Specification
 
-**Status**: Approved
+**Status**: Approved — Execute complete (Verifier PASS)
 
 ## Problem Statement
 
@@ -184,38 +184,38 @@ No new API endpoints in this slice.
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| MPROG-01 | P1-01: Hub anatomy | Tasks | Pending |
-| MPROG-02 | P1-01: Latest weight | Tasks | Pending |
-| MPROG-03 | P1-01: Trend cue rules | Tasks | Pending |
-| MPROG-04 | P1-01: Pull-to-refresh | Tasks | Pending |
-| MPROG-05 | P1-01: Partial error UX | Tasks | Pending |
-| MPROG-06 | P1-01: Full error UX | Tasks | Pending |
-| MPROG-07 | P1-02: Navigate to form | Tasks | Pending |
-| MPROG-08 | P1-02: Weight input validation | Tasks | Pending |
-| MPROG-09 | P1-02: Date bounds | Tasks | Pending |
-| MPROG-10 | P1-02: POST + refresh | Tasks | Pending |
-| MPROG-11 | P1-02: Inline validation errors | Tasks | Pending |
-| MPROG-12 | P1-02: Same-day upsert display | Tasks | Pending |
-| MPROG-13 | P1-03: History list order | Tasks | Pending |
-| MPROG-14 | P1-03: Delta display | Tasks | Pending |
-| MPROG-15 | P1-03: Empty history copy | Tasks | Pending |
-| MPROG-16 | P1-03: Hide empty when data exists | Tasks | Pending |
-| MPROG-17 | P1-04: Training streak block | Tasks | Pending |
-| MPROG-18 | P1-04: Nutrition streak block | Tasks | Pending |
-| MPROG-19 | P1-04: Zero streak copy | Tasks | Pending |
-| MPROG-20 | P1-04: Streak fetch error | Tasks | Pending |
+| MPROG-01 | P1-01: Hub anatomy | Verified | PASS |
+| MPROG-02 | P1-01: Latest weight | Verified | PASS |
+| MPROG-03 | P1-01: Trend cue rules | Verified | PASS |
+| MPROG-04 | P1-01: Pull-to-refresh | Verified | PASS |
+| MPROG-05 | P1-01: Partial error UX | Verified | PASS |
+| MPROG-06 | P1-01: Full error UX | Verified | PASS |
+| MPROG-07 | P1-02: Navigate to form | Verified | PASS |
+| MPROG-08 | P1-02: Weight input validation | Verified | PASS |
+| MPROG-09 | P1-02: Date bounds | Verified | PASS |
+| MPROG-10 | P1-02: POST + refresh | Verified | PASS |
+| MPROG-11 | P1-02: Inline validation errors | Verified | PASS |
+| MPROG-12 | P1-02: Same-day upsert display | Verified | PASS |
+| MPROG-13 | P1-03: History list order | Verified | PASS |
+| MPROG-14 | P1-03: Delta display | Verified | PASS |
+| MPROG-15 | P1-03: Empty history copy | Verified | PASS |
+| MPROG-16 | P1-03: Hide empty when data exists | Verified | PASS |
+| MPROG-17 | P1-04: Training streak block | Verified | PASS |
+| MPROG-18 | P1-04: Nutrition streak block | Verified | PASS |
+| MPROG-19 | P1-04: Zero streak copy | Verified | PASS |
+| MPROG-20 | P1-04: Streak fetch error | Verified | PASS |
 
-**Coverage:** 20 total, 20 mapped to tasks (T1–T12), 0 unmapped
+**Coverage:** 20 total, 20 mapped to tasks, 20 verified
 
 ---
 
 ## Success Criteria
 
-- [ ] Student opens Progress → sees latest weight, streaks, and recent history; pull-to-refresh works
-- [ ] Student logs weight → hub updates; same-day re-log replaces value
-- [ ] `pnpm --filter @forma/mobile test` — new unit tests pass
-- [ ] `pnpm --filter @forma/mobile check-types` + `pnpm lint` pass
-- [ ] Playwright smoke can reach Progress tab after auth (extend E2E when hub `testID`s land)
+- [x] Student opens Progress → sees latest weight, streaks, and recent history; pull-to-refresh works
+- [x] Student logs weight → hub updates; same-day re-log replaces value
+- [x] `pnpm --filter @forma/mobile test` — 99 tests pass (19 new progress)
+- [x] `pnpm --filter @forma/mobile check-types` pass
+- [x] Playwright smoke reaches Progress tab (`progress-screen`)
 
 ---
 

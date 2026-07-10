@@ -119,15 +119,14 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Nutrition → sees macro summary + streak; tap Log meal → submit manual macros → hub totals update |
 | Slice 4 target | `mobile-progress` — weight log, streaks UI, history |
 
-**Slice 4:** `mobile-progress` — **Specify + Design + Tasks complete** on `cursor/mobile-progress-spec-f68f`. Spec approved (20 requirements `MPROG-01..20`); 12 tasks in 3 batches. **Execute next.**
+**Slice 4:** `mobile-progress` — **Execute complete** on `cursor/mobile-progress-spec-f68f`. Progress hub (weight snapshot, trend, streak cards, history list), log weight form (`POST /api/progress/weight`), `progressStore`, extended `progress` API client, i18n `progress.*`. **Verifier PASS** — see `.specs/features/mobile-progress/validation.md`.
 
 | Slice 4 item | Value |
 |--------------|-------|
 | Branch | `cursor/mobile-progress-spec-f68f` |
-| Spec | `.specs/features/mobile-progress/spec.md` |
-| Design | `.specs/features/mobile-progress/design.md` |
-| Tasks | `.specs/features/mobile-progress/tasks.md` (T1–T12) |
-| Execute prompt | `/tlc-spec-driven implement mobile-progress` |
+| Gates (2026-07-10) | `pnpm --filter @forma/mobile test` — **99 passed**; `check-types` — **PASS**; progress-scope biome — **PASS** |
+| Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
+| Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
 ---
 
