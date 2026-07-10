@@ -1,4 +1,5 @@
 import type { StreaksResponse } from '../features/home/types';
+import type { LogWeightInput, WeightEntry } from '../features/progress/types';
 import type { ApiClient } from './client';
 
 export type { StreaksResponse };
@@ -13,6 +14,23 @@ export function createProgressApi(api: ApiClient) {
   return {
     getStreaks(): Promise<StreaksResponse> {
       return api.request('/api/progress/streaks');
+    },
+
+    getWeightHistory(from?: string, to?: string): Promise<WeightEntry[]> {
+      const params = new URLSearchParams();
+      if (from) params.set('from', from);
+      if (to) params.set('to', to);
+      const query = params.toString();
+      return api.request(
+        `/api/progress/weight${query ? `?${query}` : ''}`,
+      );
+    },
+
+    logWeight(body: LogWeightInput): Promise<WeightEntry> {
+      return api.request('/api/progress/weight', {
+        method: 'POST',
+        body,
+      });
     },
 
     markTrainingRestDay(date: string): Promise<TrainingRestDay> {
