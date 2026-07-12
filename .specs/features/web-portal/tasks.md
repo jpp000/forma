@@ -230,9 +230,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-01, WPORT-02
 
 **Done when**:
-- [ ] Unauthenticated users cannot open dashboard
-- [ ] Professional role lands on dashboard
-- [ ] Non-pro authed lands on onboarding
+- [x] Unauthenticated users cannot open dashboard
+- [x] Professional role lands on dashboard
+- [x] Non-pro authed lands on onboarding
 
 **Tests**: none  
 **Gate**: build  
@@ -249,8 +249,8 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-03
 
 **Done when**:
-- [ ] Checkout button works against mock/real URL
-- [ ] Failure shows InlineError
+- [x] Checkout button works against mock/real URL
+- [x] Failure shows InlineError
 
 **Tests**: none  
 **Gate**: build  
@@ -267,9 +267,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-04
 
 **Done when**:
-- [ ] Success refreshes `me` and routes to dashboard
-- [ ] 402 shows paywall (WPORT-04)
-- [ ] Validation prevents empty credentials
+- [x] Success refreshes `me` and routes to dashboard
+- [x] 402 shows paywall (WPORT-04)
+- [x] Validation prevents empty credentials
 
 **Tests**: none  
 **Gate**: build  
@@ -286,9 +286,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-05, WPORT-06
 
 **Done when**:
-- [ ] Renders linked students
-- [ ] Empty state CTA links to `/invites`
-- [ ] Error + Retry works
+- [x] Renders linked students
+- [x] Empty state CTA links to `/invites`
+- [x] Error + Retry works
 
 **Tests**: none  
 **Gate**: build  
@@ -305,8 +305,8 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-07
 
 **Done when**:
-- [ ] Successful invite shows confirmation
-- [ ] Invalid email / API errors visible
+- [x] Successful invite shows confirmation
+- [x] Invalid email / API errors visible
 
 **Tests**: none  
 **Gate**: build  
