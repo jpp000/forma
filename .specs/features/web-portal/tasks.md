@@ -497,9 +497,9 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-09  
 
 **Done when**:
-- [ ] Authenticated student opens Professionals tab
-- [ ] List loads; error+retry
-- [ ] Follows DESIGN.md tokens
+- [x] Authenticated student opens Professionals tab
+- [x] List loads; error+retry
+- [x] Follows DESIGN.md tokens
 
 **Tests**: unit/store as needed; e2e smoke in T23  
 **Gate**: build (`@forma/mobile` check-types + test)  
@@ -515,9 +515,9 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-09, WPORT-10  
 
 **Done when**:
-- [ ] Detail shows public fields
-- [ ] Request creates pending (idempotent UX)
-- [ ] Errors recoverable
+- [x] Detail shows public fields
+- [x] Request creates pending (idempotent UX)
+- [x] Errors recoverable
 
 **Tests**: none (smoke T23)  
 **Gate**: build  

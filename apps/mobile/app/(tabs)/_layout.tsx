@@ -68,6 +68,14 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="professionals"
+        options={{
+          title: t('tabs.professionals'),
+          tabBarButtonTestID: 'tab-professionals',
+          tabBarIcon: ({ color }) => <TabIcon color={color} name="people" />,
+        }}
+      />
     </Tabs>
   );
 }

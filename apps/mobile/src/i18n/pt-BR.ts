@@ -60,6 +60,7 @@ const ptBR = {
   'tabs.training': 'Treino',
   'tabs.nutrition': 'Nutrição',
   'tabs.progress': 'Progresso',
+  'tabs.professionals': 'Profissionais',
   'tabs.homePlaceholder': 'Resumo em breve.',
   'tabs.trainingPlaceholder': 'Treino em breve.',
   'tabs.nutritionPlaceholder': 'Nutrição em breve.',
@@ -178,6 +179,16 @@ const ptBR = {
   'progress.validation.dateInvalid': 'Use AAAA-MM-DD',
   'progress.validation.dateFuture': 'Data não pode ser futura',
   'progress.validation.dateTooOld': 'Data muito antiga',
+  'professionals.title': 'Profissionais',
+  'professionals.detailTitle': 'Perfil',
+  'professionals.search': 'Buscar',
+  'professionals.searchPlaceholder': 'Nome, slug ou credenciais',
+  'professionals.searchAction': 'Buscar',
+  'professionals.empty': 'Nenhum profissional publicado ainda.',
+  'professionals.typeTrainer': 'Treinador',
+  'professionals.typeNutritionist': 'Nutricionista',
+  'professionals.requestCta': 'Pedir vínculo',
+  'professionals.requestSuccess': 'Pedido enviado. Aguarde a resposta.',
 } as const;
 
 export type TranslationKey = keyof typeof ptBR;

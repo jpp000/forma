@@ -1,4 +1,5 @@
 import { createApiClient } from './client';
+import { createCoachingApi } from './coaching';
 import { createIdentityApi } from './identity';
 import { createNutritionApi } from './nutrition';
 import { createProgressApi } from './progress';
@@ -34,6 +35,7 @@ let studentApi: ReturnType<typeof createStudentApi> | null = null;
 let trainingApi: ReturnType<typeof createTrainingApi> | null = null;
 let nutritionApi: ReturnType<typeof createNutritionApi> | null = null;
 let progressApi: ReturnType<typeof createProgressApi> | null = null;
+let coachingApi: ReturnType<typeof createCoachingApi> | null = null;
 
 export function getWiredIdentityApi() {
   if (!identityApi) {
@@ -68,4 +70,11 @@ export function getWiredProgressApi() {
     progressApi = createProgressApi(createWiredClient());
   }
   return progressApi;
+}
+
+export function getWiredCoachingApi() {
+  if (!coachingApi) {
+    coachingApi = createCoachingApi(createWiredClient());
+  }
+  return coachingApi;
 }
