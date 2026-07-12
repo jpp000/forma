@@ -7,6 +7,7 @@
     "otp_rate_limit": "Muitas tentativas. Tente novamente em alguns minutos",
     "email_delivery_failed": "Não foi possível enviar o e-mail. Tente novamente",
     "oauth_invalid": "Falha na autenticação OAuth",
+    "oauth_web_redirect_missing": "URL de sucesso OAuth web não configurada",
     "forbidden": "Acesso negado",
     "student_profile_required": "Perfil de aluno necessário",
     "invalid_exercise_reference": "Referência de exercício inválida",

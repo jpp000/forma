@@ -153,9 +153,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-01
 
 **Done when**:
-- [ ] `GET .../oauth/:provider?platform=web` callback redirects to configured web success URL + token query
-- [ ] Mobile `platform=mobile` unchanged
-- [ ] E2E or oauth test covers web branch
+- [x] `GET .../oauth/:provider?platform=web` callback redirects to configured web success URL + token query
+- [x] Mobile `platform=mobile` unchanged
+- [x] E2E or oauth test covers web branch
 
 **Tests**: e2e  
 **Gate**: API  
