@@ -5,13 +5,16 @@ import { createApiClient } from './client';
 import { createCoachingApi } from './coaching';
 import { createIdentityApi } from './identity';
 
+/** Production 401 handler — exported for WPORT-02 coverage. */
+export function handleUnauthorized(): void {
+  useSessionStore.getState().clearSession();
+}
+
 function createWiredClient() {
   return createApiClient({
     getToken: () => useSessionStore.getState().token,
     getLocale: () => getActiveLocale(),
-    onUnauthorized: () => {
-      useSessionStore.getState().clearSession();
-    },
+    onUnauthorized: handleUnauthorized,
   });
 }
 

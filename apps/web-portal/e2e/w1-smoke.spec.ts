@@ -253,4 +253,27 @@ test.describe('Web portal W1 workplace (mocked API)', () => {
       /valid email|e-mail válido|Must be a valid/i,
     );
   });
+
+  test('401 from /me clears session and returns to login', async ({ page }) => {
+    await page.route('**/api/identity/me', async (route) => {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Unauthorized' }),
+      });
+    });
+
+    await page.addInitScript(() => {
+      localStorage.setItem('forma.portal.accessToken', 'expired-token');
+    });
+
+    await page.goto('/');
+    await expect(page.getByTestId('auth-screen')).toBeVisible({
+      timeout: 30_000,
+    });
+    const token = await page.evaluate(() =>
+      localStorage.getItem('forma.portal.accessToken'),
+    );
+    expect(token).toBeNull();
+  });
 });

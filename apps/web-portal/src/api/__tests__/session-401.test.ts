@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { useSessionStore } from '../../stores/sessionStore';
 import { ApiError, createApiClient } from '../client';
+import { handleUnauthorized } from '../wire';
 
 describe('401 clears session (WPORT-02)', () => {
   afterEach(() => {
@@ -11,7 +12,20 @@ describe('401 clears session (WPORT-02)', () => {
     });
   });
 
-  it('clears in-memory session when onUnauthorized runs clearSession', async () => {
+  it('production handleUnauthorized clears in-memory session', () => {
+    useSessionStore.setState({
+      token: 'stale-token',
+      user: { id: 'u1', email: 'a@example.com', roles: [] },
+      isLoading: false,
+    });
+
+    handleUnauthorized();
+
+    expect(useSessionStore.getState().token).toBeNull();
+    expect(useSessionStore.getState().user).toBeNull();
+  });
+
+  it('client 401 invokes production handleUnauthorized', async () => {
     useSessionStore.setState({
       token: 'stale-token',
       user: { id: 'u1', email: 'a@example.com', roles: [] },
@@ -21,9 +35,7 @@ describe('401 clears session (WPORT-02)', () => {
     const client = createApiClient({
       baseUrl: 'http://localhost:3000',
       getToken: () => useSessionStore.getState().token,
-      onUnauthorized: () => {
-        useSessionStore.getState().clearSession();
-      },
+      onUnauthorized: handleUnauthorized,
       fetchImpl: async () =>
         new Response(JSON.stringify({ message: 'Unauthorized' }), {
           status: 401,
