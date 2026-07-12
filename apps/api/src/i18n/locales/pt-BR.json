@@ -18,7 +18,9 @@
     "invite_already_accepted": "Convite já aceito",
     "invite_email_mismatch": "E-mail não corresponde ao convite",
     "coaching_link_exists": "Vínculo de coaching já existe",
-    "coaching_link_required": "Vínculo de coaching necessário"
+    "coaching_link_required": "Vínculo de coaching necessário",
+    "coaching_slug_taken": "Este slug de perfil já está em uso",
+    "coaching_publish_incomplete": "Para publicar, informe nome de exibição, slug e credenciais"
   },
   "billing": {
     "upgrade_required": "Upgrade necessário para acessar este recurso"

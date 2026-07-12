@@ -1,5 +1,13 @@
 import { Role } from '@forma/types';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/auth.guard';
 import { CurrentUser } from '../../common/current-user.decorator';
@@ -10,6 +18,7 @@ import { RolesGuard } from '../../common/roles.guard';
 import { CoachingService } from './coaching.service';
 import { CreateCoachingProfileDto } from './dto/create-coaching-profile.dto';
 import { CreateInviteDto } from './dto/create-invite.dto';
+import { UpdateCoachingProfileDto } from './dto/update-coaching-profile.dto';
 
 @ApiTags('coaching')
 @ApiBearerAuth()
@@ -27,6 +36,17 @@ export class CoachingController {
     @Body() body: CreateCoachingProfileDto,
   ) {
     return this.coachingService.createProfile(user.id, body);
+  }
+
+  @Patch('profile')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Update professional public profile fields' })
+  async updateProfile(
+    @CurrentUser() user: { id: string },
+    @Body() body: UpdateCoachingProfileDto,
+  ) {
+    return this.coachingService.updateProfile(user.id, body);
   }
 
   @Post('invites')
@@ -48,12 +68,7 @@ export class CoachingController {
     @CurrentUser() user: { id: string; email: string },
     @Param('token') token: string,
   ) {
-    const link = await this.coachingService.acceptInvite(
-      token,
-      user.id,
-      user.email,
-    );
-    return link;
+    return this.coachingService.acceptInvite(token, user.id, user.email);
   }
 
   @Get('dashboard')

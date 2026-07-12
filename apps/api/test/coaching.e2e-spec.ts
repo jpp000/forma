@@ -39,6 +39,7 @@ describe('Coaching (e2e)', () => {
   beforeEach(async () => {
     mockEmail.clear();
     await prisma.billingSubscription.deleteMany();
+    await prisma.coachingLinkRequest.deleteMany();
     await prisma.coachingLink.deleteMany();
     await prisma.coachingInvite.deleteMany();
     await prisma.coachingProfessionalProfile.deleteMany();
@@ -225,5 +226,84 @@ describe('Coaching (e2e)', () => {
     expect(dashboard.status).toBe(200);
     expect(dashboard.body.students).toHaveLength(1);
     expect(dashboard.body.students[0].email).toBe(studentEmail);
+  });
+
+  it('PATCH /api/coaching/profile updates publish fields', async () => {
+    const token = await auth(proEmail);
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email: proEmail },
+    });
+    await activateProfessional(user.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ type: 'trainer', credentials: 'CREF 12345' });
+
+    const incomplete = await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ isPublished: true });
+
+    expect(incomplete.status).toBe(400);
+
+    const published = await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        displayName: 'Coach Ana',
+        bio: 'Strength coach',
+        slug: 'coach-ana',
+        isPublished: true,
+      });
+
+    expect(published.status).toBe(200);
+    expect(published.body).toMatchObject({
+      displayName: 'Coach Ana',
+      slug: 'coach-ana',
+      isPublished: true,
+      bio: 'Strength coach',
+    });
+  });
+
+  it('PATCH /api/coaching/profile rejects duplicate slug', async () => {
+    const tokenA = await auth(proEmail);
+    const userA = await prisma.identityUser.findFirstOrThrow({
+      where: { email: proEmail },
+    });
+    await activateProfessional(userA.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({ type: 'trainer', credentials: 'CREF A' });
+    await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({
+        displayName: 'A',
+        slug: 'taken-slug',
+        isPublished: true,
+      });
+
+    const otherEmail = 'coach-pro-b@example.com';
+    const tokenB = await auth(otherEmail);
+    const userB = await prisma.identityUser.findFirstOrThrow({
+      where: { email: otherEmail },
+    });
+    await activateProfessional(userB.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenB}`)
+      .send({ type: 'trainer', credentials: 'CREF B' });
+
+    const clash = await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenB}`)
+      .send({
+        displayName: 'B',
+        slug: 'taken-slug',
+        isPublished: true,
+      });
+
+    expect(clash.status).toBe(409);
   });
 });

@@ -18,7 +18,9 @@
     "invite_already_accepted": "Invite already accepted",
     "invite_email_mismatch": "Invite email does not match",
     "coaching_link_exists": "Coaching link already exists",
-    "coaching_link_required": "Coaching link required"
+    "coaching_link_required": "Coaching link required",
+    "coaching_slug_taken": "This profile slug is already taken",
+    "coaching_publish_incomplete": "Publish requires display name, slug, and credentials"
   },
   "billing": {
     "upgrade_required": "Upgrade required to access this feature"

@@ -405,9 +405,9 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-08  
 
 **Done when**:
-- [ ] Pro can update publish fields
-- [ ] Unpublished/incomplete stays non-public
-- [ ] E2E covers happy path + slug conflict
+- [x] Pro can update publish fields
+- [x] Unpublished/incomplete stays non-public
+- [x] E2E covers happy path + slug conflict
 
 **Tests**: e2e  
 **Gate**: API  

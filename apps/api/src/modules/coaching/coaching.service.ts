@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { Role } from '@forma/types';
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   forwardRef,
@@ -14,6 +15,7 @@ import { NutritionService } from '../nutrition/nutrition.service';
 import { ProgressService } from '../progress/progress.service';
 import { TrainingService } from '../training/training.service';
 import type { CreateCoachingProfileDto } from './dto/create-coaching-profile.dto';
+import type { UpdateCoachingProfileDto } from './dto/update-coaching-profile.dto';
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -40,6 +42,61 @@ export class CoachingService {
         userId,
         type: dto.type,
         credentials: dto.credentials,
+      },
+    });
+  }
+
+  async updateProfile(userId: string, dto: UpdateCoachingProfileDto) {
+    const existing = await this.prisma.coachingProfessionalProfile.findUnique({
+      where: { userId },
+    });
+    if (!existing) {
+      throw new NotFoundException('errors.forbidden');
+    }
+
+    if (dto.slug !== undefined) {
+      const clash = await this.prisma.coachingProfessionalProfile.findFirst({
+        where: {
+          slug: dto.slug,
+          NOT: { userId },
+        },
+      });
+      if (clash) {
+        throw new ConflictException('errors.coaching_slug_taken');
+      }
+    }
+
+    const nextPublished = dto.isPublished ?? existing.isPublished;
+    const nextDisplayName =
+      dto.displayName !== undefined ? dto.displayName : existing.displayName;
+    const nextSlug = dto.slug !== undefined ? dto.slug : existing.slug;
+    const nextCredentials =
+      dto.credentials !== undefined ? dto.credentials : existing.credentials;
+
+    if (nextPublished) {
+      if (
+        !nextDisplayName?.trim() ||
+        !nextSlug?.trim() ||
+        !nextCredentials?.trim()
+      ) {
+        throw new BadRequestException('errors.coaching_publish_incomplete');
+      }
+    }
+
+    return this.prisma.coachingProfessionalProfile.update({
+      where: { userId },
+      data: {
+        ...(dto.displayName !== undefined
+          ? { displayName: dto.displayName.trim() }
+          : {}),
+        ...(dto.bio !== undefined ? { bio: dto.bio } : {}),
+        ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
+        ...(dto.isPublished !== undefined
+          ? { isPublished: dto.isPublished }
+          : {}),
+        ...(dto.credentials !== undefined
+          ? { credentials: dto.credentials.trim() }
+          : {}),
       },
     });
   }
