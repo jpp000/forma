@@ -134,9 +134,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-19, AD-039
 
 **Done when**:
-- [ ] With `CORS_ORIGIN=http://localhost:5173` and `NODE_ENV=production`, API reflects Allow-Origin for that origin on OPTIONS/GET
-- [ ] Without `CORS_ORIGIN` in production, behavior remains safe (no open `origin: true`)
-- [ ] Existing API e2e still pass
+- [x] With `CORS_ORIGIN=http://localhost:5173` and `NODE_ENV=production`, API reflects Allow-Origin for that origin on OPTIONS/GET
+- [x] Without `CORS_ORIGIN` in production, behavior remains safe (no open `origin: true`)
+- [x] Existing API e2e still pass
 
 **Tests**: e2e or focused test documenting CORS header  
 **Gate**: API  
