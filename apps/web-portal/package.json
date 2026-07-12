@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check-types": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium"
   },
   "dependencies": {
     "@forma/types": "workspace:*",
@@ -19,6 +20,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/react": "~19.0.10",
     "@types/react-dom": "~19.0.4",
     "@vitejs/plugin-react": "^4.5.2",

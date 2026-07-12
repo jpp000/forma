@@ -7,7 +7,7 @@ Implement with the **`tlc-spec-driven`** skill: follow Execute flow (per-task cy
 **Design**: `.specs/features/web-portal/design.md`  
 **Spec**: `.specs/features/web-portal/spec.md`  
 **Context**: `.specs/features/web-portal/context.md`  
-**Status**: Approved — ready for Execute (start **W1**)
+**Status**: W1 Execute complete — pending Verifier
 
 **Branch**: create from `dev` → `feature/web-portal-w1` (or continue `feature/web-portal-spec` then rename). Prefer `./scripts/git/new-feature-branch.sh feature/web-portal-w1` after merging spec docs to `dev`.
 
@@ -359,9 +359,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-01–07 smoke
 
 **Done when**:
-- [ ] `pnpm --filter @forma/web-portal test:e2e` (or documented smoke) passes against local API
-- [ ] Full W1 gate green
-- [ ] Update `.specs/STATE.md` Handoff: W1 Execute complete pending Verifier
+- [x] `pnpm --filter @forma/web-portal test:e2e` (or documented smoke) passes against local API
+- [x] Full W1 gate green
+- [x] Update `.specs/STATE.md` Handoff: W1 Execute complete pending Verifier
 
 **Tests**: e2e  
 **Gate**: full W1  

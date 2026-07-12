@@ -135,17 +135,17 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** W1 Execute **in progress** on `feature/web-portal-w1`.
+**P2 — Web portal:** W1 Execute **complete** on `feature/web-portal-w1` — pending Verifier.
 
 | Portal item | Value |
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
-| Docs | `context.md` · `spec.md` · `design.md` · `tasks.md` |
-| Done | T1–T11 (scaffold → invites) |
-| Next | **T12** i18n → **T13** Render → **T14** smoke e2e → Verifier |
-| After W1 | Expand/execute W2–W4 stubs |
+| Done | T1–T14 (scaffold → smoke e2e) |
+| Gates | portal unit 8 · e2e 3 · check-types PASS |
+| Next | **Verifier** → `validation.md` → expand/execute W2 stubs |
+| Smoke | `pnpm --filter @forma/web-portal test:e2e` |
 
-**Loop:** Dynamic self-paced loop continues until web-portal feature done (or stopped). PID tracked in agent session.
+**Loop:** Continue after Verifier into W2–W4 until feature done.
 
 ---
 
