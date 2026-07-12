@@ -174,4 +174,83 @@ test.describe('Web portal W1 workplace (mocked API)', () => {
     await page.getByTestId('onboarding-profile-submit').click();
     await expect(page.getByTestId('onboarding-checkout')).toBeVisible();
   });
+
+  test('dashboard renders linked students with activity summary fields', async ({
+    page,
+  }) => {
+    await page.route('**/api/identity/me', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'pro-1',
+          email: 'pro@example.com',
+          roles: ['trainer'],
+        }),
+      });
+    });
+    await page.route('**/api/coaching/dashboard', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          students: [
+            {
+              studentId: 'stu-1',
+              email: 'aluno@example.com',
+              lastWorkout: '2026-07-10',
+              lastMeal: '2026-07-11',
+              weightTrend: 'down',
+            },
+          ],
+        }),
+      });
+    });
+
+    await page.addInitScript(() => {
+      localStorage.setItem('forma.portal.accessToken', 'test-token');
+    });
+
+    await page.goto('/');
+    await expect(page.getByText('aluno@example.com')).toBeVisible();
+    await expect(page.getByText('2026-07-10')).toBeVisible();
+    await expect(page.getByText('2026-07-11')).toBeVisible();
+    await expect(page.getByText('down')).toBeVisible();
+  });
+
+  test('invite API validation error is shown on the form', async ({ page }) => {
+    await page.route('**/api/identity/me', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'pro-1',
+          email: 'pro@example.com',
+          roles: ['trainer'],
+        }),
+      });
+    });
+    await page.route('**/api/coaching/invites', async (route) => {
+      if (route.request().method() === 'POST') {
+        await route.fulfill({
+          status: 400,
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'Must be a valid email address' }),
+        });
+        return;
+      }
+      await route.continue();
+    });
+
+    await page.addInitScript(() => {
+      localStorage.setItem('forma.portal.accessToken', 'test-token');
+    });
+
+    await page.goto('/invites');
+    await page.getByTestId('invite-email-input').fill('student@example.com');
+    await page.getByTestId('invite-submit').click();
+    await expect(page.getByRole('alert')).toContainText(
+      /valid email|e-mail válido|Must be a valid/i,
+    );
+  });
 });

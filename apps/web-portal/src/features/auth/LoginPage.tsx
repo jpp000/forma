@@ -54,7 +54,7 @@ export function LoginPage() {
     setBusy(true);
     setFormError(undefined);
     try {
-      const emailAddress = 'oauth-test@example.com';
+      const emailAddress = `dev-mock-${Date.now()}@example.com`;
       await getIdentityApi().requestOtp(emailAddress);
       const { code } = await getIdentityApi().getDevLastOtp(emailAddress);
       const { accessToken } = await getIdentityApi().verifyOtp(
