@@ -20,7 +20,10 @@
     "coaching_link_exists": "Vínculo de coaching já existe",
     "coaching_link_required": "Vínculo de coaching necessário",
     "coaching_slug_taken": "Este slug de perfil já está em uso",
-    "coaching_publish_incomplete": "Para publicar, informe nome de exibição, slug e credenciais"
+    "coaching_publish_incomplete": "Para publicar, informe nome de exibição, slug e credenciais",
+    "coaching_request_not_found": "Pedido de vínculo não encontrado",
+    "coaching_request_not_pending": "Pedido de vínculo já foi resolvido",
+    "coaching_professional_unavailable": "Profissional não disponível para pedidos"
   },
   "billing": {
     "upgrade_required": "Upgrade necessário para acessar este recurso"

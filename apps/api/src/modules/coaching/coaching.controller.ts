@@ -18,6 +18,7 @@ import { RolesGuard } from '../../common/roles.guard';
 import { CoachingService } from './coaching.service';
 import { CreateCoachingProfileDto } from './dto/create-coaching-profile.dto';
 import { CreateInviteDto } from './dto/create-invite.dto';
+import { CreateLinkRequestDto } from './dto/create-link-request.dto';
 import { UpdateCoachingProfileDto } from './dto/update-coaching-profile.dto';
 
 @ApiTags('coaching')
@@ -47,6 +48,50 @@ export class CoachingController {
     @Body() body: UpdateCoachingProfileDto,
   ) {
     return this.coachingService.updateProfile(user.id, body);
+  }
+
+  @Post('requests')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Student)
+  @ApiOperation({ summary: 'Request coaching link from a professional' })
+  async createLinkRequest(
+    @CurrentUser() user: { id: string },
+    @Body() body: CreateLinkRequestDto,
+  ) {
+    return this.coachingService.createLinkRequest(
+      user.id,
+      body.professionalUserId,
+    );
+  }
+
+  @Get('requests')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'List pending coaching link requests' })
+  async listLinkRequests(@CurrentUser() user: { id: string }) {
+    return this.coachingService.listLinkRequests(user.id);
+  }
+
+  @Post('requests/:id/accept')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Accept a coaching link request' })
+  async acceptLinkRequest(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+  ) {
+    return this.coachingService.acceptLinkRequest(user.id, id);
+  }
+
+  @Post('requests/:id/decline')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Decline a coaching link request' })
+  async declineLinkRequest(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+  ) {
+    return this.coachingService.declineLinkRequest(user.id, id);
   }
 
   @Post('invites')

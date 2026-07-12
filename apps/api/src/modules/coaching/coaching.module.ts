@@ -7,6 +7,7 @@ import { NutritionModule } from '../nutrition/nutrition.module';
 import { ProgressModule } from '../progress/progress.module';
 import { TrainingModule } from '../training/training.module';
 import { CoachingController } from './coaching.controller';
+import { CoachingPublicController } from './coaching-public.controller';
 import { CoachingService } from './coaching.service';
 
 @Module({
@@ -17,7 +18,7 @@ import { CoachingService } from './coaching.service';
     forwardRef(() => NutritionModule),
     ProgressModule,
   ],
-  controllers: [CoachingController],
+  controllers: [CoachingController, CoachingPublicController],
   providers: [CoachingService, RolesGuard, EntitlementGuard],
   exports: [CoachingService],
 })

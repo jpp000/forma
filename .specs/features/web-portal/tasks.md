@@ -423,10 +423,10 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-08, WPORT-09  
 
 **Done when**:
-- [ ] Unauthenticated get by id/slug returns 200 public payload
-- [ ] Unpublished → 404
-- [ ] List returns only `isPublished=true`
-- [ ] E2E covers public read + 404
+- [x] Unauthenticated get by id/slug returns 200 public payload
+- [x] Unpublished → 404
+- [x] List returns only `isPublished=true`
+- [x] E2E covers public read + 404
 
 **Tests**: e2e  
 **Gate**: API  
@@ -442,12 +442,12 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-10, WPORT-11  
 
 **Done when**:
-- [ ] Pending unique per student↔pro (service)
-- [ ] Accept creates `CoachingLink` and clears pending
-- [ ] Decline closes without link
-- [ ] 401/403 for wrong roles
-- [ ] Invite flow still works (no regression)
-- [ ] E2E covers request→accept and decline
+- [x] Pending unique per student↔pro (service)
+- [x] Accept creates `CoachingLink` and clears pending
+- [x] Decline closes without link
+- [x] 401/403 for wrong roles
+- [x] Invite flow still works (no regression)
+- [x] E2E covers request→accept and decline
 
 **Tests**: e2e  
 **Gate**: API  
