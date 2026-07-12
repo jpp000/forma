@@ -341,8 +341,8 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-19
 
 **Done when**:
-- [ ] SPA rewrite to `index.html` documented/configured
-- [ ] README lists local + Render env vars
+- [x] SPA rewrite to `index.html` documented/configured
+- [x] README lists local + Render env vars
 
 **Tests**: none  
 **Gate**: build  
