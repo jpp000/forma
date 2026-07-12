@@ -36,6 +36,13 @@
 | AD-030 | **Mobile client state = Zustand** — session, locale, and per-slice feature state live in Zustand stores under `apps/mobile/src/stores/`; thin hooks (`useSession`, `useLocale`) read stores; **no React Context** for app state | Session + locale migrated from Context; theme follows system via `useColorScheme` in `useFormaTheme()` (no store until user override); `SessionBootstrap` runs SecureStore restore on mount; API client wired via `wireApiStores` | 2026-07-08 |
 | AD-031 | **Mobile web testing = Expo Web + Playwright** — agents and CI smoke the student UI in Chromium at `http://localhost:19006`; `testID` on auth/onboarding/tabs; API dev CORS enables browser `PUT` (student goal); SecureStore → `localStorage` on web | No iOS/Android simulator in Cursor Cloud; `pnpm --filter @forma/mobile test:e2e` boots Postgres + API mock + Expo web; see `AGENTS.md` | 2026-07-09 |
 | AD-032 | **Git: `dev` integration, `main` release** — feature branches from `dev`; only `dev` merges to `main`; CI branch-policy + local pre-push hook | Parallel tasks merge to `dev` first; avoids direct feature→main conflicts; see `docs/GIT_WORKFLOW.md` | 2026-07-09 |
+| AD-033 | **Web portal = Vite + React SPA on Render** (not Next.js) | User choice for professional workplace; Bearer JWT + prod CORS | 2026-07-12 |
+| AD-034 | **Coaching link = invite-by-email AND student request → pro accept** | Dual initiation; “LinkedIn” discovery on mobile + classic invite | 2026-07-12 |
+| AD-035 | **Web portal delivery phases W1–W4** — W1 foundation/paywall/dashboard/invites → W2 public profile + mobile discovery/request → W3 training templates/prescribe → W4 nutrition templates + light periodization | Large delivery; independently demoable phases | 2026-07-12 |
+| AD-036 | **Periodization v1 = light weeks/blocks chaining workout plans** | Not advanced periodization (P3) | 2026-07-12 |
+| AD-037 | **Portal visual = pro dashboard language × Forma brand tokens** (`DESIGN.md`) | Dense workplace UI without leaving design system | 2026-07-12 |
+| AD-038 | **P2 focus now = web-portal only**; Food DB + exercise library deferred | User paused other P2 tracks | 2026-07-12 |
+| AD-039 | **Production CORS** — API honors `CORS_ORIGIN` allowlist in production (not dev-only) | Required for Vite portal (and any browser client) with Bearer JWT | 2026-07-12 |
 
 ## Mobile slice roadmap (student)
 
@@ -128,6 +135,17 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
+**P2 — Web portal:** Specify → Design → Tasks **complete** on `feature/web-portal-spec`. Ready to Execute **W1**.
+
+| Portal item | Value |
+|-------------|-------|
+| Branch (docs) | `feature/web-portal-spec` |
+| Docs | `context.md` · `spec.md` · `design.md` · `tasks.md` (all approved) |
+| Stack | Vite + React SPA → Render (AD-033); Approach A |
+| Execute | Start **T1** in `.specs/features/web-portal/tasks.md` on branch `feature/web-portal-w1` (from updated `dev`) |
+| W1 batches | Platform T1–T4 → Auth T5–T7 → Workplace T8–T11 → Ship T12–T14 |
+| After W1 | Verifier → then expand W2 stubs |
+
 ---
 
-**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before.
+**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before. Training prescribe for linked pros is an API gap to close in W3.
