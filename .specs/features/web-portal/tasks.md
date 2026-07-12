@@ -7,7 +7,7 @@ Implement with the **`tlc-spec-driven`** skill: follow Execute flow (per-task cy
 **Design**: `.specs/features/web-portal/design.md`  
 **Spec**: `.specs/features/web-portal/spec.md`  
 **Context**: `.specs/features/web-portal/context.md`  
-**Status**: W1 Execute complete — pending Verifier
+**Status**: W1 Verifier PASS — W2 Execute in progress (T15+)
 
 **Branch**: create from `dev` → `feature/web-portal-w1` (or continue `feature/web-portal-spec` then rename). Prefer `./scripts/git/new-feature-branch.sh feature/web-portal-w1` after merging spec docs to `dev`.
 
@@ -369,26 +369,189 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 
 ---
 
-## Later phases (W2–W4) — task stubs
+## Later phases (W2–W4)
 
-Expand to atomic tasks at phase start (same protocol). Do **not** implement now.
+### W2 — Discovery & requests (Execute now — W1 Verifier PASS)
 
-### W2 stubs
-- API: extend pro profile public fields + migration  
-- API: list/get public professionals  
-- API: link request create/list/accept/decline + e2e  
-- Portal: profile publish editor + requests inbox  
-- Mobile: Professionals tab + detail + request  
-- E2E + Verifier W2  
+```
+Batch W2-A — API data:     T15 → T16 → T17 → T18
+Batch W2-B — Portal:       T19 → T20
+Batch W2-C — Mobile:       T21 → T22
+Batch W2-D — Ship:         T23
+```
 
-### W3 stubs
+#### T15: Profile public fields + link-request migration
+
+**What**: Extend `CoachingProfessionalProfile` with `displayName`, `bio`, `slug`, `isPublished`; add `CoachingLinkRequest`  
+**Where**: `prisma/schema.prisma`, new migration  
+**Depends on**: W1 done  
+**Requirement**: WPORT-08, WPORT-10  
+
+**Done when**:
+- [x] Migration applies cleanly
+- [x] Prisma client generates new models/fields
+
+**Tests**: none (schema)  
+**Gate**: build (`pnpm db:generate`)  
+**Commit**: `feat(api): add public profile fields and link requests`
+
+---
+
+#### T16: PATCH professional profile (publish fields)
+
+**What**: `PATCH /api/coaching/profile` for displayName/bio/slug/isPublished; validate slug uniqueness  
+**Where**: coaching controller/service/DTO  
+**Depends on**: T15  
+**Requirement**: WPORT-08  
+
+**Done when**:
+- [ ] Pro can update publish fields
+- [ ] Unpublished/incomplete stays non-public
+- [ ] E2E covers happy path + slug conflict
+
+**Tests**: e2e  
+**Gate**: API  
+**Commit**: `feat(api): allow professionals to update public profile`
+
+---
+
+#### T17: Public professionals list + get
+
+**What**: `GET /api/coaching/professionals` (browse/search published); `GET /api/coaching/professionals/:idOrSlug` public DTO (no private data)  
+**Where**: coaching module  
+**Depends on**: T15, T16  
+**Requirement**: WPORT-08, WPORT-09  
+
+**Done when**:
+- [ ] Unauthenticated get by id/slug returns 200 public payload
+- [ ] Unpublished → 404
+- [ ] List returns only `isPublished=true`
+- [ ] E2E covers public read + 404
+
+**Tests**: e2e  
+**Gate**: API  
+**Commit**: `feat(api): expose public professional profiles`
+
+---
+
+#### T18: Link request create / list / accept / decline
+
+**What**: Student `POST /requests`; pro `GET /requests`; accept→link; decline→closed; idempotent pending  
+**Where**: coaching module + e2e  
+**Depends on**: T15  
+**Requirement**: WPORT-10, WPORT-11  
+
+**Done when**:
+- [ ] Pending unique per student↔pro (service)
+- [ ] Accept creates `CoachingLink` and clears pending
+- [ ] Decline closes without link
+- [ ] 401/403 for wrong roles
+- [ ] Invite flow still works (no regression)
+- [ ] E2E covers request→accept and decline
+
+**Tests**: e2e  
+**Gate**: API  
+**Commit**: `feat(api): add coaching link request flow`
+
+---
+
+#### T19: Portal profile publish editor
+
+**What**: Screen to edit displayName/bio/slug/published; save via PATCH  
+**Where**: `apps/web-portal/src/features/profile/`  
+**Depends on**: T16  
+**Requirement**: WPORT-08  
+
+**Done when**:
+- [ ] Pro can publish and see success
+- [ ] Validation errors visible
+
+**Tests**: none (smoke T23)  
+**Gate**: build  
+**Commit**: `feat(web-portal): add public profile editor`
+
+---
+
+#### T20: Portal pending requests inbox
+
+**What**: List pending requests; accept/decline actions  
+**Where**: `apps/web-portal/src/features/requests/`  
+**Depends on**: T18  
+**Requirement**: WPORT-11  
+
+**Done when**:
+- [ ] Shows requester identity
+- [ ] Accept/decline update list
+
+**Tests**: none (smoke T23)  
+**Gate**: build  
+**Commit**: `feat(web-portal): add link request inbox`
+
+---
+
+#### T21: Mobile Professionals tab (list)
+
+**What**: New tab + list/search published pros; `professionalsStore`  
+**Where**: `apps/mobile/app/(tabs)/professionals/`, stores, API client, i18n  
+**Depends on**: T17  
+**Requirement**: WPORT-09  
+
+**Done when**:
+- [ ] Authenticated student opens Professionals tab
+- [ ] List loads; error+retry
+- [ ] Follows DESIGN.md tokens
+
+**Tests**: unit/store as needed; e2e smoke in T23  
+**Gate**: build (`@forma/mobile` check-types + test)  
+**Commit**: `feat(mobile): add Professionals discovery tab`
+
+---
+
+#### T22: Mobile professional detail + request CTA
+
+**What**: Detail screen from public profile; request coaching button  
+**Where**: mobile professionals feature  
+**Depends on**: T18, T21  
+**Requirement**: WPORT-09, WPORT-10  
+
+**Done when**:
+- [ ] Detail shows public fields
+- [ ] Request creates pending (idempotent UX)
+- [ ] Errors recoverable
+
+**Tests**: none (smoke T23)  
+**Gate**: build  
+**Commit**: `feat(mobile): request coaching from professional profile`
+
+---
+
+#### T23: W2 smoke + Verifier
+
+**What**: API e2e green for new endpoints; portal/mobile smoke; Verifier writes/extends validation  
+**Depends on**: T19–T22  
+**Requirement**: WPORT-08–11  
+
+**Done when**:
+- [ ] Gates green
+- [ ] STATE handoff W2 complete pending/after Verifier
+- [ ] Verifier PASS for W2 ACs
+
+**Tests**: e2e  
+**Gate**: full W2  
+**Commit**: `test(web-portal): add W2 discovery smoke` (+ verifier docs commit)
+
+---
+
+### W3–W4 stubs (do not start until W2 Verifier PASS)
+
+#### W3 stubs
 - API: training templates CRUD + e2e  
 - API: prescribe plan to linked student + e2e  
 - Portal: template library + prescribe UI  
 - Mobile: verify prescribed plan visible  
 - Verifier W3  
 
-### W4 stubs
+#### W4 stubs
 - API: nutrition templates + prescribe-from-template  
 - API: periodization + assign + lazy advance + e2e  
 - Portal: nutrition templates + periodization builder  
@@ -411,7 +574,10 @@ Expand to atomic tasks at phase start (same protocol). Do **not** implement now.
 | WPORT-17 | T4 |
 | WPORT-18 | T5, T12 |
 | WPORT-19 | T2, T13 |
-| WPORT-08–16 | W2–W4 stubs |
+| WPORT-08 | T15–T17, T19 |
+| WPORT-09 | T17, T21, T22 |
+| WPORT-10 | T15, T18, T22 |
+| WPORT-11 | T18, T20 |
 
 ---
 
