@@ -1,52 +1,51 @@
-# `@forma/web-portal`
+# @forma/web-portal
 
 Professional workplace SPA (Vite + React) for trainers and nutritionists.
 
 ## Local development
 
 ```bash
-# API (separate terminal) with CORS for Vite:
+# API (separate terminal) — include portal origin for CORS
 export DATABASE_URL=postgresql://forma:forma@localhost:5432/forma
+export PORT=3000 NODE_ENV=development EMAIL_PROVIDER=mock
+export JWT_SECRET=dev-secret-change-in-production
+export OAUTH_MOCK=true
 export CORS_ORIGIN=http://localhost:5173
 export OAUTH_WEB_SUCCESS_URL=http://localhost:5173/oauth/callback
-export OAUTH_MOCK=true EMAIL_PROVIDER=mock JWT_SECRET=dev-secret
 pnpm --filter @forma/api dev
 
-# Portal:
+# Portal
 cd apps/web-portal
-# optional .env:
-# VITE_API_URL=http://localhost:3000
-# VITE_OAUTH_SUCCESS_URL=http://localhost:5173/oauth/callback
+# optional: VITE_API_URL=http://localhost:3000
 pnpm --filter @forma/web-portal dev
 ```
 
 Open `http://localhost:5173`.
 
-## Scripts
-
-| Command | Purpose |
-|---------|---------|
-| `pnpm --filter @forma/web-portal dev` | Vite on port 5173 |
-| `pnpm --filter @forma/web-portal build` | Production build → `dist/` |
-| `pnpm --filter @forma/web-portal check-types` | `tsc --noEmit` |
-| `pnpm --filter @forma/web-portal test` | Vitest unit |
-| `pnpm --filter @forma/web-portal test:e2e` | Playwright smoke |
-
-## Environment
+## Environment variables
 
 | Variable | Where | Purpose |
 |----------|-------|---------|
-| `VITE_API_URL` | Portal build / local | API origin (e.g. `https://api.example.com`) |
-| `VITE_OAUTH_SUCCESS_URL` | Portal (optional) | Client-side oauth return hint |
-| `OAUTH_WEB_SUCCESS_URL` | **API** | OAuth `platform=web` redirect target (`…/oauth/callback`) |
-| `CORS_ORIGIN` | **API** | Comma-separated portal origins (required in production) |
+| `VITE_API_URL` | Portal build/runtime | API base URL (default `http://localhost:3000`) |
+| `VITE_OAUTH_SUCCESS_URL` | Portal (optional) | Documented callback path; API uses `OAUTH_WEB_SUCCESS_URL` |
+| `OAUTH_WEB_SUCCESS_URL` | API | OAuth `platform=web` redirect target (`…/oauth/callback`) |
+| `CORS_ORIGIN` | API | Comma-separated allowlist (include portal origin in production) |
+
+## Scripts
+
+| Command | Use |
+|---------|-----|
+| `pnpm --filter @forma/web-portal dev` | Vite on port 5173 |
+| `pnpm --filter @forma/web-portal build` | Production build → `dist/` |
+| `pnpm --filter @forma/web-portal check-types` | `tsc --noEmit` |
+| `pnpm --filter @forma/web-portal test` | Vitest unit tests |
+| `pnpm --filter @forma/web-portal test:e2e` | Playwright W1 smoke |
 
 ## Render
 
-Static site `forma-web-portal` in root `render.yaml`:
+Blueprint service `forma-web-portal` in root `render.yaml`:
 
-- Build: `pnpm install --frozen-lockfile && pnpm --filter @forma/types build && pnpm --filter @forma/web-portal build`
-- Publish: `apps/web-portal/dist`
+- Static site; `staticPublishPath: apps/web-portal/dist`
 - SPA rewrite: `/*` → `/index.html`
-
-Set `VITE_API_URL` on the static site (build-time). Set `CORS_ORIGIN` and `OAUTH_WEB_SUCCESS_URL` on `forma-api` to the portal public URL.
+- Set `VITE_API_URL` to the public API URL at **build** time
+- On `forma-api`, set `CORS_ORIGIN` to the portal URL and `OAUTH_WEB_SUCCESS_URL` to `{portal}/oauth/callback`
