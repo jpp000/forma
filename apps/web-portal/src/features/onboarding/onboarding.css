@@ -1,0 +1,55 @@
+.fp-onboarding-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fp-onboarding-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 28rem;
+  padding: 1rem;
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+}
+
+.fp-onboarding-panel h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.fp-onboarding-panel p {
+  margin: 0;
+  color: var(--color-label-secondary);
+}
+
+.fp-onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fp-onboarding-type {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.fp-onboarding-type legend {
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-label-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.fp-onboarding-type label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}

@@ -4,9 +4,9 @@ import { isProfessionalRole } from '../api/errors';
 import { LoginPage } from '../features/auth/LoginPage';
 import { OAuthCallbackPage } from '../features/auth/OAuthCallbackPage';
 import { OtpPage } from '../features/auth/OtpPage';
-import { DashboardPlaceholder } from '../features/dashboard/DashboardPlaceholder';
-import { InvitesPlaceholder } from '../features/invites/InvitesPlaceholder';
-import { OnboardingPlaceholder } from '../features/onboarding/OnboardingPlaceholder';
+import { DashboardPage } from '../features/dashboard/DashboardPage';
+import { InvitesPage } from '../features/invites/InvitesPage';
+import { OnboardingPage } from '../features/onboarding/OnboardingPage';
 import { useSessionStore } from '../stores/sessionStore';
 
 function BootstrapShell() {
@@ -88,7 +88,7 @@ export function AppRoutes() {
           path="/onboarding"
           element={
             <RequireAuth>
-              <OnboardingPlaceholder />
+              <OnboardingPage />
             </RequireAuth>
           }
         />
@@ -97,7 +97,7 @@ export function AppRoutes() {
           element={
             <RequireAuth>
               <RequireProfessional>
-                <DashboardPlaceholder />
+                <DashboardPage />
               </RequireProfessional>
             </RequireAuth>
           }
@@ -107,7 +107,7 @@ export function AppRoutes() {
           element={
             <RequireAuth>
               <RequireProfessional>
-                <InvitesPlaceholder />
+                <InvitesPage />
               </RequireProfessional>
             </RequireAuth>
           }
