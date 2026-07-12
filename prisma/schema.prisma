@@ -262,6 +262,10 @@ model CoachingProfessionalProfile {
   userId      String   @unique @map("user_id")
   type        String
   credentials String
+  displayName String?  @map("display_name")
+  bio         String?
+  slug        String?  @unique
+  isPublished Boolean  @default(false) @map("is_published")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -290,6 +294,19 @@ model CoachingLink {
   @@unique([professionalUserId, studentUserId])
   @@index([professionalUserId])
   @@map("coaching_links")
+}
+
+model CoachingLinkRequest {
+  id                 String    @id @default(cuid())
+  professionalUserId String    @map("professional_user_id")
+  studentUserId      String    @map("student_user_id")
+  status             String // pending | accepted | declined | expired
+  createdAt          DateTime  @default(now()) @map("created_at")
+  resolvedAt         DateTime? @map("resolved_at")
+
+  @@index([professionalUserId, status])
+  @@index([studentUserId, status])
+  @@map("coaching_link_requests")
 }
 
 model BillingPlan {
