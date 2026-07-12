@@ -287,7 +287,7 @@ Each phase is independently demoable. Later phases may ship API + portal + mobil
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| WPORT-01 | W1-01 Portal scaffold & auth | W1 | Pending |
+| WPORT-01 | W1-01 Portal scaffold & auth | W1 | In progress (T1) |
 | WPORT-02 | W1-01 Session 401 handling | W1 | Pending |
 | WPORT-03 | W1-02 Checkout professional plan | W1 | Pending |
 | WPORT-04 | W1-02 Profile create + 402 paywall | W1 | Pending |

@@ -115,9 +115,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-01
 
 **Done when**:
-- [ ] `pnpm --filter @forma/web-portal dev` starts Vite
-- [ ] `pnpm --filter @forma/web-portal check-types` passes (empty App OK)
-- [ ] Package name `@forma/web-portal`
+- [x] `pnpm --filter @forma/web-portal dev` starts Vite
+- [x] `pnpm --filter @forma/web-portal check-types` passes (empty App OK)
+- [x] Package name `@forma/web-portal`
 
 **Tests**: none  
 **Gate**: build  
