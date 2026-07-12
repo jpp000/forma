@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 7,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "ac_gap::when a dashboard row exposes summary fields from the api assert each field s rendered value with a non empty fixture not only empty or error states",
+      "text": "When a dashboard row exposes summary fields from the API, assert each field’s rendered value with a non-empty fixture—not only empty or error states",
+      "signal": "ac_gap",
+      "scope": "apps/web-portal",
+      "status": "candidate",
+      "features": [
+        "web-portal"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "W1-03.2 / DashboardPage activity columns (apps/web-portal)"
+      ],
+      "created": "2026-07-12T20:36:13Z",
+      "last_seen": "2026-07-12T20:36:13Z"
+    },
+    {
+      "id": "L-002",
+      "key": "ac_gap::for form submits that map api errors to ui assert the visible localized error for validation and rate limit status codes not only the success path",
+      "text": "For form submits that map API errors to UI, assert the visible localized error for validation and rate-limit status codes—not only the success path",
+      "signal": "ac_gap",
+      "scope": "apps/web-portal",
+      "status": "candidate",
+      "features": [
+        "web-portal"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "W1-04.2 invite API errors (apps/web-portal)"
+      ],
+      "created": "2026-07-12T20:36:13Z",
+      "last_seen": "2026-07-12T20:36:13Z"
+    },
+    {
+      "id": "L-003",
+      "key": "surviving_mutant::when an http client delegates 401 to an onunauthorized hook assert the wired side effect clears the stored session not only that a mock callback was invoked",
+      "text": "When an HTTP client delegates 401 to an onUnauthorized hook, assert the wired side effect clears the stored session—not only that a mock callback was invoked",
+      "signal": "surviving_mutant",
+      "scope": "apps/web-portal",
+      "status": "candidate",
+      "features": [
+        "web-portal"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "sensor mutant 8 wire.ts onUnauthorized (apps/web-portal)"
+      ],
+      "created": "2026-07-12T20:36:13Z",
+      "last_seen": "2026-07-12T20:36:13Z"
+    },
+    {
+      "id": "L-004",
+      "key": "spec_precision_gap::auth recovery acs that require both clearing storage and returning to login need assertions for both outcomes not the error kind mapper alone",
+      "text": "Auth recovery ACs that require both clearing storage and returning to login need assertions for both outcomes, not the error-kind mapper alone",
+      "signal": "spec_precision_gap",
+      "scope": "apps/web-portal",
+      "status": "candidate",
+      "features": [
+        "web-portal"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "W1-01.4 401 clear session and return to auth (apps/web-portal)",
+        "W1-01.4 401 clear session and return to auth (re-verify iter 1) (apps/web-portal)"
+      ],
+      "created": "2026-07-12T20:36:13Z",
+      "last_seen": "2026-07-12T20:47:19Z"
+    },
+    {
+      "id": "L-005",
+      "key": "surviving_mutant::exercise the production http wiring module or an exported factory when asserting 401 session clear locally reconstructing the same onunauthorized callback leaves wire ts untested",
+      "text": "Exercise the production HTTP wiring module (or an exported factory) when asserting 401 session clear—locally reconstructing the same onUnauthorized callback leaves wire.ts untested",
+      "signal": "surviving_mutant",
+      "scope": "apps/web-portal",
+      "status": "candidate",
+      "features": [
+        "web-portal"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "sensor mutant 8 wire.ts onUnauthorized (re-verify iter 1) (apps/web-portal)"
+      ],
+      "created": "2026-07-12T20:47:19Z",
+      "last_seen": "2026-07-12T20:47:19Z"
+    },
+    {
+      "id": "L-006",
+      "key": "spec_precision_gap::when an ac spans accept api plus portal roster refresh assert the portal visible student row after accept or explicitly accept api only system proof in the ac",
+      "text": "When an AC spans accept API plus portal roster refresh, assert the portal-visible student row after accept—or explicitly accept API-only system proof in the AC",
+      "signal": "spec_precision_gap",
+      "scope": "apps/web-portal",
+      "status": "candidate",
+      "features": [
+        "web-portal"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "W1-04.3 student accept appears on dashboard after refresh (apps/web-portal)",
+        "W1-04.3 student accept appears on dashboard after refresh (re-verify iter 2) (apps/web-portal)"
+      ],
+      "created": "2026-07-12T20:47:19Z",
+      "last_seen": "2026-07-12T20:50:04Z"
+    }
+  ]
+}

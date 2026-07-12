@@ -135,17 +135,17 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** W1 Execute **complete** on `feature/web-portal-w1` — pending Verifier.
+**P2 — Web portal:** W1 **Verifier PASS** on `feature/web-portal-w1`. Ready for W2.
 
 | Portal item | Value |
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
-| Done | T1–T14 (scaffold → smoke e2e) |
-| Gates | portal unit 8 · e2e 3 · check-types PASS |
-| Next | **Verifier** → `validation.md` → expand/execute W2 stubs |
+| Done | T1–T14 + Verifier PASS (`.specs/features/web-portal/validation.md`) |
+| Gates | portal unit **15** · e2e **10** · check-types PASS |
+| Next | Expand W2 stubs → atomic tasks → Execute (public profile + mobile discovery + request/accept) |
 | Smoke | `pnpm --filter @forma/web-portal test:e2e` |
 
-**Loop:** Continue after Verifier into W2–W4 until feature done.
+**Loop:** Continue into W2–W4 until feature done.
 
 ---
 
