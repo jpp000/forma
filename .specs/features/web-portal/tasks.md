@@ -463,8 +463,8 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-08  
 
 **Done when**:
-- [ ] Pro can publish and see success
-- [ ] Validation errors visible
+- [x] Pro can publish and see success
+- [x] Validation errors visible
 
 **Tests**: none (smoke T23)  
 **Gate**: build  
@@ -480,8 +480,8 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-11  
 
 **Done when**:
-- [ ] Shows requester identity
-- [ ] Accept/decline update list
+- [x] Shows requester identity
+- [x] Accept/decline update list
 
 **Tests**: none (smoke T23)  
 **Gate**: build  

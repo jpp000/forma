@@ -39,6 +39,14 @@ export class CoachingController {
     return this.coachingService.createProfile(user.id, body);
   }
 
+  @Get('profile')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Get own professional profile' })
+  async getProfile(@CurrentUser() user: { id: string }) {
+    return this.coachingService.getOwnProfile(user.id);
+  }
+
   @Patch('profile')
   @UseGuards(RolesGuard)
   @Roles(Role.Trainer, Role.Nutritionist)

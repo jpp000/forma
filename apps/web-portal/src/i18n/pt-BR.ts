@@ -63,6 +63,27 @@ const ptBR = {
   'invites.emailInvalid': 'Informe um e-mail válido',
   'invites.submit': 'Enviar convite',
   'invites.success': 'Convite enviado para {{email}}. Expira em 7 dias.',
+  'profile.title': 'Perfil público',
+  'profile.eyebrow': 'Descoberta',
+  'profile.displayName': 'Nome de exibição',
+  'profile.bio': 'Bio',
+  'profile.slug': 'Slug do perfil',
+  'profile.slugInvalid':
+    'Use letras minúsculas, números e hífens (ex.: coach-ana)',
+  'profile.credentials': 'Credenciais',
+  'profile.publish': 'Publicar perfil para alunos',
+  'profile.submit': 'Salvar perfil',
+  'profile.success': 'Perfil salvo.',
+  'dashboard.profileCta': 'Editar perfil público',
+  'dashboard.requestsCta': 'Pedidos de vínculo',
+  'requests.title': 'Pedidos de vínculo',
+  'requests.eyebrow': 'Coaching',
+  'requests.loading': 'Carregando pedidos…',
+  'requests.empty': 'Nenhum pedido pendente.',
+  'requests.colStudent': 'Aluno',
+  'requests.colCreated': 'Recebido em',
+  'requests.accept': 'Aceitar',
+  'requests.decline': 'Recusar',
 } as const;
 
 export type TranslationKey = keyof typeof ptBR;

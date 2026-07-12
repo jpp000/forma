@@ -107,6 +107,14 @@ export class CoachingService {
     });
   }
 
+  async getOwnProfile(userId: string) {
+    const profile = await this.getProfileByUserId(userId);
+    if (!profile) {
+      throw new NotFoundException('errors.forbidden');
+    }
+    return profile;
+  }
+
   toPublicProfessional(profile: {
     id: string;
     userId: string;

@@ -1,0 +1,25 @@
+.fp-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 28rem;
+}
+
+.fp-profile-bio {
+  resize: vertical;
+  min-height: 6rem;
+  font-family: inherit;
+}
+
+.fp-profile-publish {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.fp-profile-success {
+  margin: 0;
+  color: var(--color-primary-pressed);
+  font-weight: 600;
+}

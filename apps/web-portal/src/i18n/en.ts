@@ -65,6 +65,27 @@ const en: Record<TranslationKey, string> = {
   'invites.emailInvalid': 'Enter a valid email',
   'invites.submit': 'Send invite',
   'invites.success': 'Invite sent to {{email}}. It expires in 7 days.',
+  'profile.title': 'Public profile',
+  'profile.eyebrow': 'Discovery',
+  'profile.displayName': 'Display name',
+  'profile.bio': 'Bio',
+  'profile.slug': 'Profile slug',
+  'profile.slugInvalid':
+    'Use lowercase letters, numbers, and hyphens (e.g. coach-ana)',
+  'profile.credentials': 'Credentials',
+  'profile.publish': 'Publish profile for students',
+  'profile.submit': 'Save profile',
+  'profile.success': 'Profile saved.',
+  'dashboard.profileCta': 'Edit public profile',
+  'dashboard.requestsCta': 'Link requests',
+  'requests.title': 'Link requests',
+  'requests.eyebrow': 'Coaching',
+  'requests.loading': 'Loading requests…',
+  'requests.empty': 'No pending requests.',
+  'requests.colStudent': 'Student',
+  'requests.colCreated': 'Received',
+  'requests.accept': 'Accept',
+  'requests.decline': 'Decline',
 };
 
 export default en;

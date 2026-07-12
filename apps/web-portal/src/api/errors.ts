@@ -38,7 +38,7 @@ export function mapApiError(error: unknown): MappedApiError {
     if (error.status === 410) {
       return { kind: 'gone', message: error.message, status: 410 };
     }
-    if (error.status === 400 || error.status === 422) {
+    if (error.status === 400 || error.status === 422 || error.status === 409) {
       return {
         kind: 'validation',
         message: error.message,
