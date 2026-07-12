@@ -141,12 +141,11 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
 | Docs | `context.md` · `spec.md` · `design.md` · `tasks.md` |
-| Done | T1 scaffold · T2 CORS · T3 OAuth web · T4 tokens/UI |
-| Next | **T5** API client + sessionStore + error helpers |
-| W1 batches | Platform T1–T4 ✅ → Auth T5–T7 → Workplace T8–T11 → Ship T12–T14 |
-| After W1 | Verifier → then expand W2 stubs |
+| Done | T1–T11 (scaffold → invites) |
+| Next | **T12** i18n → **T13** Render → **T14** smoke e2e → Verifier |
+| After W1 | Expand/execute W2–W4 stubs |
 
-**Loop:** Self-paced agent loop continues Execute until W1–W4 done (or stopped).
+**Loop:** Dynamic self-paced loop continues until web-portal feature done (or stopped). PID tracked in agent session.
 
 ---
 
