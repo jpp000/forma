@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { mapApiError } from '../../api/errors';
 import { getCoachingApi } from '../../api/wire';
-import { Button, InlineError, Page, TextField } from '../../ui';
+import { useT } from '../../i18n';
+import { Button, InlineError, LocaleSwitcher, Page, TextField } from '../../ui';
 import './invites.css';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function InvitesPage() {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<string>();
   const [formError, setFormError] = useState<string>();
@@ -18,7 +20,7 @@ export function InvitesPage() {
     event.preventDefault();
     const trimmed = email.trim();
     if (!EMAIL_RE.test(trimmed)) {
-      setEmailError('Enter a valid email');
+      setEmailError(t('invites.emailInvalid'));
       return;
     }
 
@@ -29,7 +31,7 @@ export function InvitesPage() {
 
     try {
       await getCoachingApi().createInvite(trimmed);
-      setSuccess(`Invite sent to ${trimmed}. It expires in 7 days.`);
+      setSuccess(t('invites.success', { email: trimmed }));
       setEmail('');
     } catch (error) {
       setFormError(mapApiError(error).message);
@@ -40,14 +42,17 @@ export function InvitesPage() {
 
   return (
     <Page
-      title="Invite student"
-      eyebrow="Coaching"
+      title={t('invites.title')}
+      eyebrow={t('invites.eyebrow')}
       actions={
-        <Link to="/">
-          <Button type="button" variant="ghost">
-            Back to dashboard
-          </Button>
-        </Link>
+        <>
+          <LocaleSwitcher />
+          <Link to="/">
+            <Button type="button" variant="ghost">
+              {t('common.backDashboard')}
+            </Button>
+          </Link>
+        </>
       }
     >
       <form
@@ -56,7 +61,7 @@ export function InvitesPage() {
         data-testid="invite-form"
       >
         <TextField
-          label="Student email"
+          label={t('invites.emailLabel')}
           name="studentEmail"
           type="email"
           value={email}
@@ -71,7 +76,7 @@ export function InvitesPage() {
           </p>
         ) : null}
         <Button type="submit" disabled={busy} data-testid="invite-submit">
-          Send invite
+          {t('invites.submit')}
         </Button>
       </form>
     </Page>

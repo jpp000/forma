@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { mapApiError } from '../../api/errors';
 import { getIdentityApi } from '../../api/wire';
+import { useT } from '../../i18n';
 import { useSessionStore } from '../../stores/sessionStore';
-import { Button, InlineError, Page, TextField } from '../../ui';
+import { Button, InlineError, LocaleSwitcher, Page, TextField } from '../../ui';
 import './auth.css';
 
 const OTP_LENGTH = 6;
 
 export function OtpPage() {
+  const t = useT();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const email = params.get('email') ?? '';
@@ -21,11 +23,11 @@ export function OtpPage() {
   async function handleVerify(event: React.FormEvent) {
     event.preventDefault();
     if (!email) {
-      setFormError('Missing email');
+      setFormError(t('errors.missingEmail'));
       return;
     }
     if (code.length !== OTP_LENGTH) {
-      setCodeError('Enter the 6-digit code');
+      setCodeError(t('auth.otpInvalid'));
       return;
     }
 
@@ -56,17 +58,21 @@ export function OtpPage() {
   }
 
   return (
-    <Page title="Enter code" eyebrow="Auth">
+    <Page
+      title={t('auth.otpTitle')}
+      eyebrow={t('auth.otpEyebrow')}
+      actions={<LocaleSwitcher />}
+    >
       <form
         className="fp-auth-form"
         onSubmit={handleVerify}
         data-testid="auth-otp-screen"
       >
         <p className="fp-auth-hint">
-          Code sent to <strong>{email || '—'}</strong>
+          {t('auth.otpSentTo')} <strong>{email || '—'}</strong>
         </p>
         <TextField
-          label="Code"
+          label={t('auth.otpLabel')}
           name="code"
           inputMode="numeric"
           autoComplete="one-time-code"
@@ -83,7 +89,7 @@ export function OtpPage() {
           disabled={busy}
           data-testid="auth-otp-submit-button"
         >
-          Verify
+          {t('auth.otpSubmit')}
         </Button>
       </form>
 
@@ -94,12 +100,12 @@ export function OtpPage() {
           onClick={() => void handleDevFill()}
           data-testid="auth-dev-otp-fill"
         >
-          Dev: use mock code
+          {t('auth.devOtpFill')}
         </Button>
       ) : null}
 
       <p className="fp-auth-hint">
-        <Link to="/login">Back to login</Link>
+        <Link to="/login">{t('auth.backLogin')}</Link>
       </p>
     </Page>
   );

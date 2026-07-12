@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { mapApiError } from '../../api/errors';
 import { getBillingApi } from '../../api/wire';
+import { useT } from '../../i18n';
 import { Button, InlineError } from '../../ui';
 import './onboarding.css';
 
 export function CheckoutPanel() {
+  const t = useT();
   const navigate = useNavigate();
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -25,11 +27,8 @@ export function CheckoutPanel() {
 
   return (
     <section className="fp-onboarding-panel" data-testid="onboarding-checkout">
-      <h2>Subscribe as a professional</h2>
-      <p>
-        A paid professional plan is required before creating a trainer or
-        nutritionist profile.
-      </p>
+      <h2>{t('onboarding.checkoutTitle')}</h2>
+      <p>{t('onboarding.checkoutBody')}</p>
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="fp-onboarding-actions">
         <Button
@@ -38,10 +37,10 @@ export function CheckoutPanel() {
           onClick={() => void handleCheckout()}
           data-testid="onboarding-checkout-button"
         >
-          Continue to checkout
+          {t('onboarding.checkoutCta')}
         </Button>
         <Button type="button" variant="ghost" onClick={() => navigate('/')}>
-          I already subscribed
+          {t('onboarding.alreadySubscribed')}
         </Button>
       </div>
     </section>

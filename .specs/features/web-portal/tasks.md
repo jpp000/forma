@@ -323,8 +323,8 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-18
 
 **Done when**:
-- [ ] Switching locale updates UI strings
-- [ ] API client sends `Accept-Language`
+- [x] Switching locale updates UI strings
+- [x] API client sends `Accept-Language`
 
 **Tests**: none  
 **Gate**: build  

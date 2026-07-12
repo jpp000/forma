@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { mapApiError } from '../../api/errors';
 import { getIdentityApi } from '../../api/wire';
+import { useT } from '../../i18n';
 import { useSessionStore } from '../../stores/sessionStore';
-import { Button, InlineError, Page, TextField } from '../../ui';
+import { Button, InlineError, LocaleSwitcher, Page, TextField } from '../../ui';
 import './auth.css';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,6 +17,7 @@ function apiBaseUrl(): string {
 }
 
 export function LoginPage() {
+  const t = useT();
   const navigate = useNavigate();
   const signIn = useSessionStore((s) => s.signIn);
   const [email, setEmail] = useState('');
@@ -27,7 +29,7 @@ export function LoginPage() {
     event.preventDefault();
     const trimmed = email.trim();
     if (!EMAIL_RE.test(trimmed)) {
-      setEmailError('Enter a valid email');
+      setEmailError(t('auth.emailInvalid'));
       return;
     }
 
@@ -69,14 +71,18 @@ export function LoginPage() {
   }
 
   return (
-    <Page title="Forma" eyebrow="Portal">
+    <Page
+      title={t('brand.name')}
+      eyebrow={t('auth.eyebrow')}
+      actions={<LocaleSwitcher />}
+    >
       <form
         className="fp-auth-form"
         onSubmit={handleRequestOtp}
         data-testid="auth-screen"
       >
         <TextField
-          label="Email"
+          label={t('auth.emailLabel')}
           name="email"
           type="email"
           autoComplete="email"
@@ -91,19 +97,19 @@ export function LoginPage() {
           disabled={busy}
           data-testid="auth-request-otp-button"
         >
-          Continue with email
+          {t('auth.requestOtp')}
         </Button>
       </form>
 
       <div className="fp-auth-oauth">
         <a className="fp-auth-oauth__link" href={oauthHref('google')}>
-          Continue with Google
+          {t('auth.oauthGoogle')}
         </a>
         <a className="fp-auth-oauth__link" href={oauthHref('apple')}>
-          Continue with Apple
+          {t('auth.oauthApple')}
         </a>
         <a className="fp-auth-oauth__link" href={oauthHref('facebook')}>
-          Continue with Facebook
+          {t('auth.oauthFacebook')}
         </a>
       </div>
 
@@ -115,12 +121,13 @@ export function LoginPage() {
           onClick={() => void handleDevMockLogin()}
           data-testid="auth-dev-mock-login"
         >
-          Dev: quick login (mock)
+          {t('auth.devMockLogin')}
         </Button>
       ) : null}
 
       <p className="fp-auth-hint">
-        Already verifying a code? <Link to="/login/otp">Enter OTP</Link>
+        {t('auth.otpHintLink')}{' '}
+        <Link to="/login/otp">{t('auth.otpHintCta')}</Link>
       </p>
     </Page>
   );

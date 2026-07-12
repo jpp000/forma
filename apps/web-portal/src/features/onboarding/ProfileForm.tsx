@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { mapApiError } from '../../api/errors';
 import { getCoachingApi } from '../../api/wire';
+import { useT } from '../../i18n';
 import { useSessionStore } from '../../stores/sessionStore';
 import { Button, InlineError, TextField } from '../../ui';
 import { CheckoutPanel } from './CheckoutPanel';
@@ -10,6 +11,7 @@ import './onboarding.css';
 type ProfileType = 'trainer' | 'nutritionist';
 
 export function ProfileForm() {
+  const t = useT();
   const navigate = useNavigate();
   const refreshMe = useSessionStore((s) => s.refreshMe);
   const [type, setType] = useState<ProfileType>('trainer');
@@ -23,7 +25,7 @@ export function ProfileForm() {
     event.preventDefault();
     const trimmed = credentials.trim();
     if (!trimmed) {
-      setCredentialsError('Credentials are required');
+      setCredentialsError(t('onboarding.credentialsRequired'));
       return;
     }
 
@@ -57,9 +59,9 @@ export function ProfileForm() {
         onSubmit={handleSubmit}
         data-testid="onboarding-profile-form"
       >
-        <h2>Create your professional profile</h2>
+        <h2>{t('onboarding.profileTitle')}</h2>
         <fieldset className="fp-onboarding-type">
-          <legend>Type</legend>
+          <legend>{t('onboarding.typeLegend')}</legend>
           <label>
             <input
               type="radio"
@@ -68,7 +70,7 @@ export function ProfileForm() {
               onChange={() => setType('trainer')}
               data-testid="onboarding-type-trainer"
             />
-            Trainer
+            {t('onboarding.typeTrainer')}
           </label>
           <label>
             <input
@@ -78,11 +80,11 @@ export function ProfileForm() {
               onChange={() => setType('nutritionist')}
               data-testid="onboarding-type-nutritionist"
             />
-            Nutritionist
+            {t('onboarding.typeNutritionist')}
           </label>
         </fieldset>
         <TextField
-          label="Credentials"
+          label={t('onboarding.credentials')}
           name="credentials"
           value={credentials}
           onChange={(e) => setCredentials(e.target.value)}
@@ -95,7 +97,7 @@ export function ProfileForm() {
           disabled={busy}
           data-testid="onboarding-profile-submit"
         >
-          Create profile
+          {t('onboarding.profileSubmit')}
         </Button>
       </form>
     </div>

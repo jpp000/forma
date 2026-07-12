@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { ApiError } from './client';
 
 export type MappedApiErrorKind =
@@ -48,14 +49,14 @@ export function mapApiError(error: unknown): MappedApiError {
   }
 
   if (error instanceof TypeError) {
-    return { kind: 'network', message: 'Network error' };
+    return { kind: 'network', message: t('errors.network') };
   }
 
   if (error instanceof Error) {
     return { kind: 'generic', message: error.message };
   }
 
-  return { kind: 'generic', message: 'Unexpected error' };
+  return { kind: 'generic', message: t('errors.generic') };
 }
 
 export function isProfessionalRole(

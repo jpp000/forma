@@ -1,43 +1,46 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import type { CoachingStudentRow } from '../../api/coaching';
+import { useT } from '../../i18n';
 import { useDashboardStore } from '../../stores/dashboardStore';
 import {
   Button,
   DataTable,
   type DataTableColumn,
   InlineError,
+  LocaleSwitcher,
   Page,
 } from '../../ui';
 
-const columns: DataTableColumn<CoachingStudentRow>[] = [
-  {
-    key: 'email',
-    header: 'Student',
-    render: (row) => row.email,
-  },
-  {
-    key: 'lastWorkout',
-    header: 'Last workout',
-    render: (row) => row.lastWorkout ?? '—',
-  },
-  {
-    key: 'lastMeal',
-    header: 'Last meal',
-    render: (row) => row.lastMeal ?? '—',
-  },
-  {
-    key: 'weightTrend',
-    header: 'Weight trend',
-    render: (row) => row.weightTrend ?? '—',
-  },
-];
-
 export function DashboardPage() {
+  const t = useT();
   const students = useDashboardStore((s) => s.students);
   const isLoading = useDashboardStore((s) => s.isLoading);
   const error = useDashboardStore((s) => s.error);
   const fetchDashboard = useDashboardStore((s) => s.fetch);
+
+  const columns: DataTableColumn<CoachingStudentRow>[] = [
+    {
+      key: 'email',
+      header: t('dashboard.colStudent'),
+      render: (row) => row.email,
+    },
+    {
+      key: 'lastWorkout',
+      header: t('dashboard.colLastWorkout'),
+      render: (row) => row.lastWorkout ?? '—',
+    },
+    {
+      key: 'lastMeal',
+      header: t('dashboard.colLastMeal'),
+      render: (row) => row.lastMeal ?? '—',
+    },
+    {
+      key: 'weightTrend',
+      header: t('dashboard.colWeightTrend'),
+      render: (row) => row.weightTrend ?? '—',
+    },
+  ];
 
   useEffect(() => {
     void fetchDashboard();
@@ -45,14 +48,17 @@ export function DashboardPage() {
 
   return (
     <Page
-      title="Clients"
-      eyebrow="Dashboard"
+      title={t('dashboard.title')}
+      eyebrow={t('dashboard.eyebrow')}
       actions={
-        <Link to="/invites">
-          <Button type="button" data-testid="dashboard-invite-cta">
-            Invite student
-          </Button>
-        </Link>
+        <>
+          <LocaleSwitcher />
+          <Link to="/invites">
+            <Button type="button" data-testid="dashboard-invite-cta">
+              {t('dashboard.inviteCta')}
+            </Button>
+          </Link>
+        </>
       }
     >
       {error ? (
@@ -64,7 +70,7 @@ export function DashboardPage() {
               onClick={() => void fetchDashboard()}
               data-testid="dashboard-retry"
             >
-              Retry
+              {t('common.retry')}
             </Button>
           }
         >
@@ -72,7 +78,7 @@ export function DashboardPage() {
         </InlineError>
       ) : null}
 
-      {isLoading ? <p>Loading clients…</p> : null}
+      {isLoading ? <p>{t('dashboard.loading')}</p> : null}
 
       {!isLoading && !error ? (
         <DataTable
@@ -81,8 +87,8 @@ export function DashboardPage() {
           rowKey={(row) => row.studentId}
           empty={
             <div data-testid="dashboard-empty">
-              <p>No linked students yet.</p>
-              <Link to="/invites">Invite a student by email</Link>
+              <p>{t('dashboard.empty')}</p>
+              <Link to="/invites">{t('dashboard.emptyCta')}</Link>
             </div>
           }
         />
