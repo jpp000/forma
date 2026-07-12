@@ -1,11 +1,11 @@
-import { spawn } from 'node:child_process';
-import { execSync } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const portalRoot = resolve(__dirname, '..');
 const repoRoot = resolve(portalRoot, '../..');
+const apiRoot = resolve(repoRoot, 'apps/api');
 
 const API_PORT = Number(process.env.E2E_API_PORT ?? 3000);
 const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 5173);
@@ -40,6 +40,20 @@ function log(message) {
   console.log(`[portal-e2e] ${message}`);
 }
 
+function freePort(port) {
+  try {
+    const pids = execSync(`lsof -ti:${port}`, { encoding: 'utf8' }).trim();
+    for (const pid of pids.split('\n')) {
+      if (pid) {
+        process.kill(Number(pid), 'SIGKILL');
+      }
+    }
+    log(`freed port ${port}`);
+  } catch {
+    // already free
+  }
+}
+
 function spawnLogged(command, args, options) {
   const child = spawn(command, args, {
     ...options,
@@ -47,11 +61,14 @@ function spawnLogged(command, args, options) {
   });
   child.stdout?.on('data', (chunk) => process.stdout.write(chunk));
   child.stderr?.on('data', (chunk) => process.stderr.write(chunk));
+  child.on('exit', (code, signal) => {
+    log(`${command} ${args.join(' ')} exited code=${code} signal=${signal}`);
+  });
   children.push(child);
   return child;
 }
 
-async function waitFor(url, timeoutMs = 180_000) {
+async function waitFor(url, timeoutMs = 240_000) {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
     try {
@@ -70,9 +87,11 @@ async function waitFor(url, timeoutMs = 180_000) {
 function shutdown() {
   for (const child of children) {
     if (!child.killed) {
-      child.kill('SIGTERM');
+      child.kill('SIGKILL');
     }
   }
+  freePort(API_PORT);
+  freePort(WEB_PORT);
 }
 
 process.on('exit', shutdown);
@@ -86,16 +105,36 @@ process.on('SIGTERM', () => {
 });
 
 async function main() {
-  log('migrating database');
+  freePort(API_PORT);
+  freePort(WEB_PORT);
+
+  log('generating prisma client + migrating');
+  execSync('pnpm db:generate', {
+    cwd: repoRoot,
+    stdio: 'inherit',
+    env: apiEnv,
+  });
   execSync('pnpm db:migrate:deploy', {
     cwd: repoRoot,
     stdio: 'inherit',
     env: apiEnv,
   });
 
-  log(`starting API on ${API_URL}`);
-  spawnLogged('pnpm', ['--filter', '@forma/api', 'dev'], {
+  log('building API');
+  execSync('pnpm --filter @forma/types build', {
     cwd: repoRoot,
+    stdio: 'inherit',
+    env: apiEnv,
+  });
+  execSync('pnpm --filter @forma/api build', {
+    cwd: repoRoot,
+    stdio: 'inherit',
+    env: apiEnv,
+  });
+
+  log(`starting API on ${API_URL}`);
+  spawnLogged('node', ['dist/main.js'], {
+    cwd: apiRoot,
     env: apiEnv,
   });
   await waitFor(`${API_URL}/api/health`);
