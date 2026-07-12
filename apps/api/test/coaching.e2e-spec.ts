@@ -370,9 +370,11 @@ describe('Coaching (e2e)', () => {
   });
 
   it('link request → accept creates coaching link', async () => {
-    const proToken = await auth(proEmail);
+    const localPro = `coach-req-a-${Date.now()}@example.com`;
+    const localStudent = `student-req-a-${Date.now()}@example.com`;
+    const proToken = await auth(localPro);
     const proUser = await prisma.identityUser.findFirstOrThrow({
-      where: { email: proEmail },
+      where: { email: localPro },
     });
     await activateProfessional(proUser.id);
     await request(app.getHttpServer())
@@ -388,7 +390,7 @@ describe('Coaching (e2e)', () => {
         isPublished: true,
       });
 
-    const studentToken = await createStudent(studentEmail);
+    const studentToken = await createStudent(localStudent);
     const create = await request(app.getHttpServer())
       .post('/api/coaching/requests')
       .set('Authorization', `Bearer ${studentToken}`)
@@ -408,7 +410,7 @@ describe('Coaching (e2e)', () => {
       .set('Authorization', `Bearer ${proToken}`);
     expect(list.status).toBe(200);
     expect(list.body.requests).toHaveLength(1);
-    expect(list.body.requests[0].studentEmail).toBe(studentEmail);
+    expect(list.body.requests[0].studentEmail).toBe(localStudent);
 
     const forbidden = await request(app.getHttpServer())
       .get('/api/coaching/requests')
@@ -427,7 +429,7 @@ describe('Coaching (e2e)', () => {
           professionalUserId: proUser.id,
           studentUserId: (
             await prisma.identityUser.findFirstOrThrow({
-              where: { email: studentEmail },
+              where: { email: localStudent },
             })
           ).id,
         },
@@ -442,9 +444,11 @@ describe('Coaching (e2e)', () => {
   });
 
   it('link request decline closes without link', async () => {
-    const proToken = await auth(proEmail);
+    const localPro = `coach-req-b-${Date.now()}@example.com`;
+    const localStudent = `student-req-b-${Date.now()}@example.com`;
+    const proToken = await auth(localPro);
     const proUser = await prisma.identityUser.findFirstOrThrow({
-      where: { email: proEmail },
+      where: { email: localPro },
     });
     await activateProfessional(proUser.id);
     await request(app.getHttpServer())
@@ -460,7 +464,7 @@ describe('Coaching (e2e)', () => {
         isPublished: true,
       });
 
-    const studentToken = await createStudent(studentEmail);
+    const studentToken = await createStudent(localStudent);
     const create = await request(app.getHttpServer())
       .post('/api/coaching/requests')
       .set('Authorization', `Bearer ${studentToken}`)
@@ -473,7 +477,7 @@ describe('Coaching (e2e)', () => {
     expect(decline.body.status).toBe('declined');
 
     const student = await prisma.identityUser.findFirstOrThrow({
-      where: { email: studentEmail },
+      where: { email: localStudent },
     });
     const link = await prisma.coachingLink.findUnique({
       where: {
