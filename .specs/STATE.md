@@ -135,16 +135,18 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** Specify → Design → Tasks **complete** on `feature/web-portal-spec`. Ready to Execute **W1**.
+**P2 — Web portal:** W1 Execute **in progress** on `feature/web-portal-w1`.
 
 | Portal item | Value |
 |-------------|-------|
-| Branch (docs) | `feature/web-portal-spec` |
-| Docs | `context.md` · `spec.md` · `design.md` · `tasks.md` (all approved) |
-| Stack | Vite + React SPA → Render (AD-033); Approach A |
-| Execute | Start **T1** in `.specs/features/web-portal/tasks.md` on branch `feature/web-portal-w1` (from updated `dev`) |
-| W1 batches | Platform T1–T4 → Auth T5–T7 → Workplace T8–T11 → Ship T12–T14 |
+| Branch | `feature/web-portal-w1` |
+| Docs | `context.md` · `spec.md` · `design.md` · `tasks.md` |
+| Done | T1 scaffold · T2 CORS · T3 OAuth web · T4 tokens/UI |
+| Next | **T5** API client + sessionStore + error helpers |
+| W1 batches | Platform T1–T4 ✅ → Auth T5–T7 → Workplace T8–T11 → Ship T12–T14 |
 | After W1 | Verifier → then expand W2 stubs |
+
+**Loop:** Self-paced agent loop continues Execute until W1–W4 done (or stopped).
 
 ---
 

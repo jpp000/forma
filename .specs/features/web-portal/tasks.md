@@ -191,10 +191,10 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-01, WPORT-02, WPORT-18
 
 **Done when**:
-- [ ] 401 clears session
-- [ ] Typed helpers for 402/403/410
-- [ ] Unit tests for helpers pass (quick gate)
-- [ ] `identity.getMe`, wire pattern ready
+- [x] 401 clears session
+- [x] Typed helpers for 402/403/410
+- [x] Unit tests for helpers pass (quick gate)
+- [x] `identity.getMe`, wire pattern ready
 
 **Tests**: unit  
 **Gate**: quick  
