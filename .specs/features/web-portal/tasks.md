@@ -211,9 +211,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-01
 
 **Done when**:
-- [ ] OTP request + verify stores token via sessionStore
-- [ ] OAuth links hit API with `platform=web`
-- [ ] Success navigates to gate (T7)
+- [x] OTP request + verify stores token via sessionStore
+- [x] OAuth links hit API with `platform=web`
+- [x] Success navigates to gate (T7)
 
 **Tests**: none (smoke T14)  
 **Gate**: build  

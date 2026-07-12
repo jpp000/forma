@@ -1,10 +1,10 @@
-import { Button, Page } from './ui';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRoutes } from './app/routes';
 
 export function App() {
   return (
-    <Page title="Forma" eyebrow="Portal">
-      <p>Professional portal</p>
-      <Button type="button">Continue</Button>
-    </Page>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
