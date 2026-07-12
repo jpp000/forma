@@ -172,9 +172,9 @@ See [Later phases](#later-phases-w2w4--task-stubs) — expand to full atomic tas
 **Requirement**: WPORT-17
 
 **Done when**:
-- [ ] CSS variables for primary `#30D158`, surfaces, labels
-- [ ] Primitives export from `src/ui`
-- [ ] Light dashboard default
+- [x] CSS variables for primary `#30D158`, surfaces, labels
+- [x] Primitives export from `src/ui`
+- [x] Light dashboard default
 
 **Tests**: none  
 **Gate**: build  

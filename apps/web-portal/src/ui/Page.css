@@ -1,0 +1,40 @@
+.fp-page {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--space-page);
+}
+
+.fp-page__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-row);
+  margin-bottom: 1.25rem;
+}
+
+.fp-page__eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.fp-page__title {
+  margin: 0;
+  font-size: var(--font-size-title);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.fp-page__actions {
+  display: flex;
+  gap: var(--space-compact);
+}
+
+.fp-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

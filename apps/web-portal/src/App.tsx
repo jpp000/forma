@@ -1,8 +1,10 @@
+import { Button, Page } from './ui';
+
 export function App() {
   return (
-    <main>
-      <h1>Forma</h1>
+    <Page title="Forma" eyebrow="Portal">
       <p>Professional portal</p>
-    </main>
+      <Button type="button">Continue</Button>
+    </Page>
   );
 }

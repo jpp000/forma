@@ -1,0 +1,32 @@
+.fp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fp-field__label {
+  font-size: var(--font-size-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-label-secondary);
+}
+
+.fp-field__input {
+  min-height: 2.25rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--color-separator);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-label-primary);
+}
+
+.fp-field__input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.fp-field__error {
+  color: var(--color-error);
+  font-size: 0.8125rem;
+}
