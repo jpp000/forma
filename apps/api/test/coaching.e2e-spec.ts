@@ -488,5 +488,19 @@ describe('Coaching (e2e)', () => {
       },
     });
     expect(link).toBeNull();
+
+    const mine = await request(app.getHttpServer())
+      .get('/api/coaching/requests/mine')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(mine.status).toBe(200);
+    expect(mine.body.requests).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: create.body.id,
+          professionalUserId: proUser.id,
+          status: 'declined',
+        }),
+      ]),
+    );
   });
 });

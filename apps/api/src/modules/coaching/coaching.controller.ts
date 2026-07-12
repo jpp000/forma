@@ -72,6 +72,14 @@ export class CoachingController {
     );
   }
 
+  @Get('requests/mine')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Student)
+  @ApiOperation({ summary: 'List my outgoing coaching link requests' })
+  async listMyLinkRequests(@CurrentUser() user: { id: string }) {
+    return this.coachingService.listMyLinkRequests(user.id);
+  }
+
   @Get('requests')
   @UseGuards(RolesGuard)
   @Roles(Role.Trainer, Role.Nutritionist)

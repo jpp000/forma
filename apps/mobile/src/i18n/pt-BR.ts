@@ -188,7 +188,12 @@ const ptBR = {
   'professionals.typeTrainer': 'Treinador',
   'professionals.typeNutritionist': 'Nutricionista',
   'professionals.requestCta': 'Pedir vínculo',
+  'professionals.requestAgainCta': 'Pedir novamente',
   'professionals.requestSuccess': 'Pedido enviado. Aguarde a resposta.',
+  'professionals.statusPending': 'Pedido pendente — aguardando o profissional.',
+  'professionals.statusDeclined': 'Pedido recusado.',
+  'professionals.statusAccepted': 'Vocês já estão vinculados.',
+  'professionals.statusExpired': 'Pedido expirado.',
 } as const;
 
 export type TranslationKey = keyof typeof ptBR;

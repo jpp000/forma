@@ -135,17 +135,19 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** W1 **Verifier PASS**; W2 Execute in progress on `feature/web-portal-w1` (T15–T22 done; T23 Verifier next).
+**P2 — Web portal:** W1 **Verifier PASS**; W2 **Verifier PASS** (re-verify) on `feature/web-portal-w1`.
 
 | Portal item | Value |
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
-| Done | W1 T1–T14 + Verifier PASS; W2 T15–T22 (public profiles, link requests, portal editor/inbox, mobile Professionals tab) |
-| Gates | portal unit **15** · API coaching e2e **10** · mobile check-types PASS · coaching unit **2** |
-| Next | T23 W2 smoke + Verifier → then W3/W4 |
-| Smoke | `pnpm --filter @forma/web-portal test:e2e`; mobile Professionals via `tab-professionals` |
+| Diff (W2) | `d68f42e..HEAD` (after W1 PASS) |
+| Done | W1 T1–T14 + Verifier PASS; W2 T15–T23 + Verifier **PASS** |
+| W2 Verifier | **PASS** — **8/13** ✅ · **5** ⚠️ · **0** ❌ (W2-03.4 closed via `/requests/mine`) |
+| Gates (2026-07-12) | portal unit **15** · check-types PASS · mobile coaching unit · API coaching e2e **10/10** |
+| Next | W3 (training templates + prescribe) — expand stubs → Execute |
+| Smoke | Mobile `tab-professionals`; optional portal W2 e2e still open as ⚠️ |
 
-**Loop:** Continue W2 Verifier then W3–W4 until feature done.
+**Loop:** Start W3 after W2 PASS; continue through W4 until feature done.
 
 ---
 

@@ -248,6 +248,26 @@ export class CoachingService {
     return { requests: enriched };
   }
 
+  async listMyLinkRequests(studentUserId: string) {
+    await this.expireStalePendingRequests(studentUserId, undefined);
+
+    const requests = await this.prisma.coachingLinkRequest.findMany({
+      where: { studentUserId },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    return {
+      requests: requests.map((req) => ({
+        id: req.id,
+        professionalUserId: req.professionalUserId,
+        status: req.status,
+        createdAt: req.createdAt,
+        resolvedAt: req.resolvedAt,
+      })),
+    };
+  }
+
   async acceptLinkRequest(professionalUserId: string, requestId: string) {
     const req = await this.getOwnedPendingRequest(
       professionalUserId,

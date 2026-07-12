@@ -7,7 +7,7 @@ Implement with the **`tlc-spec-driven`** skill: follow Execute flow (per-task cy
 **Design**: `.specs/features/web-portal/design.md`  
 **Spec**: `.specs/features/web-portal/spec.md`  
 **Context**: `.specs/features/web-portal/context.md`  
-**Status**: W1 Verifier PASS — W2 Execute in progress (T15+)
+**Status**: W1 Verifier PASS — W2 Verifier **FAIL** (W2-03.4 student declined visibility); T15–T22 done; T23 gates partial
 
 **Branch**: create from `dev` → `feature/web-portal-w1` (or continue `feature/web-portal-spec` then rename). Prefer `./scripts/git/new-feature-branch.sh feature/web-portal-w1` after merging spec docs to `dev`.
 
@@ -532,13 +532,13 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-08–11  
 
 **Done when**:
-- [ ] Gates green
-- [ ] STATE handoff W2 complete pending/after Verifier
-- [ ] Verifier PASS for W2 ACs
+- [x] Gates green (portal unit 15 + check-types; mobile coaching unit + check-types; API coaching e2e **10/10**)
+- [x] STATE handoff W2 Verifier result recorded
+- [x] Verifier PASS for W2 ACs — **PASS** re-verify 2026-07-12 after W2-03.4 fix (`GET /requests/mine` + mobile status); score **8/13** ✅ · **5** ⚠️ · **0** ❌ — see `validation.md`
 
 **Tests**: e2e  
 **Gate**: full W2  
-**Commit**: `test(web-portal): add W2 discovery smoke` (+ verifier docs commit)
+**Commit**: `fix(api): let students see link-request status`
 
 ---
 

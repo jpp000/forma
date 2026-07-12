@@ -28,5 +28,8 @@ describe('createCoachingApi', () => {
       method: 'POST',
       body: { professionalUserId: 'user-1' },
     });
+
+    await api.listMyLinkRequests();
+    expect(request).toHaveBeenCalledWith('/api/coaching/requests/mine');
   });
 });

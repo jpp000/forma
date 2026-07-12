@@ -187,7 +187,12 @@ const en: Record<TranslationKey, string> = {
   'professionals.typeTrainer': 'Trainer',
   'professionals.typeNutritionist': 'Nutritionist',
   'professionals.requestCta': 'Request coaching',
+  'professionals.requestAgainCta': 'Request again',
   'professionals.requestSuccess': 'Request sent. Wait for a response.',
+  'professionals.statusPending': 'Request pending — waiting on the professional.',
+  'professionals.statusDeclined': 'Request declined.',
+  'professionals.statusAccepted': 'You are already linked.',
+  'professionals.statusExpired': 'Request expired.',
 };
 
 export default en;

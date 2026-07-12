@@ -13,10 +13,10 @@ export type PublicProfessional = {
 export type LinkRequest = {
   id: string;
   professionalUserId: string;
-  studentUserId: string;
+  studentUserId?: string;
   status: string;
   createdAt: string;
-  resolvedAt: string | null;
+  resolvedAt?: string | null;
 };
 
 export function createCoachingApi(api: ApiClient) {
@@ -39,6 +39,9 @@ export function createCoachingApi(api: ApiClient) {
         method: 'POST',
         body: { professionalUserId },
       });
+    },
+    listMyLinkRequests(): Promise<{ requests: LinkRequest[] }> {
+      return api.request('/api/coaching/requests/mine');
     },
   };
 }

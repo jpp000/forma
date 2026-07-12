@@ -11,6 +11,7 @@ type ProfessionalsState = {
   selected: PublicProfessional | null;
   detailLoading: boolean;
   detailError: string | null;
+  myRequestStatus: string | null;
   requestLoading: boolean;
   requestError: string | null;
   requestSuccess: boolean;
@@ -30,6 +31,7 @@ const initialState = {
   selected: null as PublicProfessional | null,
   detailLoading: false,
   detailError: null as string | null,
+  myRequestStatus: null as string | null,
   requestLoading: false,
   requestError: null as string | null,
   requestSuccess: false,
@@ -64,12 +66,24 @@ export const useProfessionalsStore = create<ProfessionalsState>((set, get) => ({
       detailLoading: true,
       detailError: null,
       selected: null,
+      myRequestStatus: null,
       requestError: null,
       requestSuccess: false,
     });
     try {
-      const selected = await getWiredCoachingApi().getProfessional(idOrSlug);
-      set({ selected, detailLoading: false });
+      const api = getWiredCoachingApi();
+      const selected = await api.getProfessional(idOrSlug);
+      let myRequestStatus: string | null = null;
+      try {
+        const mine = await api.listMyLinkRequests();
+        const match = mine.requests.find(
+          (r) => r.professionalUserId === selected.userId,
+        );
+        myRequestStatus = match?.status ?? null;
+      } catch {
+        myRequestStatus = null;
+      }
+      set({ selected, myRequestStatus, detailLoading: false });
     } catch (error) {
       set({ detailLoading: false, detailError: mapApiError(error) });
     }
@@ -78,8 +92,14 @@ export const useProfessionalsStore = create<ProfessionalsState>((set, get) => ({
   requestLink: async (professionalUserId) => {
     set({ requestLoading: true, requestError: null, requestSuccess: false });
     try {
-      await getWiredCoachingApi().createLinkRequest(professionalUserId);
-      set({ requestLoading: false, requestSuccess: true });
+      const created = await getWiredCoachingApi().createLinkRequest(
+        professionalUserId,
+      );
+      set({
+        requestLoading: false,
+        requestSuccess: true,
+        myRequestStatus: created.status,
+      });
     } catch (error) {
       set({ requestLoading: false, requestError: mapApiError(error) });
     }

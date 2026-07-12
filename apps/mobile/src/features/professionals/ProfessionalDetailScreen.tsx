@@ -14,6 +14,7 @@ export function ProfessionalDetailScreen() {
     selected,
     detailLoading,
     detailError,
+    myRequestStatus,
     requestLoading,
     requestError,
     requestSuccess,
@@ -58,6 +59,22 @@ export function ProfessionalDetailScreen() {
       ? t('professionals.typeNutritionist')
       : t('professionals.typeTrainer');
 
+  const statusMessage =
+    myRequestStatus === 'pending'
+      ? t('professionals.statusPending')
+      : myRequestStatus === 'declined'
+        ? t('professionals.statusDeclined')
+        : myRequestStatus === 'accepted'
+          ? t('professionals.statusAccepted')
+          : myRequestStatus === 'expired'
+            ? t('professionals.statusExpired')
+            : null;
+
+  const canRequest =
+    !requestLoading &&
+    myRequestStatus !== 'pending' &&
+    myRequestStatus !== 'accepted';
+
   return (
     <Screen scroll style={styles.content} testID="professional-detail-screen">
       <Text style={[typography.largeTitle, { color: colors.labelPrimary }]}>
@@ -73,8 +90,17 @@ export function ProfessionalDetailScreen() {
         </Text>
       ) : null}
 
+      {statusMessage ? (
+        <Text
+          style={[typography.body, { color: colors.labelSecondary }]}
+          testID="professional-request-status"
+        >
+          {statusMessage}
+        </Text>
+      ) : null}
+
       {requestError ? <InlineError message={requestError} /> : null}
-      {requestSuccess ? (
+      {requestSuccess && myRequestStatus === 'pending' ? (
         <Text
           style={[typography.body, { color: colors.primary }]}
           testID="professional-request-success"
@@ -84,12 +110,18 @@ export function ProfessionalDetailScreen() {
       ) : null}
 
       <View style={styles.actions}>
-        <PrimaryButton
-          label={t('professionals.requestCta')}
-          onPress={() => void requestLink(selected.userId)}
-          disabled={requestLoading || requestSuccess}
-          testID="professional-request-cta"
-        />
+        {canRequest ? (
+          <PrimaryButton
+            label={
+              myRequestStatus === 'declined' || myRequestStatus === 'expired'
+                ? t('professionals.requestAgainCta')
+                : t('professionals.requestCta')
+            }
+            onPress={() => void requestLink(selected.userId)}
+            disabled={requestLoading}
+            testID="professional-request-cta"
+          />
+        ) : null}
       </View>
     </Screen>
   );
