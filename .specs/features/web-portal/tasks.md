@@ -7,7 +7,7 @@ Implement with the **`tlc-spec-driven`** skill: follow Execute flow (per-task cy
 **Design**: `.specs/features/web-portal/design.md`  
 **Spec**: `.specs/features/web-portal/spec.md`  
 **Context**: `.specs/features/web-portal/context.md`  
-**Status**: W1 Verifier PASS — W2 Verifier **FAIL** (W2-03.4 student declined visibility); T15–T22 done; T23 gates partial
+**Status**: W1 Verifier PASS — W2 Verifier **PASS** (re-verify; 5 ⚠️ precision remain); W3 next
 
 **Branch**: create from `dev` → `feature/web-portal-w1` (or continue `feature/web-portal-spec` then rename). Prefer `./scripts/git/new-feature-branch.sh feature/web-portal-w1` after merging spec docs to `dev`.
 
