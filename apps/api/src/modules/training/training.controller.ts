@@ -20,6 +20,10 @@ import { CreateWorkoutSessionDto } from './dto/create-workout-session.dto';
 import { ListExercisesQueryDto } from './dto/list-exercises-query.dto';
 import { PrescribeWorkoutPlanDto } from './dto/prescribe-workout-plan.dto';
 import {
+  AssignPeriodizationDto,
+  CreatePeriodizationDto,
+} from './dto/periodization.dto';
+import {
   CreateWorkoutTemplateDto,
   UpdateWorkoutTemplateDto,
 } from './dto/workout-template.dto';
@@ -145,5 +149,50 @@ export class TrainingController {
     @Param('id') id: string,
   ) {
     return this.trainingService.archiveTemplate(user.id, id);
+  }
+
+  @Post('periodizations')
+  @Roles(Role.Trainer)
+  @ApiOperation({ summary: 'Create light periodization' })
+  async createPeriodization(
+    @CurrentUser() user: { id: string },
+    @Body() body: CreatePeriodizationDto,
+  ) {
+    return this.trainingService.createPeriodization(user.id, body);
+  }
+
+  @Get('periodizations')
+  @Roles(Role.Trainer)
+  @ApiOperation({ summary: 'List own periodizations' })
+  async listPeriodizations(@CurrentUser() user: { id: string }) {
+    return this.trainingService.listPeriodizations(user.id);
+  }
+
+  @Post('periodizations/:id/assign')
+  @Roles(Role.Trainer)
+  @ApiOperation({ summary: 'Assign periodization to linked student' })
+  async assignPeriodization(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+    @Body() body: AssignPeriodizationDto,
+  ) {
+    return this.trainingService.assignPeriodization(user.id, id, body);
+  }
+
+  @Post('periodization-assignments/:id/advance')
+  @Roles(Role.Trainer)
+  @ApiOperation({ summary: 'Advance periodization to next block' })
+  async advanceAssignment(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+  ) {
+    return this.trainingService.advancePeriodizationAssignment(user.id, id);
+  }
+
+  @Get('periodizations/active')
+  @Roles(Role.Student)
+  @ApiOperation({ summary: 'Get student active periodization (lazy advance)' })
+  async activePeriodization(@CurrentUser() user: { id: string }) {
+    return this.trainingService.getStudentActivePeriodization(user.id);
   }
 }

@@ -661,6 +661,98 @@ Batch W2-D — Ship:         T23
 - Mobile: active block plan  
 - Verifier W4 + final feature validation.md  
 
+#### W4 — Nutrition templates + light periodization (expanded)
+
+**Execution order**: T30 → T31 → T32 → T33 → T34 → T35
+
+#### T30: Nutrition template + periodization schema
+
+**What**: `NutritionPlanTemplate`; periodization + block + assignment models  
+**Where**: prisma schema + migration  
+**Depends on**: W3 PASS  
+**Requirement**: WPORT-15, WPORT-16  
+
+**Done when**:
+- [ ] Migration applies
+
+**Gate**: migrate deploy  
+**Commit**: `feat(db): add nutrition templates and periodization`
+
+---
+
+#### T31: Nutrition templates CRUD + prescribe-from-template
+
+**What**: Nutritionist CRUD `/api/nutrition/templates`; prescribe via `templateId` on plans POST  
+**Where**: nutrition module  
+**Depends on**: T30  
+**Requirement**: WPORT-15  
+
+**Done when**:
+- [ ] Create/list/archive e2e
+- [ ] Prescribe from template → student daily target
+- [ ] Trainer 403; unlinked 403
+
+**Tests**: e2e  
+**Commit**: `feat(api): add nutrition plan templates`
+
+---
+
+#### T32: Periodization CRUD, assign, advance
+
+**What**: Trainer periodizations with ordered template blocks; assign linked student; advance (lazy on read + explicit)  
+**Where**: training module  
+**Depends on**: T30, T26  
+**Requirement**: WPORT-16  
+
+**Done when**:
+- [ ] Create 2-block + assign → student has first plan
+- [ ] Advance → second plan
+- [ ] Unlinked assign → 403
+
+**Tests**: e2e  
+**Commit**: `feat(api): add light training periodization`
+
+---
+
+#### T33: Portal nutrition templates UI
+
+**What**: Create/list nutrition templates + prescribe to linked student  
+**Where**: web-portal  
+**Depends on**: T31  
+**Requirement**: WPORT-15  
+
+**Done when**:
+- [ ] Pro can create and prescribe from portal
+**Gate**: build  
+**Commit**: `feat(web-portal): add nutrition templates UI`
+
+---
+
+#### T34: Portal periodization builder
+
+**What**: Create 2+ block periodization, assign to student, advance  
+**Where**: web-portal  
+**Depends on**: T32  
+**Requirement**: WPORT-16  
+
+**Done when**:
+- [ ] Assign + advance available in portal
+**Gate**: build  
+**Commit**: `feat(web-portal): add periodization builder`
+
+---
+
+#### T35: W4 Verifier + feature complete
+
+**What**: Gates + Verifier WPORT-15–16; update validation.md + STATE feature done  
+**Depends on**: T30–T34  
+
+**Done when**:
+- [ ] Verifier PASS W4
+- [ ] Feature handoff complete
+
+**Commit**: docs for W4 PASS
+
 ---
 
 ## Requirement → Task map (W1)

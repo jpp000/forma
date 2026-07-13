@@ -16,6 +16,8 @@
     "template_not_found": "Modelo de treino não encontrado",
     "template_archived": "Modelo de treino arquivado",
     "prescribe_incomplete": "Prescrição exige um modelo ou nome e exercícios",
+    "periodization_not_found": "Periodização não encontrada",
+    "periodization_complete": "Periodização sem próximo bloco",
     "invite_not_found": "Convite não encontrado",
     "invite_expired": "Convite expirado",
     "invite_already_accepted": "Convite já aceito",

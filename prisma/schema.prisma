@@ -158,6 +158,50 @@ model TrainingWorkoutTemplate {
   @@map("training_workout_templates")
 }
 
+model TrainingPeriodization {
+  id                 String   @id @default(cuid())
+  professionalUserId String   @map("professional_user_id")
+  name               String
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  blocks       TrainingPeriodizationBlock[]
+  assignments  TrainingPeriodizationAssignment[]
+
+  @@index([professionalUserId])
+  @@map("training_periodizations")
+}
+
+model TrainingPeriodizationBlock {
+  id              String @id @default(cuid())
+  periodizationId String @map("periodization_id")
+  position        Int
+  templateId      String @map("template_id")
+  durationDays    Int    @map("duration_days")
+
+  periodization TrainingPeriodization @relation(fields: [periodizationId], references: [id], onDelete: Cascade)
+
+  @@unique([periodizationId, position])
+  @@index([periodizationId])
+  @@map("training_periodization_blocks")
+}
+
+model TrainingPeriodizationAssignment {
+  id              String   @id @default(cuid())
+  periodizationId String   @map("periodization_id")
+  studentUserId   String   @map("student_user_id")
+  startedOn       DateTime @map("started_on") @db.Date
+  activePosition  Int      @default(0) @map("active_position")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  periodization TrainingPeriodization @relation(fields: [periodizationId], references: [id], onDelete: Cascade)
+
+  @@unique([periodizationId, studentUserId])
+  @@index([studentUserId])
+  @@map("training_periodization_assignments")
+}
+
 model TrainingWorkoutSession {
   id          String   @id @default(cuid())
   userId      String   @map("user_id")
@@ -228,6 +272,23 @@ model NutritionPlan {
 
   @@index([studentUserId])
   @@map("nutrition_plans")
+}
+
+model NutritionPlanTemplate {
+  id                 String    @id @default(cuid())
+  professionalUserId String    @map("professional_user_id")
+  name               String
+  dailyCalories      Int       @map("daily_calories")
+  dailyProtein       Float     @map("daily_protein")
+  dailyCarbs         Float     @map("daily_carbs")
+  dailyFat           Float     @map("daily_fat")
+  menuJson           Json?     @map("menu_json")
+  archivedAt         DateTime? @map("archived_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@index([professionalUserId])
+  @@map("nutrition_plan_templates")
 }
 
 model ProgressWeightEntry {

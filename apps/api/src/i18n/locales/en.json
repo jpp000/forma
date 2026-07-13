@@ -16,6 +16,8 @@
     "template_not_found": "Workout template not found",
     "template_archived": "Workout template is archived",
     "prescribe_incomplete": "Prescribe requires a template or name and exercises",
+    "periodization_not_found": "Periodization not found",
+    "periodization_complete": "Periodization has no next block",
     "invite_not_found": "Invite not found",
     "invite_expired": "Invite expired",
     "invite_already_accepted": "Invite already accepted",

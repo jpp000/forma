@@ -1,9 +1,16 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BillingService } from '../billing/billing.service';
 import { CoachingService } from '../coaching/coaching.service';
 import type { CreateNutritionPlanDto } from './dto/create-nutrition-plan.dto';
+import type { CreateNutritionTemplateDto } from './dto/create-nutrition-template.dto';
 import type { LogMealDto } from './dto/log-meal.dto';
 import {
   NUTRITION_MEAL_LOGGED,
@@ -115,15 +122,84 @@ export class NutritionService {
       dto.studentUserId,
     );
 
+    let dailyCalories = dto.dailyCalories;
+    let dailyProtein = dto.dailyProtein;
+    let dailyCarbs = dto.dailyCarbs;
+    let dailyFat = dto.dailyFat;
+
+    if (dto.templateId) {
+      const template = await this.prisma.nutritionPlanTemplate.findFirst({
+        where: {
+          id: dto.templateId,
+          professionalUserId,
+          archivedAt: null,
+        },
+      });
+      if (!template) {
+        throw new NotFoundException('errors.template_not_found');
+      }
+      dailyCalories = template.dailyCalories;
+      dailyProtein = template.dailyProtein;
+      dailyCarbs = template.dailyCarbs;
+      dailyFat = template.dailyFat;
+    }
+
+    if (
+      dailyCalories === undefined ||
+      dailyProtein === undefined ||
+      dailyCarbs === undefined ||
+      dailyFat === undefined
+    ) {
+      throw new BadRequestException('errors.prescribe_incomplete');
+    }
+
     return this.prisma.nutritionPlan.create({
       data: {
         studentUserId: dto.studentUserId,
         professionalUserId,
+        dailyCalories,
+        dailyProtein,
+        dailyCarbs,
+        dailyFat,
+      },
+    });
+  }
+
+  async createTemplate(
+    professionalUserId: string,
+    dto: CreateNutritionTemplateDto,
+  ) {
+    return this.prisma.nutritionPlanTemplate.create({
+      data: {
+        professionalUserId,
+        name: dto.name.trim(),
         dailyCalories: dto.dailyCalories,
         dailyProtein: dto.dailyProtein,
         dailyCarbs: dto.dailyCarbs,
         dailyFat: dto.dailyFat,
+        menuJson: dto.menuJson ?? undefined,
       },
+    });
+  }
+
+  async listTemplates(professionalUserId: string) {
+    const templates = await this.prisma.nutritionPlanTemplate.findMany({
+      where: { professionalUserId, archivedAt: null },
+      orderBy: { updatedAt: 'desc' },
+    });
+    return { templates };
+  }
+
+  async archiveTemplate(professionalUserId: string, templateId: string) {
+    const existing = await this.prisma.nutritionPlanTemplate.findFirst({
+      where: { id: templateId, professionalUserId },
+    });
+    if (!existing) {
+      throw new NotFoundException('errors.template_not_found');
+    }
+    return this.prisma.nutritionPlanTemplate.update({
+      where: { id: existing.id },
+      data: { archivedAt: new Date() },
     });
   }
 
