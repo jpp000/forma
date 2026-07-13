@@ -135,19 +135,17 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** W1 **Verifier PASS**; W2 **Verifier PASS** (re-verify) on `feature/web-portal-w1`.
+**P2 — Web portal:** W1 **Verifier PASS**; W2 **Verifier PASS**; W3 Execute in progress on `feature/web-portal-w1`.
 
 | Portal item | Value |
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
-| Diff (W2) | `d68f42e..HEAD` (after W1 PASS) |
-| Done | W1 T1–T14 + Verifier PASS; W2 T15–T23 + Verifier **PASS** |
-| W2 Verifier | **PASS** — **8/13** ✅ · **5** ⚠️ · **0** ❌ (W2-03.4 closed via `/requests/mine`) |
-| Gates (2026-07-12) | portal unit **15** · check-types PASS · mobile coaching unit · API coaching e2e **10/10** |
-| Next | W3 (training templates + prescribe) — expand stubs → Execute |
-| Smoke | Mobile `tab-professionals`; optional portal W2 e2e still open as ⚠️ |
+| Done | W1+W2 PASS; W3 T24–T28 (templates API + prescribe + portal UI) — T29 Verifier next |
+| Gates | API training e2e **8**; portal unit **15** · build PASS |
+| Next | T29 W3 Verifier → then W4 |
+| Smoke | Portal `/templates`; student `GET /training/plans` includes prescribed |
 
-**Loop:** Start W3 after W2 PASS; continue through W4 until feature done.
+**Loop:** Finish W3 Verifier then W4 until feature done.
 
 ---
 

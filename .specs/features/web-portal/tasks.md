@@ -609,8 +609,8 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-12  
 
 **Done when**:
-- [ ] Pro can create and see templates
-- [ ] Errors visible
+- [x] Pro can create and see templates
+- [x] Errors visible
 
 **Tests**: none (smoke T29)  
 **Gate**: build  
@@ -626,8 +626,8 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-13  
 
 **Done when**:
-- [ ] Prescribe succeeds for linked student
-- [ ] Unlinked/error shown
+- [x] Prescribe succeeds for linked student
+- [x] Unlinked/error shown
 
 **Tests**: none (smoke T29)  
 **Gate**: build  

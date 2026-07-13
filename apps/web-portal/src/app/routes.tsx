@@ -9,6 +9,7 @@ import { InvitesPage } from '../features/invites/InvitesPage';
 import { OnboardingPage } from '../features/onboarding/OnboardingPage';
 import { ProfileEditorPage } from '../features/profile/ProfileEditorPage';
 import { RequestsInboxPage } from '../features/requests/RequestsInboxPage';
+import { TemplatesPage } from '../features/templates/TemplatesPage';
 import { useSessionStore } from '../stores/sessionStore';
 
 function BootstrapShell() {
@@ -130,6 +131,16 @@ export function AppRoutes() {
             <RequireAuth>
               <RequireProfessional>
                 <RequestsInboxPage />
+              </RequireProfessional>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/templates"
+          element={
+            <RequireAuth>
+              <RequireProfessional>
+                <TemplatesPage />
               </RequireProfessional>
             </RequireAuth>
           }

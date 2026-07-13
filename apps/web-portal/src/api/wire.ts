@@ -4,6 +4,7 @@ import { createBillingApi } from './billing';
 import { createApiClient } from './client';
 import { createCoachingApi } from './coaching';
 import { createIdentityApi } from './identity';
+import { createTrainingApi } from './training';
 
 /** Production 401 handler — exported for WPORT-02 coverage. */
 export function handleUnauthorized(): void {
@@ -22,6 +23,7 @@ const client = createWiredClient();
 const identityApi = createIdentityApi(client);
 const billingApi = createBillingApi(client);
 const coachingApi = createCoachingApi(client);
+const trainingApi = createTrainingApi(client);
 
 export function getIdentityApi() {
   return identityApi;
@@ -33,4 +35,8 @@ export function getBillingApi() {
 
 export function getCoachingApi() {
   return coachingApi;
+}
+
+export function getTrainingApi() {
+  return trainingApi;
 }

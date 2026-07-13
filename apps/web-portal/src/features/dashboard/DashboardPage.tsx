@@ -63,6 +63,11 @@ export function DashboardPage() {
               {t('dashboard.requestsCta')}
             </Button>
           </Link>
+          <Link to="/templates">
+            <Button type="button" variant="ghost" data-testid="dashboard-templates-cta">
+              {t('dashboard.templatesCta')}
+            </Button>
+          </Link>
           <Link to="/invites">
             <Button type="button" data-testid="dashboard-invite-cta">
               {t('dashboard.inviteCta')}
