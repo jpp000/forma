@@ -692,6 +692,8 @@ Batch W2-D — Ship:         T23
 - [x] Prescribe from template → student daily target
 - [x] Trainer 403; unlinked 403
 
+**Notes (Verifier)**: Create/list/prescribe + trainer 403 e2e ✅; archive e2e and unlinked prescribe e2e ⚠️ (structural only).
+
 **Tests**: e2e  
 **Commit**: `feat(api): add nutrition plan templates`
 
@@ -748,8 +750,10 @@ Batch W2-D — Ship:         T23
 **Depends on**: T30–T34  
 
 **Done when**:
-- [ ] Verifier PASS W4
-- [ ] Feature handoff complete
+- [x] Verifier PASS W4
+- [x] Feature handoff complete
+
+**Notes**: Verifier PASS 2026-07-12 — nutrition e2e 6 + training e2e 9; portal unit 15 + types + build; sensor 3/5; 0 ❌ / 2 story ⚠️. Feature web-portal W1–W4 complete pending optional ⚠️.
 
 **Commit**: docs for W4 PASS
 

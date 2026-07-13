@@ -135,19 +135,18 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** W1 **Verifier PASS**; W2 **Verifier PASS**; W3 **Verifier PASS** on `feature/web-portal-w1`.
+**P2 — Web portal:** W1–W4 **Verifier PASS** on `feature/web-portal-w1` — **feature complete** pending optional ⚠️ polish.
 
 | Portal item | Value |
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
-| Done | W1+W2+W3 PASS (T24–T29); templates CRUD + prescribe API + portal `/templates` |
-| Gates (W3 Verifier 2026-07-12) | API training e2e **8**; portal unit **15** · check-types · build PASS |
-| Verifier W3 | **PASS** — 6/8 ✅, 2 ⚠️ (owner-isolation e2e; nutri-prescribe e2e); sensor 3/5; 0 ❌ — `.specs/features/web-portal/validation.md` |
-| Next | Expand/execute W4 stubs (nutrition templates + light periodization) |
-| Smoke | Portal `/templates`; student `GET /training/plans` includes prescribed |
-
-**Loop:** Start W4 until feature done.
+| Done | W1+W2+W3+W4 PASS (T30–T35); nutrition templates + light periodization API + portal `/nutrition-templates` + `/periodization` |
+| Gates (W4 Verifier 2026-07-12) | API nutrition e2e **6** + training e2e **9**; portal unit **15** · check-types · build PASS |
+| Verifier W4 | **PASS** — 6/8 ✅, 2 ⚠️ (unlinked nutri prescribe e2e; lazy advance e2e); sensor 3/5; 0 ❌ — `.specs/features/web-portal/validation.md` |
+| Feature status | **Complete** (W1–W4); residual ⚠️ non-blocking across phases |
+| Smoke | Portal `/nutrition-templates`, `/periodization`; student daily targets + training plans after prescribe/assign |
+| Next | Merge → `dev` when ready; optional e2e polish for ranked ⚠️ |
 
 ---
 
-**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before. W3 training prescribe to linked students is shipped.
+**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before. Web-portal W1–W4 shipped on `feature/web-portal-w1` (nutrition templates + light periodization included).

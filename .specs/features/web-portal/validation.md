@@ -443,3 +443,149 @@ Not performed (automated Verifier pass only).
 **What works**: Template CRUD + archive, nutritionist template 403, linked prescribe from template, unlinked 403, student `GET /plans` sees prescribed plan, portal `/templates` create+prescribe UI shipped, mobile reuses plan list.
 
 **Next steps**: Optional strengthen e2e for isolation + nutri-prescribe; proceed to W4 stubs.
+
+---
+
+# Web Portal W4 Validation
+
+**Date**: 2026-07-12
+**Spec**: `.specs/features/web-portal/spec.md`
+**Diff range**: `faf965e..c3bce23` (`feature/web-portal-w1` HEAD after W3 PASS)
+**Verifier**: independent sub-agent (author ≠ verifier)
+**Scope**: W4 only — WPORT-15..16; stories W4-01..W4-02. W1–W3 not re-scored (prior PASS retained).
+
+**Commits in range**:
+- `1311b48` feat(api): add nutrition templates and light periodization
+- `c3bce23` feat(web-portal): add nutrition templates and periodization UI
+
+---
+
+## Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T30 | ✅ Done | `NutritionPlanTemplate`; `TrainingPeriodization` + Block + Assignment; migration applied |
+| T31 | ⚠️ Partial | Create/list/prescribe + trainer 403 e2e; **archive e2e absent** (endpoint exists) |
+| T32 | ✅ Done | 2-block create, assign, advance, unlinked 403 e2e |
+| T33 | ✅ Done | Portal `/nutrition-templates` create + prescribe — **no portal e2e** |
+| T34 | ✅ Done | Portal `/periodization` create/assign/advance — **no portal e2e** |
+| T35 | ✅ Done | Gates green; Verifier **PASS** (2 story ⚠️ + task/portal ⚠️ non-blocking) |
+
+---
+
+## Spec-Anchored Acceptance Criteria (W4)
+
+### P1 / W4-01: Nutrition templates / cardápios (WPORT-15)
+
+| Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
+| ------------------------- | -------------------- | ----------------------- | ------ |
+| WHEN Nutritionist creates nutrition template THEN store daily macros + optional menu owned by pro | 201; macros stored; optional `menuJson` | `nutrition.e2e-spec.ts:307-317` — `POST /templates` → `201`; schema `NutritionPlanTemplate` macros + `menuJson` (`schema.prisma:277-285`); create stores `menuJson` (`nutrition.service.ts:172-180`) | ✅ PASS (menu optional; e2e covers macros) |
+| WHEN Nutritionist prescribes from template to linked student THEN create/update student nutrition plan | 201; student daily target from template | `nutrition.e2e-spec.ts:337-351` — prescribe `templateId` → `dailyCalories` `1800`; student `GET /daily` `target.calories` `1800` | ✅ PASS |
+| WHEN unlinked Nutritionist prescribes THEN 403 | 403 | `assertLinked` (`nutrition.service.ts:120-123`). **No unlinked prescribe e2e** (sensor mutant 1 survived) | ⚠️ Spec-precision gap |
+| WHEN Trainer-only writes nutrition templates THEN 403 | 403 | `nutrition.e2e-spec.ts:369-379` — trainer `POST /templates` → `403`; `@Roles(Role.Nutritionist)` (`nutrition.controller.ts:57-58`) | ✅ PASS |
+
+### P1 / W4-02: Light periodization (WPORT-16)
+
+| Criterion | Spec-defined outcome | `file:line` + assertion | Result |
+| --------- | -------------------- | ----------------------- | ------ |
+| WHEN Trainer creates periodization with ordered blocks THEN each block references workout plan/template | 201; ≥2 ordered blocks with `templateId` + `durationDays` | `training.e2e-spec.ts:488-499` — `blocks` length `2`; create maps `templateId`/`durationDays` (`training.service.ts:352-361`); schema `TrainingPeriodizationBlock` (`schema.prisma:175-180`) | ✅ PASS |
+| WHEN Trainer assigns to linked student THEN expose active block’s plan to student | Assignment + first-block plan; student sees plans | `training.e2e-spec.ts:515-521` — `activePosition` `0`, `plan.name` `'Block 1'`; student `GET /plans` length ≥2 after advance (`:532-535`) | ✅ PASS |
+| WHEN current block ends (date/duration or explicit) THEN advance to next or complete | Explicit advance + Design lazy-on-read | Explicit: `training.e2e-spec.ts:523-530` — advance → `activePosition` `1`, `plan.name` `'Block 2'`. Lazy: `getStudentActivePeriodization` elapsed≥`durationDays` (`training.service.ts:495-526`) — **no lazy/date e2e** | ✅ PASS (explicit path); ⚠️ lazy path untested |
+| WHEN unlinked Trainer assigns periodization THEN 403 | 403 | `training.e2e-spec.ts:501-505` — unlinked assign `403`; `assertLinked` in assign (`training.service.ts:382-385`) + nested prescribe | ✅ PASS |
+
+**Portal UI (T33/T34)**: `NutritionTemplatesPage` `/nutrition-templates` (`routes.tsx:151-158`); `PeriodizationPage` `/periodization` create 2 blocks + assign + advance (`PeriodizationPage.tsx:79-128`, `routes.tsx:161-168`). **No portal unit/e2e** — ⚠️ ok per W3/W4 notes when API covered.
+
+**Status**: ✅ **PASS** — **0** ❌ blocking AC gaps; **2** story ⚠️ + portal/archive ⚠️ non-blocking.
+
+**Story AC score**: **6/8** ✅ matched; **2** ⚠️ precision; **0** ❌ AC gaps
+
+**WPORT mapping**: WPORT-15 ✅/⚠️ (unlinked prescribe e2e thin); WPORT-16 ✅/⚠️ (lazy advance e2e thin).
+
+---
+
+## Discrimination Sensor
+
+Scratch mutations on live tree then restored (`cp`/`mv` backup). Suites: `nutrition.e2e-spec` / `training.e2e-spec`.
+
+| # | Mutation | File:line (approx) | Killed? |
+| - | -------- | ------------------ | ------- |
+| 1 | Skip `assertLinked` in nutrition `prescribePlan` | `nutrition.service.ts:120-123` | ❌ Survived — 6/0 (no unlinked nutrition prescribe e2e) |
+| 2 | Skip `assertLinked` in `assignPeriodization` | `training.service.ts:382-385` | ❌ Survived — 9/0 (nested `prescribeWorkoutPlan` still returns 403) |
+| 3 | Allow `@Roles(Nutritionist, Trainer)` on template create | `nutrition.controller.ts:57-58` | ✅ Killed (trainer expect 403) — 5/1 |
+| 4 | Advance `activePosition + 1` → `+ 0` | `training.service.ts:447` | ✅ Killed (expect position 1 / Block 2) — 8/1 |
+| 5 | Template prescribe calories hardcode `9999` | `nutrition.service.ts:141` | ✅ Killed (expect 1800) — 5/1 |
+
+**Sensor depth**: lightweight (5 behavior-level mutations)
+**Result**: **3/5 killed** — macros/roles/advance covered; unlinked nutrition + assign-layer link check weakly discriminated — **PASS** for blocking ACs (⚠️ remain)
+
+---
+
+## Interactive UAT Results
+
+Not performed (automated Verifier pass only).
+
+---
+
+## Gate Check
+
+- **Gate command**: W4 — API nutrition + training e2e + portal unit / check-types / build
+- **Result (this session)**:
+  - API `nutrition.e2e-spec`: **6 passed**, 0 failed (includes 1 W4 case)
+  - API `training.e2e-spec`: **9 passed**, 0 failed (includes 1 W4 periodization case; was 8 at W3)
+  - Portal unit: **15 passed**
+  - Portal check-types: **PASS**
+  - Portal build: **PASS** (vite dist)
+  - Portal W4 e2e: **absent**
+- **Failures**: none on gates that ran
+
+---
+
+## Ranked Gaps
+
+1. **⚠️ W4-01.3 unlinked nutrition prescribe e2e** — prescribe with `templateId` before link → expect `403` (kills sensor mutant 1).
+2. **⚠️ W4-02.3 lazy/date advance e2e** — assignment with elapsed ≥ `durationDays` + `GET …/periodizations/active` (or student plan fetch) advances without explicit POST.
+3. **⚠️ T31 archive e2e** — `POST /nutrition/templates/:id/archive` then list excludes (Done-when listed archive).
+4. **⚠️ Portal nutrition/periodization UI untested (T33/T34)** — optional Playwright smoke (non-blocking; API covered).
+5. **⚠️ Sensor mutant 2** — assign-layer `assertLinked` redundant with nested prescribe; optional assert on error code/body or skip nested call in a unit seam (low priority).
+
+---
+
+## Code Quality
+
+| Principle | Status |
+| --------- | ------ |
+| Minimum code | ✅ |
+| Surgical changes | ✅ |
+| No scope creep | ✅ |
+| Matches patterns | ✅ |
+| Spec-anchored outcome check | ✅ (⚠️ flagged where precision thin) |
+| Per-layer coverage (API happy+edge) | ✅ API happy paths; unlinked nutri + lazy thin |
+| Tests map to ACs | ✅ |
+| Guidelines | none — strong defaults / existing e2e patterns |
+
+---
+
+## Feature readiness (W1–W4 brief)
+
+| Phase | Verdict | Residual |
+| ----- | ------- | -------- |
+| W1 | ✅ PASS | 1 ⚠️ accept→portal dashboard |
+| W2 | ✅ PASS | several non-blocking ⚠️ |
+| W3 | ✅ PASS | owner-isolation + nutri-prescribe e2e ⚠️ |
+| W4 | ✅ PASS | unlinked nutri prescribe + lazy advance ⚠️ |
+
+**Feature overall**: ✅ **Complete** pending optional ⚠️ polish — all phase Verifiers PASS; 0 ❌ AC gaps across W1–W4.
+
+---
+
+## Summary
+
+**Overall**: ✅ **PASS** — no ❌ blocking AC gaps; **2** story ⚠️ + portal/archive ⚠️ non-blocking
+
+**Spec-anchored check**: 6/8 ✅; 2 ⚠️; 0 ❌  
+**Sensor**: 3/5 killed  
+**Gate**: nutrition e2e **6** + training e2e **9** PASS; portal unit **15** + types + build PASS
+
+**What works**: Nutrition template create/list/prescribe→student targets; trainer template write 403; 2-block periodization assign/advance with student plans; portal `/nutrition-templates` + `/periodization` UI shipped.
+
+**Next steps**: Optional strengthen e2e for unlinked nutri prescribe + lazy advance + archive; feature handoff complete.
