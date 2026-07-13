@@ -31,6 +31,22 @@ export type PrescribePlanInput = {
   items?: TemplateExerciseItem[];
 };
 
+export type PeriodizationBlockInput = {
+  templateId: string;
+  durationDays: number;
+};
+
+export type Periodization = {
+  id: string;
+  name: string;
+  blocks: Array<{
+    id: string;
+    position: number;
+    templateId: string;
+    durationDays: number;
+  }>;
+};
+
 export function createTrainingApi(client: ApiClient) {
   return {
     listTemplates: () =>
@@ -47,6 +63,34 @@ export function createTrainingApi(client: ApiClient) {
         method: 'POST',
         body,
       }),
+    listPeriodizations: () =>
+      client.request<{ periodizations: Periodization[] }>(
+        '/api/training/periodizations',
+      ),
+    createPeriodization: (body: {
+      name: string;
+      blocks: PeriodizationBlockInput[];
+    }) =>
+      client.request<Periodization>('/api/training/periodizations', {
+        method: 'POST',
+        body,
+      }),
+    assignPeriodization: (
+      id: string,
+      body: { studentUserId: string },
+    ) =>
+      client.request<{
+        assignment: { id: string };
+        activePosition: number;
+      }>(`/api/training/periodizations/${id}/assign`, {
+        method: 'POST',
+        body,
+      }),
+    advanceAssignment: (assignmentId: string) =>
+      client.request(
+        `/api/training/periodization-assignments/${assignmentId}/advance`,
+        { method: 'POST' },
+      ),
   };
 }
 

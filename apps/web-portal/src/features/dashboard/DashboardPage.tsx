@@ -68,6 +68,24 @@ export function DashboardPage() {
               {t('dashboard.templatesCta')}
             </Button>
           </Link>
+          <Link to="/nutrition-templates">
+            <Button
+              type="button"
+              variant="ghost"
+              data-testid="dashboard-nutrition-templates-cta"
+            >
+              {t('dashboard.nutritionTemplatesCta')}
+            </Button>
+          </Link>
+          <Link to="/periodization">
+            <Button
+              type="button"
+              variant="ghost"
+              data-testid="dashboard-periodization-cta"
+            >
+              {t('dashboard.periodizationCta')}
+            </Button>
+          </Link>
           <Link to="/invites">
             <Button type="button" data-testid="dashboard-invite-cta">
               {t('dashboard.inviteCta')}

@@ -4,6 +4,7 @@ import { createBillingApi } from './billing';
 import { createApiClient } from './client';
 import { createCoachingApi } from './coaching';
 import { createIdentityApi } from './identity';
+import { createNutritionApi } from './nutrition';
 import { createTrainingApi } from './training';
 
 /** Production 401 handler — exported for WPORT-02 coverage. */
@@ -24,6 +25,7 @@ const identityApi = createIdentityApi(client);
 const billingApi = createBillingApi(client);
 const coachingApi = createCoachingApi(client);
 const trainingApi = createTrainingApi(client);
+const nutritionApi = createNutritionApi(client);
 
 export function getIdentityApi() {
   return identityApi;
@@ -39,4 +41,8 @@ export function getCoachingApi() {
 
 export function getTrainingApi() {
   return trainingApi;
+}
+
+export function getNutritionApi() {
+  return nutritionApi;
 }

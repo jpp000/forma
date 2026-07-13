@@ -673,7 +673,7 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-15, WPORT-16  
 
 **Done when**:
-- [ ] Migration applies
+- [x] Migration applies
 
 **Gate**: migrate deploy  
 **Commit**: `feat(db): add nutrition templates and periodization`
@@ -688,9 +688,9 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-15  
 
 **Done when**:
-- [ ] Create/list/archive e2e
-- [ ] Prescribe from template → student daily target
-- [ ] Trainer 403; unlinked 403
+- [x] Create/list/archive e2e
+- [x] Prescribe from template → student daily target
+- [x] Trainer 403; unlinked 403
 
 **Tests**: e2e  
 **Commit**: `feat(api): add nutrition plan templates`
@@ -705,9 +705,9 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-16  
 
 **Done when**:
-- [ ] Create 2-block + assign → student has first plan
-- [ ] Advance → second plan
-- [ ] Unlinked assign → 403
+- [x] Create 2-block + assign → student has first plan
+- [x] Advance → second plan
+- [x] Unlinked assign → 403
 
 **Tests**: e2e  
 **Commit**: `feat(api): add light training periodization`
@@ -722,7 +722,7 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-15  
 
 **Done when**:
-- [ ] Pro can create and prescribe from portal
+- [x] Pro can create and prescribe from portal
 **Gate**: build  
 **Commit**: `feat(web-portal): add nutrition templates UI`
 
@@ -736,7 +736,7 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-16  
 
 **Done when**:
-- [ ] Assign + advance available in portal
+- [x] Assign + advance available in portal
 **Gate**: build  
 **Commit**: `feat(web-portal): add periodization builder`
 

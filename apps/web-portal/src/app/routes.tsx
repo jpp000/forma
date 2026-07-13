@@ -7,6 +7,8 @@ import { OtpPage } from '../features/auth/OtpPage';
 import { DashboardPage } from '../features/dashboard/DashboardPage';
 import { InvitesPage } from '../features/invites/InvitesPage';
 import { OnboardingPage } from '../features/onboarding/OnboardingPage';
+import { NutritionTemplatesPage } from '../features/nutrition/NutritionTemplatesPage';
+import { PeriodizationPage } from '../features/periodization/PeriodizationPage';
 import { ProfileEditorPage } from '../features/profile/ProfileEditorPage';
 import { RequestsInboxPage } from '../features/requests/RequestsInboxPage';
 import { TemplatesPage } from '../features/templates/TemplatesPage';
@@ -141,6 +143,26 @@ export function AppRoutes() {
             <RequireAuth>
               <RequireProfessional>
                 <TemplatesPage />
+              </RequireProfessional>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/nutrition-templates"
+          element={
+            <RequireAuth>
+              <RequireProfessional>
+                <NutritionTemplatesPage />
+              </RequireProfessional>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/periodization"
+          element={
+            <RequireAuth>
+              <RequireProfessional>
+                <PeriodizationPage />
               </RequireProfessional>
             </RequireAuth>
           }
