@@ -544,12 +544,114 @@ Batch W2-D — Ship:         T23
 
 ### W3–W4 stubs (do not start until W2 Verifier PASS)
 
-#### W3 stubs
-- API: training templates CRUD + e2e  
-- API: prescribe plan to linked student + e2e  
-- Portal: template library + prescribe UI  
-- Mobile: verify prescribed plan visible  
-- Verifier W3  
+#### W3 — Training templates + prescribe (expanded)
+
+**Execution order**: T24 → T25 → T26 → T27 → T28 → T29
+
+#### T24: Template + prescribe schema
+
+**What**: `TrainingWorkoutTemplate` (professionalUserId, name, items Json, archivedAt); `TrainingWorkoutPlan.prescribedByUserId` optional  
+**Where**: `prisma/schema.prisma` + migration  
+**Depends on**: W2 PASS  
+**Requirement**: WPORT-12, WPORT-13  
+
+**Done when**:
+- [x] Migration applies
+- [x] Prisma client generates new models/fields
+
+**Tests**: migrate deploy  
+**Gate**: `pnpm db:migrate:deploy`  
+**Commit**: `feat(db): add workout templates and prescribedByUserId`
+
+---
+
+#### T25: Training templates CRUD API
+
+**What**: Trainer CRUD `/api/training/templates` (list own, create, patch, archive); nutritionist → 403  
+**Where**: training module  
+**Depends on**: T24  
+**Requirement**: WPORT-12  
+
+**Done when**:
+- [x] Create/list/update/archive e2e
+- [x] Owner isolation
+- [x] Nutritionist 403
+
+**Tests**: e2e  
+**Gate**: API  
+**Commit**: `feat(api): add training workout templates CRUD`
+
+---
+
+#### T26: Prescribe plan to linked student
+
+**What**: `POST /api/training/plans/prescribe` `{ studentUserId, templateId? , name?, items? }` + `assertLinked`; copies exercises onto student; sets `prescribedByUserId`  
+**Where**: training module + CoachingModule import  
+**Depends on**: T25  
+**Requirement**: WPORT-13, WPORT-14  
+
+**Done when**:
+- [x] Linked prescribe → student `GET /plans` includes plan
+- [x] Unlinked → 403
+- [x] Nutritionist-only → 403
+
+**Tests**: e2e  
+**Gate**: API  
+**Commit**: `feat(api): prescribe workout plans to linked students`
+
+---
+
+#### T27: Portal training templates UI
+
+**What**: List/create templates in portal  
+**Where**: `apps/web-portal/src/features/templates/`  
+**Depends on**: T25  
+**Requirement**: WPORT-12  
+
+**Done when**:
+- [ ] Pro can create and see templates
+- [ ] Errors visible
+
+**Tests**: none (smoke T29)  
+**Gate**: build  
+**Commit**: `feat(web-portal): add training templates library`
+
+---
+
+#### T28: Portal prescribe UI
+
+**What**: From template or ad-hoc, pick linked student and prescribe  
+**Where**: portal templates/prescribe feature  
+**Depends on**: T26, T27  
+**Requirement**: WPORT-13  
+
+**Done when**:
+- [ ] Prescribe succeeds for linked student
+- [ ] Unlinked/error shown
+
+**Tests**: none (smoke T29)  
+**Gate**: build  
+**Commit**: `feat(web-portal): prescribe workout templates to students`
+
+---
+
+#### T29: W3 smoke + Verifier
+
+**What**: Gates + Verifier for WPORT-12–14  
+**Depends on**: T24–T28  
+**Requirement**: WPORT-12–14  
+
+**Done when**:
+- [ ] API e2e green
+- [ ] Portal build green
+- [ ] Student sees prescribed plan via existing training list (API/mobile)
+- [ ] Verifier PASS W3
+
+**Tests**: e2e  
+**Gate**: full W3  
+**Commit**: docs/validation for W3
+
+---
 
 #### W4 stubs
 - API: nutrition templates + prescribe-from-template  

@@ -14,7 +14,7 @@ import { CoachingService } from './coaching.service';
   imports: [
     IdentityModule,
     BillingModule,
-    TrainingModule,
+    forwardRef(() => TrainingModule),
     forwardRef(() => NutritionModule),
     ProgressModule,
   ],

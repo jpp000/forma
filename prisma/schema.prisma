@@ -114,16 +114,18 @@ model TrainingExercise {
 }
 
 model TrainingWorkoutPlan {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  name      String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
+  name               String
+  prescribedByUserId String?  @map("prescribed_by_user_id")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
 
   items    TrainingWorkoutPlanItem[]
   sessions TrainingWorkoutSession[]
 
   @@index([userId])
+  @@index([prescribedByUserId])
   @@map("training_workout_plans")
 }
 
@@ -141,6 +143,19 @@ model TrainingWorkoutPlanItem {
 
   @@index([planId])
   @@map("training_workout_plan_items")
+}
+
+model TrainingWorkoutTemplate {
+  id                 String    @id @default(cuid())
+  professionalUserId String    @map("professional_user_id")
+  name               String
+  items              Json
+  archivedAt         DateTime? @map("archived_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@index([professionalUserId])
+  @@map("training_workout_templates")
 }
 
 model TrainingWorkoutSession {

@@ -1,9 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../prisma/prisma.service';
+import { CoachingService } from '../coaching/coaching.service';
 import type { CreateExerciseDto } from './dto/create-exercise.dto';
 import type { CreateWorkoutPlanDto } from './dto/create-workout-plan.dto';
 import type { CreateWorkoutSessionDto } from './dto/create-workout-session.dto';
+import type { PrescribeWorkoutPlanDto } from './dto/prescribe-workout-plan.dto';
+import type {
+  CreateWorkoutTemplateDto,
+  TemplateExerciseItemDto,
+  UpdateWorkoutTemplateDto,
+} from './dto/workout-template.dto';
 import {
   TRAINING_SESSION_COMPLETED,
   type TrainingSessionCompletedEvent,
@@ -14,6 +27,8 @@ export class TrainingService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(forwardRef(() => CoachingService))
+    private readonly coachingService: CoachingService,
   ) {}
 
   async createExercise(userId: string, dto: CreateExerciseDto) {
@@ -195,5 +210,130 @@ export class TrainingService {
       orderBy: { completedAt: 'desc' },
     });
     return session ? session.completedAt.toISOString().slice(0, 10) : null;
+  }
+
+  async createTemplate(professionalUserId: string, dto: CreateWorkoutTemplateDto) {
+    return this.prisma.trainingWorkoutTemplate.create({
+      data: {
+        professionalUserId,
+        name: dto.name.trim(),
+        items: dto.items,
+      },
+    });
+  }
+
+  async listTemplates(professionalUserId: string) {
+    const templates = await this.prisma.trainingWorkoutTemplate.findMany({
+      where: {
+        professionalUserId,
+        archivedAt: null,
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+    return { templates };
+  }
+
+  async updateTemplate(
+    professionalUserId: string,
+    templateId: string,
+    dto: UpdateWorkoutTemplateDto,
+  ) {
+    const existing = await this.getOwnedTemplate(professionalUserId, templateId);
+    return this.prisma.trainingWorkoutTemplate.update({
+      where: { id: existing.id },
+      data: {
+        ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
+        ...(dto.items !== undefined ? { items: dto.items } : {}),
+      },
+    });
+  }
+
+  async archiveTemplate(professionalUserId: string, templateId: string) {
+    const existing = await this.getOwnedTemplate(professionalUserId, templateId);
+    return this.prisma.trainingWorkoutTemplate.update({
+      where: { id: existing.id },
+      data: { archivedAt: new Date() },
+    });
+  }
+
+  async prescribeWorkoutPlan(
+    professionalUserId: string,
+    dto: PrescribeWorkoutPlanDto,
+  ) {
+    await this.coachingService.assertLinked(
+      professionalUserId,
+      dto.studentUserId,
+    );
+
+    let name = dto.name?.trim();
+    let items: TemplateExerciseItemDto[] | undefined = dto.items;
+
+    if (dto.templateId) {
+      const template = await this.getOwnedTemplate(
+        professionalUserId,
+        dto.templateId,
+      );
+      if (template.archivedAt) {
+        throw new BadRequestException('errors.template_archived');
+      }
+      name = name || template.name;
+      items = (template.items as TemplateExerciseItemDto[]) ?? undefined;
+    }
+
+    if (!name || !items?.length) {
+      throw new BadRequestException('errors.prescribe_incomplete');
+    }
+
+    const resolvedItems = items;
+    const resolvedName = name;
+
+    return this.prisma.$transaction(async (tx) => {
+      const createdItems = [];
+      for (const [index, item] of resolvedItems.entries()) {
+        const exercise = await tx.trainingExercise.create({
+          data: {
+            userId: dto.studentUserId,
+            name: item.name,
+            muscleGroup: item.muscleGroup,
+            equipment: item.equipment,
+          },
+        });
+        createdItems.push({
+          exerciseId: exercise.id,
+          sets: item.sets,
+          reps: item.reps,
+          restSeconds: item.restSeconds,
+          sortOrder: index,
+        });
+      }
+
+      return tx.trainingWorkoutPlan.create({
+        data: {
+          userId: dto.studentUserId,
+          name: resolvedName,
+          prescribedByUserId: professionalUserId,
+          items: { create: createdItems },
+        },
+        include: {
+          items: {
+            orderBy: { sortOrder: 'asc' },
+            include: { exercise: true },
+          },
+        },
+      });
+    });
+  }
+
+  private async getOwnedTemplate(
+    professionalUserId: string,
+    templateId: string,
+  ) {
+    const template = await this.prisma.trainingWorkoutTemplate.findFirst({
+      where: { id: templateId, professionalUserId },
+    });
+    if (!template) {
+      throw new NotFoundException('errors.template_not_found');
+    }
+    return template;
   }
 }
