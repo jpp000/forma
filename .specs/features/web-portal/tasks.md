@@ -642,14 +642,15 @@ Batch W2-D — Ship:         T23
 **Requirement**: WPORT-12–14  
 
 **Done when**:
-- [ ] API e2e green
-- [ ] Portal build green
-- [ ] Student sees prescribed plan via existing training list (API/mobile)
-- [ ] Verifier PASS W3
+- [x] API e2e green
+- [x] Portal build green
+- [x] Student sees prescribed plan via existing training list (API/mobile)
+- [x] Verifier PASS W3
 
 **Tests**: e2e  
 **Gate**: full W3  
-**Commit**: docs/validation for W3
+**Commit**: docs/validation for W3  
+**Verifier**: PASS 2026-07-12 — see `validation.md` § Web Portal W3 Validation (6/8 ✅, 2 ⚠️, 0 ❌; sensor 3/5)
 
 ---
 

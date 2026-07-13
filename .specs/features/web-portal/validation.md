@@ -313,3 +313,133 @@ Not performed (automated Verifier pass only).
 **What works**: Public publish fields, public browse/get (safe DTO), link-request idempotency, accept→link, decline→no link + student mine status, invite regression, Professionals tab smoke, portal editor/inbox shipped.
 
 **Next steps**: Optional polish for ⚠️ portal/mobile smoke; proceed to W3 stubs when ready.
+
+---
+
+# Web Portal W3 Validation
+
+**Date**: 2026-07-12
+**Spec**: `.specs/features/web-portal/spec.md`
+**Diff range**: `4e3b299..5c54759` (`feature/web-portal-w1` HEAD after W2 PASS)
+**Verifier**: independent sub-agent (author ≠ verifier)
+**Scope**: W3 only — WPORT-12..14; stories W3-01..W3-02. W1/W2 not re-scored.
+
+**Commits in range**:
+- `17b4068` feat(api): add workout templates and linked prescribe
+- `5c54759` feat(web-portal): add training templates and prescribe UI
+
+---
+
+## Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T24 | ✅ Done | Migration `20260712190000_add_workout_templates`; `TrainingWorkoutTemplate` + `prescribedByUserId` |
+| T25 | ✅ Done | Trainer CRUD `/api/training/templates`; nutritionist POST → 403 e2e |
+| T26 | ✅ Done | `POST /plans/prescribe` + `assertLinked`; student `GET /plans` includes plan; unlinked 403 |
+| T27 | ✅ Done | Portal `TemplatesPage` create/list — **no portal e2e** |
+| T28 | ✅ Done | Portal prescribe form (template + linked student) — **no portal e2e** |
+| T29 | ✅ Done | Gates green; Verifier **PASS** (2 ⚠️ non-blocking) |
+
+---
+
+## Spec-Anchored Acceptance Criteria (W3)
+
+### P1 / W3-01: Training templates (WPORT-12)
+
+| Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
+| ------------------------- | -------------------- | ----------------------- | ------ |
+| WHEN Trainer creates template THEN store name + exercise structure owned by pro | 201; name + items; owned | `training.e2e-spec.ts:349-354` — `status` `201`, `body.name` `'Push A'`; schema `TrainingWorkoutTemplate.professionalUserId` (`schema.prisma:148-152`); create stores `items` (`training.service.ts:216-221`) | ✅ PASS |
+| WHEN Trainer lists templates THEN only their templates | Owner-scoped list | List filter `professionalUserId` + `archivedAt: null` (`training.service.ts:226-230`); e2e own list length 1 (`:356-360`). **No cross-trainer isolation e2e** (sensor mutant 4 survived) | ⚠️ Spec-precision gap |
+| WHEN Trainer updates or archives THEN subsequent list/prescribe uses new state | Update name; archive hidden from list | `training.e2e-spec.ts:362-377` — PATCH `name` `'Push A v2'`; archive then list length `0`. Service rejects archived on prescribe (`training.service.ts:276-278`) — **no e2e prescribe-after-archive** | ✅ PASS (list path e2e; archive→prescribe structural) |
+| WHEN Nutritionist without trainer hits template write APIs THEN 403 | 403 | `training.e2e-spec.ts:396-400` — nutritionist `POST /templates` → `403`; controller `@Roles(Role.Trainer)` (`training.controller.ts:112-113`) | ✅ PASS |
+
+### P1 / W3-02: Prescribe training to linked student (WPORT-13, WPORT-14)
+
+| Criterion | Spec-defined outcome | `file:line` + assertion | Result |
+| --------- | -------------------- | ----------------------- | ------ |
+| WHEN linked Trainer prescribes (template or ad-hoc) THEN create/assign plan for student | 201; plan on student; `prescribedByUserId` set | `training.e2e-spec.ts:434-444` — `201`, `prescribedByUserId` truthy, `userId` = student, exercise name copied | ✅ PASS |
+| WHEN unlinked Trainer tries prescribe THEN 403 | 403 | `training.e2e-spec.ts:417-424` — unlinked prescribe `403`; `assertLinked` (`training.service.ts:263-266`, `coaching.service.ts:432-444`) | ✅ PASS |
+| WHEN Student opens Training THEN prescribed plan visible in existing flows | Plan in student `GET /plans`; mobile lists plans | API: `training.e2e-spec.ts:446-452` — student `GET /plans` includes prescribed id. Mobile: `listPlans` → `/api/training/plans` (`training.ts:110-111`); `fetchPlans` (`trainingStore.ts:145`) | ✅ PASS (API e2e + mobile structural; notes: WPORT-14) |
+| WHEN Nutritionist-only tries training prescribe THEN 403 | 403 | Controller `@Roles(Role.Trainer)` on prescribe (`training.controller.ts:80-81`). **No dedicated nutritionist-prescribe e2e** (sensor mutant allowing `Role.Nutritionist` survived) | ⚠️ Spec-precision gap |
+
+**Portal UI (T27/T28)**: `TemplatesPage` at `/templates` — create + prescribe forms, errors via `InlineError` (`TemplatesPage.tsx:76-134,164`). Route wired (`routes.tsx:139-143`). **No portal unit/e2e** — ⚠️ ok per W3 notes when API covered.
+
+**Status**: ✅ **PASS** — **0** ❌ blocking AC gaps; **2** story ⚠️ + portal UI ⚠️ non-blocking.
+
+**Story AC score**: **6/8** ✅ matched; **2** ⚠️ precision; **0** ❌ AC gaps
+
+**WPORT mapping**: WPORT-12 ✅/⚠️ (isolation e2e weak); WPORT-13 ✅ API / ⚠️ nutri-prescribe e2e + portal UI; WPORT-14 ✅.
+
+---
+
+## Discrimination Sensor
+
+Scratch mutations on live tree then restored (`git` clean). Suite: `training.e2e-spec`.
+
+| # | Mutation | File:line (approx) | Killed? |
+| - | -------- | ------------------ | ------- |
+| 1 | Skip `assertLinked` in prescribe | `training.service.ts:263-266` | ✅ Killed (unlinked expect 403) — 7/1 |
+| 2 | Archive sets `archivedAt: null` | `training.service.ts:255` | ✅ Killed (list after archive length 0) — 7/1 |
+| 3 | `prescribedByUserId: null` | `training.service.ts:314` | ✅ Killed (`prescribedByUserId` truthy) — 7/1 |
+| 4 | Drop `professionalUserId` from list filter | `training.service.ts:227-229` | ❌ Survived — 8/0 (no cross-owner e2e) |
+| 5 | Allow `@Roles(Trainer, Nutritionist)` on prescribe | `training.controller.ts:81` | ❌ Survived — 8/0 (no nutri prescribe e2e) |
+
+**Sensor depth**: lightweight (5 behavior-level mutations)
+**Result**: **3/5 killed** — linked/archive/prescribedBy covered; owner-isolation list + nutritionist-prescribe weakly discriminated — **PASS** for blocking ACs (⚠️ remain)
+
+---
+
+## Interactive UAT Results
+
+Not performed (automated Verifier pass only).
+
+---
+
+## Gate Check
+
+- **Gate command**: W3 — API training e2e + portal unit / check-types / build
+- **Result (this session)**:
+  - API `training.e2e-spec`: **8 passed**, 0 failed (includes 2 W3 cases)
+  - Portal unit: **15 passed**
+  - Portal check-types: **PASS**
+  - Portal build: **PASS** (vite dist)
+  - Portal W3 e2e: **absent** (only `w1-smoke.spec.ts`)
+- **Failures**: none on gates that ran
+
+---
+
+## Ranked Gaps
+
+1. **⚠️ W3-01.2 owner isolation e2e** — add second trainer + assert list excludes foreign templates (kills sensor mutant 4).
+2. **⚠️ W3-02.4 nutritionist prescribe e2e** — nutritionist token → `POST /plans/prescribe` expect `403` (kills mutant 5).
+3. **⚠️ Portal templates/prescribe UI untested (T27/T28)** — optional Playwright: create template → prescribe linked student (non-blocking; API covered).
+
+---
+
+## Code Quality
+
+| Principle | Status |
+| --------- | ------ |
+| Minimum code | ✅ |
+| Surgical changes | ✅ |
+| No scope creep | ✅ |
+| Matches patterns | ✅ |
+| Spec-anchored outcome check | ✅ (⚠️ flagged where precision thin) |
+| Per-layer coverage (API happy+edge) | ✅ API; portal UI smoke thin |
+| Tests map to ACs | ✅ |
+| Guidelines | none — strong defaults / existing e2e patterns |
+
+---
+
+## Summary
+
+**Overall**: ✅ **PASS** — no ❌ blocking AC gaps; **2** story ⚠️ + portal UI ⚠️ non-blocking
+
+**Spec-anchored check**: 6/8 ✅; 2 ⚠️; 0 ❌  
+**Sensor**: 3/5 killed  
+**Gate**: training e2e **8** PASS; portal unit **15** + types + build PASS
+
+**What works**: Template CRUD + archive, nutritionist template 403, linked prescribe from template, unlinked 403, student `GET /plans` sees prescribed plan, portal `/templates` create+prescribe UI shipped, mobile reuses plan list.
+
+**Next steps**: Optional strengthen e2e for isolation + nutri-prescribe; proceed to W4 stubs.

@@ -135,18 +135,19 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
-**P2 — Web portal:** W1 **Verifier PASS**; W2 **Verifier PASS**; W3 Execute in progress on `feature/web-portal-w1`.
+**P2 — Web portal:** W1 **Verifier PASS**; W2 **Verifier PASS**; W3 **Verifier PASS** on `feature/web-portal-w1`.
 
 | Portal item | Value |
 |-------------|-------|
 | Branch | `feature/web-portal-w1` |
-| Done | W1+W2 PASS; W3 T24–T28 (templates API + prescribe + portal UI) — T29 Verifier next |
-| Gates | API training e2e **8**; portal unit **15** · build PASS |
-| Next | T29 W3 Verifier → then W4 |
+| Done | W1+W2+W3 PASS (T24–T29); templates CRUD + prescribe API + portal `/templates` |
+| Gates (W3 Verifier 2026-07-12) | API training e2e **8**; portal unit **15** · check-types · build PASS |
+| Verifier W3 | **PASS** — 6/8 ✅, 2 ⚠️ (owner-isolation e2e; nutri-prescribe e2e); sensor 3/5; 0 ❌ — `.specs/features/web-portal/validation.md` |
+| Next | Expand/execute W4 stubs (nutrition templates + light periodization) |
 | Smoke | Portal `/templates`; student `GET /training/plans` includes prescribed |
 
-**Loop:** Finish W3 Verifier then W4 until feature done.
+**Loop:** Start W4 until feature done.
 
 ---
 
-**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before. Training prescribe for linked pros is an API gap to close in W3.
+**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before. W3 training prescribe to linked students is shipped.
