@@ -31,3 +31,10 @@
   color: var(--color-label-secondary);
   font-size: 0.875rem;
 }
+
+.fp-auth-dev {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 22rem;
+}

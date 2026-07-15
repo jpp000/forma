@@ -1,6 +1,7 @@
 import { createHash, randomInt } from 'node:crypto';
 import { Role } from '@forma/types';
 import {
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Inject,
@@ -19,6 +20,10 @@ const OTP_RATE_WINDOW_MS = 15 * 60 * 1000;
 const OTP_RATE_LIMIT = 3;
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
+/** Stable local/dev accounts for portal smoke testing. */
+export const DEV_PRO_EMAIL = 'pro-dev@forma.local';
+export const DEV_STUDENT_EMAIL = 'aluno-dev@forma.local';
+
 @Injectable()
 export class IdentityService {
   constructor(
@@ -29,14 +34,67 @@ export class IdentityService {
   ) {}
 
   getDevMockOtp(email: string): string | undefined {
-    if (
-      process.env.NODE_ENV === 'production' ||
-      (process.env.EMAIL_PROVIDER ?? 'mock') !== 'mock'
-    ) {
+    if (!this.isDevMockEnabled()) {
       return undefined;
     }
 
     return this.mockEmail.getLastCode(email);
+  }
+
+  /**
+   * Dev-only: ensure a professional (paid + trainer profile) and return JWT.
+   * Also seeds one linked student so the coaching dashboard is non-empty.
+   */
+  async createDevProfessionalSession(): Promise<{ accessToken: string }> {
+    if (!this.isDevMockEnabled()) {
+      throw new ForbiddenException('errors.forbidden');
+    }
+
+    const proUser = await this.prisma.identityUser.upsert({
+      where: { email: DEV_PRO_EMAIL },
+      create: { email: DEV_PRO_EMAIL },
+      update: {},
+    });
+
+    const plan = await this.prisma.billingPlan.findUniqueOrThrow({
+      where: { slug: 'professional' },
+    });
+
+    await this.prisma.billingSubscription.upsert({
+      where: { userId: proUser.id },
+      create: {
+        userId: proUser.id,
+        planId: plan.id,
+        status: 'active',
+      },
+      update: {
+        planId: plan.id,
+        status: 'active',
+      },
+    });
+
+    const existingProfile =
+      await this.prisma.coachingProfessionalProfile.findUnique({
+        where: { userId: proUser.id },
+      });
+
+    if (!existingProfile) {
+      await this.prisma.coachingProfessionalProfile.create({
+        data: {
+          userId: proUser.id,
+          type: 'trainer',
+          credentials: 'CREF Dev 00000',
+          displayName: 'Forma Dev Pro',
+          slug: 'forma-dev-pro',
+          bio: 'Conta de desenvolvimento local do portal',
+          isPublished: true,
+        },
+      });
+    }
+
+    await this.ensureDevLinkedStudent(proUser.id);
+
+    return this.issueSessionToken(proUser.id);
   }
 
   async requestOtp(email: string, locale: SupportedLocale): Promise<void> {
@@ -111,19 +169,7 @@ export class IdentityService {
       data: { usedAt: now },
     });
 
-    const session = await this.prisma.identitySession.create({
-      data: {
-        userId: user.id,
-        expiresAt: new Date(Date.now() + SESSION_TTL_MS),
-      },
-    });
-
-    const accessToken = await this.jwtService.signAsync({
-      sub: user.id,
-      sid: session.id,
-    });
-
-    return { accessToken };
+    return this.issueSessionToken(user.id);
   }
 
   async getMe(
@@ -164,6 +210,65 @@ export class IdentityService {
     }
 
     return roles;
+  }
+
+  private async ensureDevLinkedStudent(professionalUserId: string) {
+    const studentUser = await this.prisma.identityUser.upsert({
+      where: { email: DEV_STUDENT_EMAIL },
+      create: { email: DEV_STUDENT_EMAIL },
+      update: {},
+    });
+
+    await this.prisma.studentProfile.upsert({
+      where: { userId: studentUser.id },
+      create: {
+        userId: studentUser.id,
+        age: 28,
+        sex: 'male',
+        heightCm: 178,
+        activityLevel: 'moderate',
+      },
+      update: {},
+    });
+
+    await this.prisma.coachingLink.upsert({
+      where: {
+        professionalUserId_studentUserId: {
+          professionalUserId,
+          studentUserId: studentUser.id,
+        },
+      },
+      create: {
+        professionalUserId,
+        studentUserId: studentUser.id,
+      },
+      update: {},
+    });
+  }
+
+  private async issueSessionToken(
+    userId: string,
+  ): Promise<{ accessToken: string }> {
+    const session = await this.prisma.identitySession.create({
+      data: {
+        userId,
+        expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+      },
+    });
+
+    const accessToken = await this.jwtService.signAsync({
+      sub: userId,
+      sid: session.id,
+    });
+
+    return { accessToken };
+  }
+
+  private isDevMockEnabled(): boolean {
+    return (
+      process.env.NODE_ENV !== 'production' &&
+      (process.env.EMAIL_PROVIDER ?? 'mock') === 'mock'
+    );
   }
 
   private hashCode(code: string): string {

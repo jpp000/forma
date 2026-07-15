@@ -26,6 +26,10 @@ export function createIdentityApi(client: ApiClient) {
       client.request<{ code: string }>(
         `/api/identity/otp/dev-last?email=${encodeURIComponent(email)}`,
       ),
+    devProLogin: () =>
+      client.request<OtpVerifyResponse>('/api/identity/dev/pro-login', {
+        method: 'POST',
+      }),
   };
 }
 

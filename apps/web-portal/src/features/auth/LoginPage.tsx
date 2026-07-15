@@ -70,6 +70,20 @@ export function LoginPage() {
     }
   }
 
+  async function handleDevProLogin() {
+    setBusy(true);
+    setFormError(undefined);
+    try {
+      const { accessToken } = await getIdentityApi().devProLogin();
+      await signIn(accessToken);
+      navigate('/');
+    } catch (error) {
+      setFormError(mapApiError(error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <Page
       title={t('brand.name')}
@@ -114,15 +128,26 @@ export function LoginPage() {
       </div>
 
       {import.meta.env.DEV ? (
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={busy}
-          onClick={() => void handleDevMockLogin()}
-          data-testid="auth-dev-mock-login"
-        >
-          {t('auth.devMockLogin')}
-        </Button>
+        <div className="fp-auth-dev">
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={busy}
+            onClick={() => void handleDevProLogin()}
+            data-testid="auth-dev-pro-login"
+          >
+            {t('auth.devProLogin')}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={busy}
+            onClick={() => void handleDevMockLogin()}
+            data-testid="auth-dev-mock-login"
+          >
+            {t('auth.devMockLogin')}
+          </Button>
+        </div>
       ) : null}
 
       <p className="fp-auth-hint">

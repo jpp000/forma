@@ -61,6 +61,16 @@ export class IdentityController {
     return { code };
   }
 
+  @Post('dev/pro-login')
+  @ApiOperation({
+    summary:
+      'Dev only: sign in as seeded professional (plan + trainer profile + linked student)',
+  })
+  @ApiOkResponse({ type: AuthResponseDto })
+  async devProLogin(): Promise<AuthResponseDto> {
+    return this.identityService.createDevProfessionalSession();
+  }
+
   @Get('me')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()

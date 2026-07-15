@@ -194,6 +194,39 @@ describe('Identity OTP (e2e)', () => {
       expect(response.status).toBe(401);
     });
   });
+
+  it('POST /api/identity/dev/pro-login returns JWT with trainer role and linked student', async () => {
+    await prisma.billingSubscription.deleteMany();
+    await prisma.coachingLink.deleteMany();
+    await prisma.coachingProfessionalProfile.deleteMany();
+    await prisma.studentProfile.deleteMany();
+
+    const response = await request(app.getHttpServer()).post(
+      '/api/identity/dev/pro-login',
+    );
+
+    expect(response.status).toBe(201);
+    expect(response.body.accessToken).toEqual(expect.any(String));
+
+    const me = await request(app.getHttpServer())
+      .get('/api/identity/me')
+      .set('Authorization', `Bearer ${response.body.accessToken}`);
+
+    expect(me.status).toBe(200);
+    expect(me.body.email).toBe('pro-dev@forma.local');
+    expect(me.body.roles).toContain('trainer');
+
+    const dashboard = await request(app.getHttpServer())
+      .get('/api/coaching/dashboard')
+      .set('Authorization', `Bearer ${response.body.accessToken}`);
+
+    expect(dashboard.status).toBe(200);
+    expect(
+      dashboard.body.students.some(
+        (s: { email: string }) => s.email === 'aluno-dev@forma.local',
+      ),
+    ).toBe(true);
+  });
 });
 
 describe('Identity OAuth (e2e)', () => {

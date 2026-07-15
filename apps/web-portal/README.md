@@ -32,6 +32,17 @@ pnpm --filter @forma/web-portal dev
 
 Open `http://localhost:5173`.
 
+### Dev login (mock)
+
+On the login screen (Vite `DEV` only):
+
+| Button | What it does |
+|--------|----------------|
+| **Dev: entrar como profissional** | Seeds `pro-dev@forma.local` with paid pro plan + trainer profile + linked student `aluno-dev@forma.local`, then opens the dashboard |
+| **Dev: entrar como usuário novo** | Fresh OTP mock user → onboarding/checkout |
+
+Requires API with `EMAIL_PROVIDER=mock` (Compose already sets this).
+
 ## Environment variables
 
 | Variable | Where | Purpose |
