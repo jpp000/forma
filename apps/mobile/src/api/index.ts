@@ -14,6 +14,8 @@ export type { NutritionApi } from './nutrition';
 export { createNutritionApi } from './nutrition';
 export type { ProgressApi, StreaksResponse, TrainingRestDay } from './progress';
 export { createProgressApi } from './progress';
+export type { CoachingApi, LinkRequest, PublicProfessional } from './coaching';
+export { createCoachingApi } from './coaching';
 export type {
   SetHealthGoalInput,
   StudentApi,
@@ -38,6 +40,7 @@ export type {
 export { createTrainingApi } from './training';
 export { useApiClient } from './useApiClient';
 export {
+  getWiredCoachingApi,
   getWiredIdentityApi,
   getWiredNutritionApi,
   getWiredProgressApi,

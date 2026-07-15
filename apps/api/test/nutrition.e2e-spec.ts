@@ -42,6 +42,7 @@ describe('Nutrition (e2e)', () => {
     await prisma.nutritionMealItem.deleteMany();
     await prisma.nutritionMealLog.deleteMany();
     await prisma.nutritionPlan.deleteMany();
+    await prisma.nutritionPlanTemplate.deleteMany();
     await prisma.coachingLink.deleteMany();
     await prisma.coachingInvite.deleteMany();
     await prisma.coachingProfessionalProfile.deleteMany();
@@ -280,5 +281,101 @@ describe('Nutrition (e2e)', () => {
       carbs: 200,
       fat: 65,
     });
+  });
+
+  it('nutritionist templates + prescribe-from-template; trainer forbidden', async () => {
+    const nutriEmail = `nutri-tpl-${Date.now()}@example.com`;
+    const studentEmailLocal = `student-nutri-tpl-${Date.now()}@example.com`;
+    const trainerEmail = `trainer-nutri-tpl-${Date.now()}@example.com`;
+
+    const nutriToken = await authenticate(nutriEmail);
+    const nutriUser = await prisma.identityUser.findFirstOrThrow({
+      where: { email: nutriEmail },
+    });
+    await request(app.getHttpServer())
+      .post('/api/billing/webhook')
+      .set('stripe-signature', 'mock-signature')
+      .send({
+        type: 'checkout.session.completed',
+        data: { userId: nutriUser.id, planSlug: 'professional' },
+      });
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${nutriToken}`)
+      .send({ type: 'nutritionist', credentials: 'CRN 9' });
+
+    const created = await request(app.getHttpServer())
+      .post('/api/nutrition/templates')
+      .set('Authorization', `Bearer ${nutriToken}`)
+      .send({
+        name: 'Cut',
+        dailyCalories: 1800,
+        dailyProtein: 140,
+        dailyCarbs: 160,
+        dailyFat: 55,
+      });
+    expect(created.status).toBe(201);
+
+    const list = await request(app.getHttpServer())
+      .get('/api/nutrition/templates')
+      .set('Authorization', `Bearer ${nutriToken}`);
+    expect(list.status).toBe(200);
+    expect(list.body.templates).toHaveLength(1);
+
+    const studentToken = await createStudent(studentEmailLocal);
+    const student = await prisma.identityUser.findFirstOrThrow({
+      where: { email: studentEmailLocal },
+    });
+    const invite = await request(app.getHttpServer())
+      .post('/api/coaching/invites')
+      .set('Authorization', `Bearer ${nutriToken}`)
+      .send({ studentEmail: studentEmailLocal });
+    await request(app.getHttpServer())
+      .post(`/api/coaching/invites/${invite.body.token}/accept`)
+      .set('Authorization', `Bearer ${studentToken}`);
+
+    const prescribed = await request(app.getHttpServer())
+      .post('/api/nutrition/plans')
+      .set('Authorization', `Bearer ${nutriToken}`)
+      .send({
+        studentUserId: student.id,
+        templateId: created.body.id,
+      });
+    expect(prescribed.status).toBe(201);
+    expect(prescribed.body.dailyCalories).toBe(1800);
+
+    const summary = await request(app.getHttpServer())
+      .get('/api/nutrition/daily')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(summary.status).toBe(200);
+    expect(summary.body.target.calories).toBe(1800);
+
+    const trainerToken = await authenticate(trainerEmail);
+    const trainerUser = await prisma.identityUser.findFirstOrThrow({
+      where: { email: trainerEmail },
+    });
+    await request(app.getHttpServer())
+      .post('/api/billing/webhook')
+      .set('stripe-signature', 'mock-signature')
+      .send({
+        type: 'checkout.session.completed',
+        data: { userId: trainerUser.id, planSlug: 'professional' },
+      });
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${trainerToken}`)
+      .send({ type: 'trainer', credentials: 'CREF 9' });
+
+    const forbidden = await request(app.getHttpServer())
+      .post('/api/nutrition/templates')
+      .set('Authorization', `Bearer ${trainerToken}`)
+      .send({
+        name: 'No',
+        dailyCalories: 1,
+        dailyProtein: 1,
+        dailyCarbs: 1,
+        dailyFat: 1,
+      });
+    expect(forbidden.status).toBe(403);
   });
 });

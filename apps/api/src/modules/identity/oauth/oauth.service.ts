@@ -33,8 +33,8 @@ export class OAuthService {
         'mock-account-1',
       );
       const params = new URLSearchParams({ mockToken: token });
-      if (options?.platform === 'mobile') {
-        params.set('platform', 'mobile');
+      if (options?.platform === 'mobile' || options?.platform === 'web') {
+        params.set('platform', options.platform);
       }
       return `${baseUrl}/api/identity/oauth/${provider}/callback?${params.toString()}`;
     }

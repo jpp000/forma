@@ -66,10 +66,17 @@ export class OAuthController {
       code,
     });
 
-    if (platform === 'mobile') {
-      const successUrl = process.env.OAUTH_MOBILE_SUCCESS_URL;
+    if (platform === 'mobile' || platform === 'web') {
+      const successUrl =
+        platform === 'mobile'
+          ? process.env.OAUTH_MOBILE_SUCCESS_URL
+          : process.env.OAUTH_WEB_SUCCESS_URL;
       if (!successUrl) {
-        throw new BadRequestException('errors.oauth_mobile_redirect_missing');
+        throw new BadRequestException(
+          platform === 'mobile'
+            ? 'errors.oauth_mobile_redirect_missing'
+            : 'errors.oauth_web_redirect_missing',
+        );
       }
 
       const redirectTarget = new URL(successUrl);

@@ -23,6 +23,7 @@ Hooks locais (uma vez por clone): `./scripts/setup-git-hooks.sh`
 |---------|------|-------|-----------------|
 | `@forma/api` | `apps/api` | API REST NestJS + Fastify + Prisma | Node, `http://localhost:3000` (`/api`, Swagger em `/api/docs`) |
 | `@forma/mobile` | `apps/mobile` | App Expo / React Native (aluno) | Metro `8081`, **web E2E** `19006` |
+| `@forma/web-portal` | `apps/web-portal` | Portal profissional (Vite SPA) | Vite `5173` |
 | `@forma/worker` | `apps/worker` | Jobs BullMQ (fora do MVP) | Requer Redis |
 | PostgreSQL 16 | — | Banco da API (obrigatório) | `localhost:5432` |
 | Redis | — | Filas do worker (opcional, fora do MVP) | `localhost:6379` |
@@ -93,6 +94,19 @@ pnpm --filter @forma/api dev
 ```
 
 Verificar: `/api/health`, `/api/ready`, `/api/docs`
+
+## Web portal — profissionais
+
+Vite SPA em `apps/web-portal` (porta **5173**). Detalhes: [`apps/web-portal/README.md`](apps/web-portal/README.md).
+
+```bash
+export CORS_ORIGIN=http://localhost:5173
+export OAUTH_WEB_SUCCESS_URL=http://localhost:5173/oauth/callback
+pnpm --filter @forma/api dev
+pnpm --filter @forma/web-portal dev
+```
+
+Render: serviço estático `forma-web-portal` no `render.yaml` (rewrite SPA `/*` → `/index.html`). Em produção, configure `VITE_API_URL` no portal e `CORS_ORIGIN` + `OAUTH_WEB_SUCCESS_URL` na API.
 
 ## Mobile — desenvolvimento e testes visuais
 

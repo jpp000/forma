@@ -1,14 +1,27 @@
+import cors from '@fastify/cors';
 import { ValidationPipe } from '@nestjs/common';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import cors from '@fastify/cors';
+
+function resolveCorsOrigin(): boolean | string[] | undefined {
+  const configured = process.env.CORS_ORIGIN?.trim();
+  if (configured) {
+    return configured
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    return true;
+  }
+  return undefined;
+}
 
 export async function configureApp(app: NestFastifyApplication): Promise<void> {
-  if (process.env.NODE_ENV !== 'production') {
+  const origin = resolveCorsOrigin();
+  if (origin !== undefined) {
     await app.register(cors, {
-      origin: process.env.CORS_ORIGIN
-        ? process.env.CORS_ORIGIN.split(',').map((value) => value.trim())
-        : true,
+      origin,
       credentials: true,
       methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     });

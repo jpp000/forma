@@ -1,0 +1,19 @@
+.fp-inline-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-row);
+  padding: var(--space-row);
+  border: 1px solid color-mix(in srgb, var(--color-error) 35%, transparent);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--color-error) 8%, var(--color-surface));
+}
+
+.fp-inline-error__message {
+  margin: 0;
+  color: var(--color-error);
+}
+
+.fp-inline-error__action {
+  flex-shrink: 0;
+}

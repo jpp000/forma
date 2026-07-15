@@ -42,7 +42,16 @@ describe('Training (e2e)', () => {
     await prisma.trainingWorkoutSession.deleteMany();
     await prisma.trainingWorkoutPlanItem.deleteMany();
     await prisma.trainingWorkoutPlan.deleteMany();
+    await prisma.trainingPeriodizationAssignment.deleteMany();
+    await prisma.trainingPeriodizationBlock.deleteMany();
+    await prisma.trainingPeriodization.deleteMany();
+    await prisma.trainingWorkoutTemplate.deleteMany();
     await prisma.trainingExercise.deleteMany();
+    await prisma.billingSubscription.deleteMany();
+    await prisma.coachingLink.deleteMany();
+    await prisma.coachingInvite.deleteMany();
+    await prisma.coachingLinkRequest.deleteMany();
+    await prisma.coachingProfessionalProfile.deleteMany();
     await prisma.studentHealthGoal.deleteMany();
     await prisma.studentProfile.deleteMany();
     await prisma.identitySession.deleteMany();
@@ -301,5 +310,228 @@ describe('Training (e2e)', () => {
     expect(response.body.message).toBe(
       'Só é possível registrar treinos do dia atual',
     );
+  });
+
+  const pushItems = [
+    {
+      name: 'Bench Press',
+      muscleGroup: 'chest',
+      equipment: 'barbell',
+      sets: 3,
+      reps: 8,
+      restSeconds: 90,
+    },
+  ];
+
+  async function activateTrainer(email: string): Promise<{
+    token: string;
+    userId: string;
+  }> {
+    const token = await authenticate(email);
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email },
+    });
+    await request(app.getHttpServer())
+      .post('/api/billing/webhook')
+      .set('stripe-signature', 'mock-signature')
+      .send({
+        type: 'checkout.session.completed',
+        data: { userId: user.id, planSlug: 'professional' },
+      });
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ type: 'trainer', credentials: 'CREF 1' });
+    return { token, userId: user.id };
+  }
+
+  it('trainer CRUD templates; nutritionist forbidden', async () => {
+    const trainerEmail = `trainer-tpl-${Date.now()}@example.com`;
+    const { token } = await activateTrainer(trainerEmail);
+
+    const created = await request(app.getHttpServer())
+      .post('/api/training/templates')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Push A', items: pushItems });
+    expect(created.status).toBe(201);
+    expect(created.body.name).toBe('Push A');
+
+    const listed = await request(app.getHttpServer())
+      .get('/api/training/templates')
+      .set('Authorization', `Bearer ${token}`);
+    expect(listed.status).toBe(200);
+    expect(listed.body.templates).toHaveLength(1);
+
+    const updated = await request(app.getHttpServer())
+      .patch(`/api/training/templates/${created.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Push A v2' });
+    expect(updated.status).toBe(200);
+    expect(updated.body.name).toBe('Push A v2');
+
+    const archived = await request(app.getHttpServer())
+      .post(`/api/training/templates/${created.body.id}/archive`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(archived.status).toBe(201);
+
+    const afterArchive = await request(app.getHttpServer())
+      .get('/api/training/templates')
+      .set('Authorization', `Bearer ${token}`);
+    expect(afterArchive.body.templates).toHaveLength(0);
+
+    const nutriEmail = `nutri-tpl-${Date.now()}@example.com`;
+    const nutriToken = await authenticate(nutriEmail);
+    const nutriUser = await prisma.identityUser.findFirstOrThrow({
+      where: { email: nutriEmail },
+    });
+    await request(app.getHttpServer())
+      .post('/api/billing/webhook')
+      .set('stripe-signature', 'mock-signature')
+      .send({
+        type: 'checkout.session.completed',
+        data: { userId: nutriUser.id, planSlug: 'professional' },
+      });
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${nutriToken}`)
+      .send({ type: 'nutritionist', credentials: 'CRN 1' });
+
+    const forbidden = await request(app.getHttpServer())
+      .post('/api/training/templates')
+      .set('Authorization', `Bearer ${nutriToken}`)
+      .send({ name: 'No', items: pushItems });
+    expect(forbidden.status).toBe(403);
+  });
+
+  it('prescribe from template to linked student; unlinked 403', async () => {
+    const trainerEmail = `trainer-pres-${Date.now()}@example.com`;
+    const studentEmail = `student-pres-${Date.now()}@example.com`;
+    const { token: proToken } = await activateTrainer(trainerEmail);
+    const studentToken = await createStudent(studentEmail);
+    const student = await prisma.identityUser.findFirstOrThrow({
+      where: { email: studentEmail },
+    });
+
+    const template = await request(app.getHttpServer())
+      .post('/api/training/templates')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ name: 'Full Body', items: pushItems });
+
+    const unlinked = await request(app.getHttpServer())
+      .post('/api/training/plans/prescribe')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        studentUserId: student.id,
+        templateId: template.body.id,
+      });
+    expect(unlinked.status).toBe(403);
+
+    const invite = await request(app.getHttpServer())
+      .post('/api/coaching/invites')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ studentEmail });
+    await request(app.getHttpServer())
+      .post(`/api/coaching/invites/${invite.body.token}/accept`)
+      .set('Authorization', `Bearer ${studentToken}`);
+
+    const prescribed = await request(app.getHttpServer())
+      .post('/api/training/plans/prescribe')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        studentUserId: student.id,
+        templateId: template.body.id,
+      });
+    expect(prescribed.status).toBe(201);
+    expect(prescribed.body.prescribedByUserId).toBeTruthy();
+    expect(prescribed.body.userId).toBe(student.id);
+    expect(prescribed.body.items[0].exercise.name).toBe('Bench Press');
+
+    const plans = await request(app.getHttpServer())
+      .get('/api/training/plans')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(plans.status).toBe(200);
+    expect(plans.body.items.some((p: { id: string }) => p.id === prescribed.body.id)).toBe(
+      true,
+    );
+  });
+
+  it('periodization assign and advance for linked student', async () => {
+    const trainerEmail = `trainer-per-${Date.now()}@example.com`;
+    const studentEmail = `student-per-${Date.now()}@example.com`;
+    const { token: proToken } = await activateTrainer(trainerEmail);
+    const studentToken = await createStudent(studentEmail);
+    const student = await prisma.identityUser.findFirstOrThrow({
+      where: { email: studentEmail },
+    });
+
+    const t1 = await request(app.getHttpServer())
+      .post('/api/training/templates')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ name: 'Block 1', items: pushItems });
+    const t2 = await request(app.getHttpServer())
+      .post('/api/training/templates')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        name: 'Block 2',
+        items: [
+          {
+            name: 'Squat',
+            muscleGroup: 'legs',
+            equipment: 'barbell',
+            sets: 4,
+            reps: 5,
+            restSeconds: 120,
+          },
+        ],
+      });
+
+    const periodization = await request(app.getHttpServer())
+      .post('/api/training/periodizations')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        name: '8-week',
+        blocks: [
+          { templateId: t1.body.id, durationDays: 7 },
+          { templateId: t2.body.id, durationDays: 7 },
+        ],
+      });
+    expect(periodization.status).toBe(201);
+    expect(periodization.body.blocks).toHaveLength(2);
+
+    const unlinked = await request(app.getHttpServer())
+      .post(`/api/training/periodizations/${periodization.body.id}/assign`)
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ studentUserId: student.id });
+    expect(unlinked.status).toBe(403);
+
+    const invite = await request(app.getHttpServer())
+      .post('/api/coaching/invites')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ studentEmail });
+    await request(app.getHttpServer())
+      .post(`/api/coaching/invites/${invite.body.token}/accept`)
+      .set('Authorization', `Bearer ${studentToken}`);
+
+    const assigned = await request(app.getHttpServer())
+      .post(`/api/training/periodizations/${periodization.body.id}/assign`)
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ studentUserId: student.id });
+    expect(assigned.status).toBe(201);
+    expect(assigned.body.activePosition).toBe(0);
+    expect(assigned.body.plan.name).toBe('Block 1');
+
+    const advanced = await request(app.getHttpServer())
+      .post(
+        `/api/training/periodization-assignments/${assigned.body.assignment.id}/advance`,
+      )
+      .set('Authorization', `Bearer ${proToken}`);
+    expect(advanced.status).toBe(201);
+    expect(advanced.body.activePosition).toBe(1);
+    expect(advanced.body.plan.name).toBe('Block 2');
+
+    const plans = await request(app.getHttpServer())
+      .get('/api/training/plans')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(plans.body.items.length).toBeGreaterThanOrEqual(2);
   });
 });

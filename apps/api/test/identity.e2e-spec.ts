@@ -294,6 +294,34 @@ describe('Identity OAuth (e2e)', () => {
     expect(token).toEqual(expect.any(String));
   });
 
+  it('OAuth callback with platform=web redirects to configured success URL', async () => {
+    process.env.OAUTH_WEB_SUCCESS_URL = 'http://localhost:5173/oauth/callback';
+
+    const start = await request(app.getHttpServer())
+      .get('/api/identity/oauth/google?platform=web')
+      .redirects(0);
+
+    expect(start.status).toBe(302);
+    expect(start.headers.location).toContain('platform=web');
+
+    const callbackPath =
+      new URL(start.headers.location as string, 'http://localhost').pathname +
+      new URL(start.headers.location as string, 'http://localhost').search;
+
+    const response = await request(app.getHttpServer())
+      .get(callbackPath)
+      .redirects(0);
+
+    expect(response.status).toBe(302);
+    const location = response.headers.location as string;
+    expect(location).toMatch(
+      /^http:\/\/localhost:5173\/oauth\/callback\?accessToken=/,
+    );
+
+    const token = new URL(location).searchParams.get('accessToken');
+    expect(token).toEqual(expect.any(String));
+  });
+
   it('OAuth callback with invalid token returns 401 with localized error', async () => {
     const response = await request(app.getHttpServer())
       .get('/api/identity/oauth/google/callback?mockToken=invalid')

@@ -1,5 +1,13 @@
 import { Role } from '@forma/types';
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/auth.guard';
 import { CurrentUser } from '../../common/current-user.decorator';
@@ -10,6 +18,8 @@ import { RolesGuard } from '../../common/roles.guard';
 import { CoachingService } from './coaching.service';
 import { CreateCoachingProfileDto } from './dto/create-coaching-profile.dto';
 import { CreateInviteDto } from './dto/create-invite.dto';
+import { CreateLinkRequestDto } from './dto/create-link-request.dto';
+import { UpdateCoachingProfileDto } from './dto/update-coaching-profile.dto';
 
 @ApiTags('coaching')
 @ApiBearerAuth()
@@ -27,6 +37,77 @@ export class CoachingController {
     @Body() body: CreateCoachingProfileDto,
   ) {
     return this.coachingService.createProfile(user.id, body);
+  }
+
+  @Get('profile')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Get own professional profile' })
+  async getProfile(@CurrentUser() user: { id: string }) {
+    return this.coachingService.getOwnProfile(user.id);
+  }
+
+  @Patch('profile')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Update professional public profile fields' })
+  async updateProfile(
+    @CurrentUser() user: { id: string },
+    @Body() body: UpdateCoachingProfileDto,
+  ) {
+    return this.coachingService.updateProfile(user.id, body);
+  }
+
+  @Post('requests')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Student)
+  @ApiOperation({ summary: 'Request coaching link from a professional' })
+  async createLinkRequest(
+    @CurrentUser() user: { id: string },
+    @Body() body: CreateLinkRequestDto,
+  ) {
+    return this.coachingService.createLinkRequest(
+      user.id,
+      body.professionalUserId,
+    );
+  }
+
+  @Get('requests/mine')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Student)
+  @ApiOperation({ summary: 'List my outgoing coaching link requests' })
+  async listMyLinkRequests(@CurrentUser() user: { id: string }) {
+    return this.coachingService.listMyLinkRequests(user.id);
+  }
+
+  @Get('requests')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'List pending coaching link requests' })
+  async listLinkRequests(@CurrentUser() user: { id: string }) {
+    return this.coachingService.listLinkRequests(user.id);
+  }
+
+  @Post('requests/:id/accept')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Accept a coaching link request' })
+  async acceptLinkRequest(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+  ) {
+    return this.coachingService.acceptLinkRequest(user.id, id);
+  }
+
+  @Post('requests/:id/decline')
+  @UseGuards(RolesGuard)
+  @Roles(Role.Trainer, Role.Nutritionist)
+  @ApiOperation({ summary: 'Decline a coaching link request' })
+  async declineLinkRequest(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+  ) {
+    return this.coachingService.declineLinkRequest(user.id, id);
   }
 
   @Post('invites')
@@ -48,12 +129,7 @@ export class CoachingController {
     @CurrentUser() user: { id: string; email: string },
     @Param('token') token: string,
   ) {
-    const link = await this.coachingService.acceptInvite(
-      token,
-      user.id,
-      user.email,
-    );
-    return link;
+    return this.coachingService.acceptInvite(token, user.id, user.email);
   }
 
   @Get('dashboard')

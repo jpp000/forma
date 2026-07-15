@@ -39,6 +39,7 @@ describe('Coaching (e2e)', () => {
   beforeEach(async () => {
     mockEmail.clear();
     await prisma.billingSubscription.deleteMany();
+    await prisma.coachingLinkRequest.deleteMany();
     await prisma.coachingLink.deleteMany();
     await prisma.coachingInvite.deleteMany();
     await prisma.coachingProfessionalProfile.deleteMany();
@@ -225,5 +226,281 @@ describe('Coaching (e2e)', () => {
     expect(dashboard.status).toBe(200);
     expect(dashboard.body.students).toHaveLength(1);
     expect(dashboard.body.students[0].email).toBe(studentEmail);
+  });
+
+  it('PATCH /api/coaching/profile updates publish fields', async () => {
+    const token = await auth(proEmail);
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email: proEmail },
+    });
+    await activateProfessional(user.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ type: 'trainer', credentials: 'CREF 12345' });
+
+    const incomplete = await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ isPublished: true });
+
+    expect(incomplete.status).toBe(400);
+
+    const published = await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        displayName: 'Coach Ana',
+        bio: 'Strength coach',
+        slug: 'coach-ana',
+        isPublished: true,
+      });
+
+    expect(published.status).toBe(200);
+    expect(published.body).toMatchObject({
+      displayName: 'Coach Ana',
+      slug: 'coach-ana',
+      isPublished: true,
+      bio: 'Strength coach',
+    });
+  });
+
+  it('PATCH /api/coaching/profile rejects duplicate slug', async () => {
+    const tokenA = await auth(proEmail);
+    const userA = await prisma.identityUser.findFirstOrThrow({
+      where: { email: proEmail },
+    });
+    await activateProfessional(userA.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({ type: 'trainer', credentials: 'CREF A' });
+    await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({
+        displayName: 'A',
+        slug: 'taken-slug',
+        isPublished: true,
+      });
+
+    const otherEmail = 'coach-pro-b@example.com';
+    const tokenB = await auth(otherEmail);
+    const userB = await prisma.identityUser.findFirstOrThrow({
+      where: { email: otherEmail },
+    });
+    await activateProfessional(userB.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenB}`)
+      .send({ type: 'trainer', credentials: 'CREF B' });
+
+    const clash = await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${tokenB}`)
+      .send({
+        displayName: 'B',
+        slug: 'taken-slug',
+        isPublished: true,
+      });
+
+    expect(clash.status).toBe(409);
+  });
+
+  it('public professionals list and get expose safe fields only', async () => {
+    const token = await auth(proEmail);
+    const user = await prisma.identityUser.findFirstOrThrow({
+      where: { email: proEmail },
+    });
+    await activateProfessional(user.id);
+    const created = await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ type: 'trainer', credentials: 'CREF 12345' });
+    expect(created.status).toBe(201);
+    const profileId = created.body.id as string;
+
+    const unpublished = await request(app.getHttpServer()).get(
+      `/api/coaching/professionals/${profileId}`,
+    );
+    expect(unpublished.status).toBe(404);
+
+    await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        displayName: 'Coach Ana',
+        bio: 'Strength coach',
+        slug: 'coach-ana',
+        isPublished: true,
+      });
+
+    const list = await request(app.getHttpServer()).get(
+      '/api/coaching/professionals',
+    );
+    expect(list.status).toBe(200);
+    expect(list.body.professionals).toHaveLength(1);
+    expect(list.body.professionals[0]).toMatchObject({
+      displayName: 'Coach Ana',
+      slug: 'coach-ana',
+      type: 'trainer',
+      credentials: 'CREF 12345',
+      bio: 'Strength coach',
+    });
+    expect(list.body.professionals[0].email).toBeUndefined();
+
+    const bySlug = await request(app.getHttpServer()).get(
+      '/api/coaching/professionals/coach-ana',
+    );
+    expect(bySlug.status).toBe(200);
+    expect(bySlug.body.slug).toBe('coach-ana');
+    expect(bySlug.body.email).toBeUndefined();
+
+    const byId = await request(app.getHttpServer()).get(
+      `/api/coaching/professionals/${profileId}`,
+    );
+    expect(byId.status).toBe(200);
+    expect(byId.body.id).toBe(profileId);
+
+    const search = await request(app.getHttpServer()).get(
+      '/api/coaching/professionals?q=Ana',
+    );
+    expect(search.status).toBe(200);
+    expect(search.body.professionals).toHaveLength(1);
+  });
+
+  it('link request → accept creates coaching link', async () => {
+    const localPro = `coach-req-a-${Date.now()}@example.com`;
+    const localStudent = `student-req-a-${Date.now()}@example.com`;
+    const proToken = await auth(localPro);
+    const proUser = await prisma.identityUser.findFirstOrThrow({
+      where: { email: localPro },
+    });
+    await activateProfessional(proUser.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ type: 'trainer', credentials: 'CREF 12345' });
+    await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        displayName: 'Coach Ana',
+        slug: 'coach-ana',
+        isPublished: true,
+      });
+
+    const studentToken = await createStudent(localStudent);
+    const create = await request(app.getHttpServer())
+      .post('/api/coaching/requests')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ professionalUserId: proUser.id });
+    expect(create.status).toBe(201);
+    expect(create.body.status).toBe('pending');
+
+    const again = await request(app.getHttpServer())
+      .post('/api/coaching/requests')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ professionalUserId: proUser.id });
+    expect(again.status).toBe(201);
+    expect(again.body.id).toBe(create.body.id);
+
+    const list = await request(app.getHttpServer())
+      .get('/api/coaching/requests')
+      .set('Authorization', `Bearer ${proToken}`);
+    expect(list.status).toBe(200);
+    expect(list.body.requests).toHaveLength(1);
+    expect(list.body.requests[0].studentEmail).toBe(localStudent);
+
+    const forbidden = await request(app.getHttpServer())
+      .get('/api/coaching/requests')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(forbidden.status).toBe(403);
+
+    const accept = await request(app.getHttpServer())
+      .post(`/api/coaching/requests/${create.body.id}/accept`)
+      .set('Authorization', `Bearer ${proToken}`);
+    expect(accept.status).toBe(201);
+    expect(accept.body.status).toBe('accepted');
+
+    const link = await prisma.coachingLink.findUnique({
+      where: {
+        professionalUserId_studentUserId: {
+          professionalUserId: proUser.id,
+          studentUserId: (
+            await prisma.identityUser.findFirstOrThrow({
+              where: { email: localStudent },
+            })
+          ).id,
+        },
+      },
+    });
+    expect(link).not.toBeNull();
+
+    const empty = await request(app.getHttpServer())
+      .get('/api/coaching/requests')
+      .set('Authorization', `Bearer ${proToken}`);
+    expect(empty.body.requests).toHaveLength(0);
+  });
+
+  it('link request decline closes without link', async () => {
+    const localPro = `coach-req-b-${Date.now()}@example.com`;
+    const localStudent = `student-req-b-${Date.now()}@example.com`;
+    const proToken = await auth(localPro);
+    const proUser = await prisma.identityUser.findFirstOrThrow({
+      where: { email: localPro },
+    });
+    await activateProfessional(proUser.id);
+    await request(app.getHttpServer())
+      .post('/api/coaching/profile')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({ type: 'nutritionist', credentials: 'CRN 1' });
+    await request(app.getHttpServer())
+      .patch('/api/coaching/profile')
+      .set('Authorization', `Bearer ${proToken}`)
+      .send({
+        displayName: 'Nutri Bea',
+        slug: 'nutri-bea',
+        isPublished: true,
+      });
+
+    const studentToken = await createStudent(localStudent);
+    const create = await request(app.getHttpServer())
+      .post('/api/coaching/requests')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ professionalUserId: proUser.id });
+
+    const decline = await request(app.getHttpServer())
+      .post(`/api/coaching/requests/${create.body.id}/decline`)
+      .set('Authorization', `Bearer ${proToken}`);
+    expect(decline.status).toBe(201);
+    expect(decline.body.status).toBe('declined');
+
+    const student = await prisma.identityUser.findFirstOrThrow({
+      where: { email: localStudent },
+    });
+    const link = await prisma.coachingLink.findUnique({
+      where: {
+        professionalUserId_studentUserId: {
+          professionalUserId: proUser.id,
+          studentUserId: student.id,
+        },
+      },
+    });
+    expect(link).toBeNull();
+
+    const mine = await request(app.getHttpServer())
+      .get('/api/coaching/requests/mine')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(mine.status).toBe(200);
+    expect(mine.body.requests).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: create.body.id,
+          professionalUserId: proUser.id,
+          status: 'declined',
+        }),
+      ]),
+    );
   });
 });

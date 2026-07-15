@@ -18,6 +18,27 @@ services:
         fromDatabase:
           name: forma-db
           property: connectionString
+      - key: CORS_ORIGIN
+        sync: false
+      - key: OAUTH_WEB_SUCCESS_URL
+        sync: false
+
+  - type: web
+    name: forma-web-portal
+    runtime: static
+    plan: free
+    region: ohio
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @forma/types build && pnpm --filter @forma/web-portal build
+    staticPublishPath: apps/web-portal/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: VITE_OAUTH_SUCCESS_URL
+        sync: false
 
 databases:
   - name: forma-db

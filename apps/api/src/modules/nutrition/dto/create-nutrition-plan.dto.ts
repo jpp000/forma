@@ -1,28 +1,39 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNumber, IsString, Min } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateNutritionPlanDto {
   @ApiProperty()
   @IsString()
   studentUserId!: string;
 
-  @ApiProperty({ example: 2200 })
+  @ApiPropertyOptional({
+    description: 'Prescribe from an owned nutrition template',
+  })
+  @IsOptional()
+  @IsString()
+  templateId?: string;
+
+  @ApiPropertyOptional({ example: 2200 })
+  @IsOptional()
   @IsInt()
   @Min(0)
-  dailyCalories!: number;
+  dailyCalories?: number;
 
-  @ApiProperty({ example: 150 })
+  @ApiPropertyOptional({ example: 150 })
+  @IsOptional()
   @IsNumber()
   @Min(0)
-  dailyProtein!: number;
+  dailyProtein?: number;
 
-  @ApiProperty({ example: 250 })
+  @ApiPropertyOptional({ example: 250 })
+  @IsOptional()
   @IsNumber()
   @Min(0)
-  dailyCarbs!: number;
+  dailyCarbs?: number;
 
-  @ApiProperty({ example: 70 })
+  @ApiPropertyOptional({ example: 70 })
+  @IsOptional()
   @IsNumber()
   @Min(0)
-  dailyFat!: number;
+  dailyFat?: number;
 }

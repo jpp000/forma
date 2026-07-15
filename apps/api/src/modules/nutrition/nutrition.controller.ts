@@ -1,11 +1,20 @@
 import { Role } from '@forma/types';
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/auth.guard';
 import { CurrentUser } from '../../common/current-user.decorator';
 import { Roles } from '../../common/roles.decorator';
 import { RolesGuard } from '../../common/roles.guard';
 import { CreateNutritionPlanDto } from './dto/create-nutrition-plan.dto';
+import { CreateNutritionTemplateDto } from './dto/create-nutrition-template.dto';
 import { DailySummaryQueryDto } from './dto/daily-summary-query.dto';
 import { LogMealDto } from './dto/log-meal.dto';
 import { NutritionService } from './nutrition.service';
@@ -36,11 +45,39 @@ export class NutritionController {
   }
 
   @Post('plans')
+  @Roles(Role.Nutritionist)
   @ApiOperation({ summary: 'Prescribe nutrition plan for linked student' })
   async prescribePlan(
     @CurrentUser() user: { id: string },
     @Body() body: CreateNutritionPlanDto,
   ) {
     return this.nutritionService.prescribePlan(user.id, body);
+  }
+
+  @Post('templates')
+  @Roles(Role.Nutritionist)
+  @ApiOperation({ summary: 'Create nutrition plan template' })
+  async createTemplate(
+    @CurrentUser() user: { id: string },
+    @Body() body: CreateNutritionTemplateDto,
+  ) {
+    return this.nutritionService.createTemplate(user.id, body);
+  }
+
+  @Get('templates')
+  @Roles(Role.Nutritionist)
+  @ApiOperation({ summary: 'List own nutrition templates' })
+  async listTemplates(@CurrentUser() user: { id: string }) {
+    return this.nutritionService.listTemplates(user.id);
+  }
+
+  @Post('templates/:id/archive')
+  @Roles(Role.Nutritionist)
+  @ApiOperation({ summary: 'Archive nutrition template' })
+  async archiveTemplate(
+    @CurrentUser() user: { id: string },
+    @Param('id') id: string,
+  ) {
+    return this.nutritionService.archiveTemplate(user.id, id);
   }
 }

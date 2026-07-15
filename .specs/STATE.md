@@ -36,6 +36,13 @@
 | AD-030 | **Mobile client state = Zustand** — session, locale, and per-slice feature state live in Zustand stores under `apps/mobile/src/stores/`; thin hooks (`useSession`, `useLocale`) read stores; **no React Context** for app state | Session + locale migrated from Context; theme follows system via `useColorScheme` in `useFormaTheme()` (no store until user override); `SessionBootstrap` runs SecureStore restore on mount; API client wired via `wireApiStores` | 2026-07-08 |
 | AD-031 | **Mobile web testing = Expo Web + Playwright** — agents and CI smoke the student UI in Chromium at `http://localhost:19006`; `testID` on auth/onboarding/tabs; API dev CORS enables browser `PUT` (student goal); SecureStore → `localStorage` on web | No iOS/Android simulator in Cursor Cloud; `pnpm --filter @forma/mobile test:e2e` boots Postgres + API mock + Expo web; see `AGENTS.md` | 2026-07-09 |
 | AD-032 | **Git: `dev` integration, `main` release** — feature branches from `dev`; only `dev` merges to `main`; CI branch-policy + local pre-push hook | Parallel tasks merge to `dev` first; avoids direct feature→main conflicts; see `docs/GIT_WORKFLOW.md` | 2026-07-09 |
+| AD-033 | **Web portal = Vite + React SPA on Render** (not Next.js) | User choice for professional workplace; Bearer JWT + prod CORS | 2026-07-12 |
+| AD-034 | **Coaching link = invite-by-email AND student request → pro accept** | Dual initiation; “LinkedIn” discovery on mobile + classic invite | 2026-07-12 |
+| AD-035 | **Web portal delivery phases W1–W4** — W1 foundation/paywall/dashboard/invites → W2 public profile + mobile discovery/request → W3 training templates/prescribe → W4 nutrition templates + light periodization | Large delivery; independently demoable phases | 2026-07-12 |
+| AD-036 | **Periodization v1 = light weeks/blocks chaining workout plans** | Not advanced periodization (P3) | 2026-07-12 |
+| AD-037 | **Portal visual = pro dashboard language × Forma brand tokens** (`DESIGN.md`) | Dense workplace UI without leaving design system | 2026-07-12 |
+| AD-038 | **P2 focus now = web-portal only**; Food DB + exercise library deferred | User paused other P2 tracks | 2026-07-12 |
+| AD-039 | **Production CORS** — API honors `CORS_ORIGIN` allowlist in production (not dev-only) | Required for Vite portal (and any browser client) with Bearer JWT | 2026-07-12 |
 
 ## Mobile slice roadmap (student)
 
@@ -128,6 +135,18 @@ Execute **one slice at a time**. Each slice = `.specs/features/[name]/` + own ch
 | Smoke | Authenticated student opens Progress → sees hub; tap Log weight → form with weight/date; E2E smoke reaches `progress-screen` |
 | Optional next | `mobile-invite-accept` (thin) or merge Slice 4 → `dev` |
 
+**P2 — Web portal:** W1–W4 **Verifier PASS** on `feature/web-portal-w1` — **feature complete** pending optional ⚠️ polish.
+
+| Portal item | Value |
+|-------------|-------|
+| Branch | `feature/web-portal-w1` |
+| Done | W1+W2+W3+W4 PASS (T30–T35); nutrition templates + light periodization API + portal `/nutrition-templates` + `/periodization` |
+| Gates (W4 Verifier 2026-07-12) | API nutrition e2e **6** + training e2e **9**; portal unit **15** · check-types · build PASS |
+| Verifier W4 | **PASS** — 6/8 ✅, 2 ⚠️ (unlinked nutri prescribe e2e; lazy advance e2e); sensor 3/5; 0 ❌ — `.specs/features/web-portal/validation.md` |
+| Feature status | **Complete** (W1–W4); residual ⚠️ non-blocking across phases |
+| Smoke | Portal `/nutrition-templates`, `/periodization`; student daily targets + training plans after prescribe/assign |
+| Next | Merge → `dev` when ready; optional e2e polish for ranked ⚠️ |
+
 ---
 
-**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before.
+**Backend notes:** Docker may be unavailable locally — e2e uses `TEST_DATABASE_URL` fallback. Historical test gate: `pnpm build && pnpm lint && pnpm --filter @forma/api test:e2e`. OAuth/email/Stripe mocks as before. Web-portal W1–W4 shipped on `feature/web-portal-w1` (nutrition templates + light periodization included).

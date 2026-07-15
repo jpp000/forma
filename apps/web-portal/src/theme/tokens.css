@@ -1,0 +1,50 @@
+:root {
+  --color-primary: #30d158;
+  --color-primary-pressed: #248a3d;
+  --color-primary-soft: rgba(48, 209, 88, 0.18);
+  --color-on-primary: #000000;
+  --color-error: #ff453a;
+  --color-canvas: #f2f2f7;
+  --color-surface: #ffffff;
+  --color-raised: #e5e5ea;
+  --color-separator: #c6c6c8;
+  --color-label-primary: #000000;
+  --color-label-secondary: rgba(0, 0, 0, 0.6);
+  --color-label-tertiary: rgba(0, 0, 0, 0.3);
+  --font-sans: 'SF Pro Text', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-eyebrow: 0.75rem;
+  --font-size-body: 0.9375rem;
+  --font-size-title: 1.75rem;
+  --radius-control: 10px;
+  --space-page: 1.5rem;
+  --space-compact: 0.5rem;
+  --space-row: 0.75rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  color: var(--color-label-primary);
+  background: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
