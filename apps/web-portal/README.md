@@ -2,10 +2,21 @@
 
 Professional workplace SPA (Vite + React) for trainers and nutritionists.
 
-## Local development
+## Local development (recomendado)
+
+Com o Compose (Postgres + API + este portal):
 
 ```bash
-# API (separate terminal) — include portal origin for CORS
+pnpm dev:docker
+# → http://localhost:5173
+```
+
+`CORS_ORIGIN` e `OAUTH_WEB_SUCCESS_URL` já vêm configurados no serviço `api` do Compose.
+
+## Host-only (sem container do portal)
+
+```bash
+# API — include portal origin for CORS
 export DATABASE_URL=postgresql://forma:forma@localhost:5432/forma
 export PORT=3000 NODE_ENV=development EMAIL_PROVIDER=mock
 export JWT_SECRET=dev-secret-change-in-production
@@ -15,9 +26,8 @@ export OAUTH_WEB_SUCCESS_URL=http://localhost:5173/oauth/callback
 pnpm --filter @forma/api dev
 
 # Portal
-cd apps/web-portal
-# optional: VITE_API_URL=http://localhost:3000
 pnpm --filter @forma/web-portal dev
+# or: pnpm dev:portal
 ```
 
 Open `http://localhost:5173`.

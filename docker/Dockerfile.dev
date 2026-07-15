@@ -15,6 +15,7 @@ ENV DATABASE_URL=postgresql://forma:forma@postgres:5432/forma
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml .npmrc turbo.json prisma.config.ts ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/mobile/package.json ./apps/mobile/
+COPY apps/web-portal/package.json ./apps/web-portal/
 COPY apps/worker/package.json ./apps/worker/
 COPY packages/types/package.json ./packages/types/
 COPY packages/config/package.json ./packages/config/
@@ -30,6 +31,6 @@ RUN chmod +x ./docker/entrypoint-dev.sh \
   && pnpm db:generate \
   && pnpm --filter @forma/types build
 
-EXPOSE 3000 8081 19000 19001 19002
+EXPOSE 3000 5173
 
 ENTRYPOINT ["./docker/entrypoint-dev.sh"]

@@ -8,6 +8,7 @@
     "dev:docker:build": "docker compose up --build",
     "dev:mobile": "pnpm --filter @forma/mobile dev",
     "dev:mobile:web": "pnpm --filter @forma/mobile dev:web",
+    "dev:portal": "pnpm --filter @forma/web-portal dev",
     "lint": "node ./node_modules/@biomejs/biome/bin/biome check .",
     "format": "node ./node_modules/@biomejs/biome/bin/biome format --write .",
     "check-types": "turbo run check-types",

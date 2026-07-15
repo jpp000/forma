@@ -30,16 +30,17 @@ Hooks locais (uma vez por clone): `./scripts/setup-git-hooks.sh`
 
 ## Desenvolvimento local (Mac — padrão)
 
-**Híbrido:** Compose = Postgres + API (`OAUTH_MOCK=true`). Mobile = host (terminal dedicado para o emulador).
+**Híbrido:** Compose = Postgres + API + web portal. Mobile = host (terminal para o emulador).
 
 ```bash
 pnpm install
 pnpm dev:docker:build   # primeira vez
-pnpm dev:docker         # terminal 1 — Postgres + API
-pnpm dev:mobile         # terminal 2 — Expo (i / a / w)
+pnpm dev:docker         # terminal 1 — Postgres + API + portal
+pnpm dev:mobile         # terminal 2 — Expo (só se precisar do app aluno)
 ```
 
 - API: http://localhost:3000
+- Portal: http://localhost:5173
 - Mobile web (opcional): `pnpm dev:mobile:web` → http://localhost:19006
 - Auth dev: botão **Dev: entrar rápido (mock)** + OTP mock
 
@@ -114,7 +115,9 @@ Verificar: `/api/health`, `/api/ready`, `/api/docs`
 
 ## Web portal — profissionais
 
-Vite SPA em `apps/web-portal` (porta **5173**). Detalhes: [`apps/web-portal/README.md`](apps/web-portal/README.md).
+Vite SPA em `apps/web-portal` (porta **5173**). No Mac, sobe com `pnpm dev:docker` (serviço `web-portal`). Detalhes: [`apps/web-portal/README.md`](apps/web-portal/README.md).
+
+Host-only (sem Compose do portal):
 
 ```bash
 export CORS_ORIGIN=http://localhost:5173
@@ -155,7 +158,7 @@ Scripts úteis:
 | `pnpm --filter @forma/mobile test:e2e` | Playwright smoke (auth → onboarding → tabs) |
 | `pnpm --filter @forma/mobile test:e2e:ui` | Playwright UI mode (debug) |
 | `pnpm --filter @forma/mobile check-types` | `tsc` |
-| `pnpm dev:docker` | Postgres + API (Mac) |
+| `pnpm dev:docker` | Postgres + API + portal (Mac) |
 | `pnpm dev:mobile` / `dev:mobile:web` | Expo no host |
 
 ### Auth em dev (sem email/OAuth real)
@@ -201,7 +204,7 @@ Busque `http://localhost:8081/` com header `expo-platform: ios` e requisite a UR
 
 ### Docker (Mac)
 
-`pnpm dev:docker` sobe **Postgres + API** (mock auth). Mobile **não** entra no Compose — use `pnpm dev:mobile` ou `pnpm dev:mobile:web` no host.
+`pnpm dev:docker` sobe **Postgres + API + web portal**. Mobile **não** entra no Compose — use `pnpm dev:mobile` ou `pnpm dev:mobile:web` no host.
 
 Docker **não** vem instalado na cloud VM por padrão; o fluxo nativo acima (Postgres local + API + Expo web) é o caminho suportado no Cursor Cloud.
 
