@@ -28,6 +28,23 @@ Hooks locais (uma vez por clone): `./scripts/setup-git-hooks.sh`
 | PostgreSQL 16 | — | Banco da API (obrigatório) | `localhost:5432` |
 | Redis | — | Filas do worker (opcional, fora do MVP) | `localhost:6379` |
 
+## Desenvolvimento local (Mac — padrão)
+
+**Híbrido:** Compose = Postgres + API (`OAUTH_MOCK=true`). Mobile = host (terminal dedicado para o emulador).
+
+```bash
+pnpm install
+pnpm dev:docker:build   # primeira vez
+pnpm dev:docker         # terminal 1 — Postgres + API
+pnpm dev:mobile         # terminal 2 — Expo (i / a / w)
+```
+
+- API: http://localhost:3000
+- Mobile web (opcional): `pnpm dev:mobile:web` → http://localhost:19006
+- Auth dev: botão **Dev: entrar rápido (mock)** + OTP mock
+
+Cursor Cloud continua no fluxo nativo abaixo (sem Docker na VM).
+
 ## Cursor Cloud — setup por sessão
 
 O script de update do ambiente roda `pnpm install`, `pnpm db:generate` e `pnpm --filter @forma/types build`. **Não inicia serviços.**
@@ -138,6 +155,8 @@ Scripts úteis:
 | `pnpm --filter @forma/mobile test:e2e` | Playwright smoke (auth → onboarding → tabs) |
 | `pnpm --filter @forma/mobile test:e2e:ui` | Playwright UI mode (debug) |
 | `pnpm --filter @forma/mobile check-types` | `tsc` |
+| `pnpm dev:docker` | Postgres + API (Mac) |
+| `pnpm dev:mobile` / `dev:mobile:web` | Expo no host |
 
 ### Auth em dev (sem email/OAuth real)
 
@@ -180,11 +199,11 @@ Busque `http://localhost:8081/` com header `expo-platform: ios` e requisite a UR
 - `expo doctor` pode avisar sobre versões de `babel-preset-expo` / `typescript` — não bloqueia dev web.
 - API em dev expõe CORS (`PUT`/`PATCH`/`DELETE` inclusos) para o browser em `localhost:19006`.
 
-### Docker (Mac / CI com Docker)
+### Docker (Mac)
 
-`docker compose up` sobe Postgres + API + mobile (Metro). Para UI web no host, rode API via compose e `pnpm dev:web` no Mac apontando `EXPO_PUBLIC_API_URL=http://localhost:3000`.
+`pnpm dev:docker` sobe **Postgres + API** (mock auth). Mobile **não** entra no Compose — use `pnpm dev:mobile` ou `pnpm dev:mobile:web` no host.
 
-Docker **não** vem instalado na cloud VM por padrão; o fluxo nativo acima é o caminho suportado no Cursor Cloud.
+Docker **não** vem instalado na cloud VM por padrão; o fluxo nativo acima (Postgres local + API + Expo web) é o caminho suportado no Cursor Cloud.
 
 ### Notas de ambiente
 

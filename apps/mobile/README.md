@@ -20,14 +20,21 @@ API must set matching `OAUTH_MOBILE_SUCCESS_URL` when testing OAuth on device/si
 
 ## Run
 
-From repo root:
+Hybrid setup (recommended) — API in Docker, Expo on the host:
 
 ```bash
-pnpm --filter @forma/api dev          # terminal 1 — API
-pnpm --filter @forma/mobile start     # terminal 2 — Expo
+pnpm dev:docker                       # terminal 1 — Postgres + API (OAUTH_MOCK)
+pnpm dev:mobile                       # terminal 2 — Expo
 ```
 
-Press `i` / `a` for iOS/Android simulator, or scan QR in Expo Go.
+Press `i` / `a` for iOS/Android simulator, or scan QR in Expo Go. Web: `pnpm dev:mobile:web`.
+
+API only on the Mac (no API container):
+
+```bash
+pnpm --filter @forma/api dev          # terminal 1 — API (export OAUTH_MOCK=true)
+pnpm --filter @forma/mobile start     # terminal 2 — Expo
+```
 
 **Dev auth:** API `OAUTH_MOCK=true` enables mock OAuth; email OTP uses `EMAIL_PROVIDER=mock` in test/dev.
 

@@ -2,7 +2,6 @@ x-app-volumes: &app-volumes
   - .:/app
   - dev_node_modules:/app/node_modules
   - dev_api_node_modules:/app/apps/api/node_modules
-  - dev_mobile_node_modules:/app/apps/mobile/node_modules
   - dev_worker_node_modules:/app/apps/worker/node_modules
   - dev_types_node_modules:/app/packages/types/node_modules
   - dev_config_node_modules:/app/packages/config/node_modules
@@ -39,6 +38,7 @@ services:
       JWT_SECRET: dev-secret-change-in-production
       OAUTH_MOCK: "true"
       OAUTH_MOBILE_SUCCESS_URL: forma://oauth
+      # Do not set GOOGLE_CLIENT_ID here — mock OAuth must stay enabled for local login.
       RUN_MIGRATIONS: "true"
     volumes: *app-volumes
     depends_on:
@@ -56,34 +56,10 @@ services:
       start_period: 25s
     command: ["pnpm", "--filter", "@forma/api", "dev"]
 
-  mobile:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.dev
-    stdin_open: true
-    tty: true
-    ports:
-      - "8081:8081"
-      - "19006:19006"
-      - "19000:19000"
-      - "19001:19001"
-      - "19002:19002"
-    environment:
-      EXPO_PUBLIC_API_URL: http://localhost:3000
-      EXPO_PUBLIC_OAUTH_SUCCESS_URL: forma://oauth
-      REACT_NATIVE_PACKAGER_HOSTNAME: localhost
-      CHOKIDAR_USEPOLLING: "true"
-    volumes: *app-volumes
-    depends_on:
-      api:
-        condition: service_healthy
-    command: ["pnpm", "--filter", "@forma/mobile", "dev"]
-
 volumes:
   postgres_data:
   dev_node_modules:
   dev_api_node_modules:
-  dev_mobile_node_modules:
   dev_worker_node_modules:
   dev_types_node_modules:
   dev_config_node_modules:

@@ -15,47 +15,69 @@ Plataforma integrada de saúde, treino e nutrição.
 
 ## Desenvolvimento local
 
-### Docker (recomendado)
+### Setup híbrido (recomendado)
 
-Deps ficam na imagem/volume do Docker — **não mistura** com `node_modules` do Mac.
+**Docker Compose** sobe o backend (Postgres + API com `OAUTH_MOCK=true`).  
+**Mobile** roda no host — terminal dedicado para `i`/`a` e o emulador.
+
+Deps da API ficam na imagem/volume do Docker — **não misturam** com `node_modules` do Mac. O mobile usa `pnpm install` no host.
 
 ```bash
-# primeira vez ou quando mudar package.json
-docker compose up --build
+# terminal 1 — primeira vez ou quando mudar package.json:
+pnpm install
+pnpm dev:docker:build
 
-# depois disso, sobe rápido
-docker compose up
+# depois disso:
+pnpm dev:docker
+
+# terminal 2 — Expo (simulador / device):
+pnpm dev:mobile
+# atalhos: i = iOS, a = Android, w = web
 ```
 
-- API: `http://localhost:3000`
-- Mobile (Metro): terminal do serviço `mobile` → `i` (iOS) ou `a` (Android)
+| Serviço | Onde | URL |
+|---------|------|-----|
+| Postgres | Docker | `localhost:5432` |
+| API | Docker | http://localhost:3000 (`/api/health`, Swagger `/api/docs`) |
+| Mobile (Expo) | Host | Metro; web via `pnpm dev:mobile:web` → http://localhost:19006 |
 
-Se mudou dependências: `docker compose build --no-cache && docker compose up`
+Login dev: botão **Dev: entrar rápido (mock)** (requer API do compose).
 
-### Sem Docker (apps no Mac)
+Se mudou dependências da API no Compose: `docker compose build --no-cache && docker compose up`
+
+### API só no Mac (sem container da API)
+
+Útil para debugar a API fora do Docker. Ainda precisa do Postgres e das vars de mock (`OAUTH_MOCK=true`).
 
 ```bash
 docker compose up -d postgres
 pnpm install
 cp .env.example .env
 pnpm db:migrate:deploy
+export DATABASE_URL=postgresql://forma:forma@localhost:5432/forma
+export EMAIL_PROVIDER=mock OAUTH_MOCK=true JWT_SECRET=dev-secret-change-in-production
 pnpm --filter @forma/api dev
-# outro terminal — simulador / Expo Go
-pnpm --filter @forma/mobile dev
+# outro terminal
+pnpm dev:mobile
 ```
 
 ### Mobile — UI web e testes (sem simulador)
 
-Útil para agentes no cloud e para smoke visual rápido no navegador:
+Útil para agentes no cloud e smoke visual no navegador. Com o compose já no ar:
 
 ```bash
-# API mock (outro terminal)
+pnpm dev:mobile:web
+# → http://localhost:19006
+```
+
+Sem Docker (API no Mac):
+
+```bash
 export DATABASE_URL=postgresql://forma:forma@localhost:5432/forma
 export EMAIL_PROVIDER=mock OAUTH_MOCK=true JWT_SECRET=dev-secret
 pnpm --filter @forma/api dev
 
-# Expo Web → http://localhost:19006
-cd apps/mobile && EXPO_PUBLIC_API_URL=http://localhost:3000 pnpm dev:web
+pnpm dev:mobile:web
 ```
 
 **E2E automatizado** (Postgres + API + web + Playwright):
@@ -151,5 +173,7 @@ AGENTS.md    # Setup Cursor Cloud + testes web mobile
 | `pnpm db:migrate` | Migration dev |
 | `pnpm db:migrate:deploy` | Migration produção |
 | `pnpm db:studio` | Prisma Studio |
-| `pnpm --filter @forma/mobile dev:web` | Expo Web (porta 19006) |
+| `pnpm dev:docker` | Postgres + API (mock auth) via Compose |
+| `pnpm dev:mobile` | Expo no host (simulador / device) |
+| `pnpm dev:mobile:web` | Expo Web (porta 19006) |
 | `pnpm --filter @forma/mobile test:e2e` | Playwright — auth/onboarding/tabs |
