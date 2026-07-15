@@ -75,10 +75,7 @@ export function createTrainingApi(client: ApiClient) {
         method: 'POST',
         body,
       }),
-    assignPeriodization: (
-      id: string,
-      body: { studentUserId: string },
-    ) =>
+    assignPeriodization: (id: string, body: { studentUserId: string }) =>
       client.request<{
         assignment: { id: string };
         activePosition: number;

@@ -158,8 +158,7 @@ const en: Record<TranslationKey, string> = {
   'progress.hub.trend.up': 'Trending up',
   'progress.hub.trend.down': 'Trending down',
   'progress.hub.trend.stable': 'Stable',
-  'progress.hub.trend.insufficient':
-    'Log at least two entries to see trend',
+  'progress.hub.trend.insufficient': 'Log at least two entries to see trend',
   'progress.hub.recentWeight': 'Recent weight',
   'progress.hub.emptyHistory': 'Log your first weight to start tracking',
   'progress.streak.training': 'Training streak',
@@ -189,7 +188,8 @@ const en: Record<TranslationKey, string> = {
   'professionals.requestCta': 'Request coaching',
   'professionals.requestAgainCta': 'Request again',
   'professionals.requestSuccess': 'Request sent. Wait for a response.',
-  'professionals.statusPending': 'Request pending — waiting on the professional.',
+  'professionals.statusPending':
+    'Request pending — waiting on the professional.',
   'professionals.statusDeclined': 'Request declined.',
   'professionals.statusAccepted': 'You are already linked.',
   'professionals.statusExpired': 'Request expired.',

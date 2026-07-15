@@ -21,7 +21,9 @@ export type LinkRequest = {
 
 export function createCoachingApi(api: ApiClient) {
   return {
-    listProfessionals(q?: string): Promise<{ professionals: PublicProfessional[] }> {
+    listProfessionals(
+      q?: string,
+    ): Promise<{ professionals: PublicProfessional[] }> {
       const params = new URLSearchParams();
       if (q?.trim()) params.set('q', q.trim());
       const query = params.toString();

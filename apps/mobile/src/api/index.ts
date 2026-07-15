@@ -1,5 +1,7 @@
 export type { ApiClient, ApiClientOptions } from './client';
 export { ApiError, createApiClient } from './client';
+export type { CoachingApi, LinkRequest, PublicProfessional } from './coaching';
+export { createCoachingApi } from './coaching';
 export type { GuidanceApi } from './guidance';
 export { createGuidanceApi } from './guidance';
 export type {
@@ -14,8 +16,6 @@ export type { NutritionApi } from './nutrition';
 export { createNutritionApi } from './nutrition';
 export type { ProgressApi, StreaksResponse, TrainingRestDay } from './progress';
 export { createProgressApi } from './progress';
-export type { CoachingApi, LinkRequest, PublicProfessional } from './coaching';
-export { createCoachingApi } from './coaching';
 export type {
   SetHealthGoalInput,
   StudentApi,

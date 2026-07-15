@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { BillingService } from '../billing/billing.service';
 import { CoachingService } from '../coaching/coaching.service';
@@ -177,7 +178,9 @@ export class NutritionService {
         dailyProtein: dto.dailyProtein,
         dailyCarbs: dto.dailyCarbs,
         dailyFat: dto.dailyFat,
-        menuJson: dto.menuJson ?? undefined,
+        menuJson:
+          (dto.menuJson as unknown as Prisma.InputJsonValue | undefined) ??
+          undefined,
       },
     });
   }

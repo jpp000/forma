@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createApiClient, ApiError } from '../client';
 import { createBillingApi } from '../billing';
+import { ApiError, createApiClient } from '../client';
 import { createCoachingApi } from '../coaching';
 
 describe('createApiClient 401 handling', () => {

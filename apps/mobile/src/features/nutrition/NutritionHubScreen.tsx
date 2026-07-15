@@ -95,9 +95,7 @@ export function NutritionHubScreen() {
       <View style={styles.ctaWrap}>
         <PrimaryButton
           label={t('nutrition.hub.logMeal')}
-          onPress={() =>
-            router.push('/(tabs)/nutrition/meal/new' as Href)
-          }
+          onPress={() => router.push('/(tabs)/nutrition/meal/new' as Href)}
           testID="nutrition-log-meal-button"
         />
       </View>

@@ -34,6 +34,7 @@ export function RequestsInboxPage() {
     }
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only load
   useEffect(() => {
     void load();
   }, []);

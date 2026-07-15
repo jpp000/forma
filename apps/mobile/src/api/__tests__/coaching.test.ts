@@ -6,9 +6,7 @@ describe('createCoachingApi', () => {
     const api = createCoachingApi({ request } as never);
 
     await api.listProfessionals('Ana');
-    expect(request).toHaveBeenCalledWith(
-      '/api/coaching/professionals?q=Ana',
-    );
+    expect(request).toHaveBeenCalledWith('/api/coaching/professionals?q=Ana');
 
     await api.listProfessionals();
     expect(request).toHaveBeenCalledWith('/api/coaching/professionals');

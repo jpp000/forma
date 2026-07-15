@@ -52,9 +52,9 @@ export function NutritionTemplatesPage() {
     }
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only load
   useEffect(() => {
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleCreate(event: React.FormEvent) {
@@ -137,7 +137,10 @@ export function NutritionTemplatesPage() {
     >
       {error ? <InlineError>{error}</InlineError> : null}
       {success ? (
-        <p className="fp-templates-success" data-testid="nutrition-templates-success">
+        <p
+          className="fp-templates-success"
+          data-testid="nutrition-templates-success"
+        >
           {success}
         </p>
       ) : null}

@@ -68,9 +68,9 @@ export function TemplatesPage() {
     }
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only load
   useEffect(() => {
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount load
   }, []);
 
   async function handleCreate(event: React.FormEvent) {
@@ -235,7 +235,11 @@ export function TemplatesPage() {
                 onChange={(e) => setRestSeconds(e.target.value)}
               />
             </div>
-            <Button type="submit" disabled={busy} data-testid="templates-create">
+            <Button
+              type="submit"
+              disabled={busy}
+              data-testid="templates-create"
+            >
               {t('templates.createSubmit')}
             </Button>
           </form>
@@ -247,7 +251,9 @@ export function TemplatesPage() {
           >
             <h2>{t('templates.prescribeTitle')}</h2>
             <label className="fp-field" htmlFor="prescribe-template">
-              <span className="fp-field__label">{t('templates.pickTemplate')}</span>
+              <span className="fp-field__label">
+                {t('templates.pickTemplate')}
+              </span>
               <select
                 id="prescribe-template"
                 className="fp-field__input"
@@ -255,7 +261,9 @@ export function TemplatesPage() {
                 onChange={(e) => setPrescribeTemplateId(e.target.value)}
                 data-testid="templates-pick-template"
               >
-                <option value="">{t('templates.pickTemplatePlaceholder')}</option>
+                <option value="">
+                  {t('templates.pickTemplatePlaceholder')}
+                </option>
                 {templates.map((tpl) => (
                   <option key={tpl.id} value={tpl.id}>
                     {tpl.name}
@@ -264,7 +272,9 @@ export function TemplatesPage() {
               </select>
             </label>
             <label className="fp-field" htmlFor="prescribe-student">
-              <span className="fp-field__label">{t('templates.pickStudent')}</span>
+              <span className="fp-field__label">
+                {t('templates.pickStudent')}
+              </span>
               <select
                 id="prescribe-student"
                 className="fp-field__input"
@@ -272,7 +282,9 @@ export function TemplatesPage() {
                 onChange={(e) => setPrescribeStudentId(e.target.value)}
                 data-testid="templates-pick-student"
               >
-                <option value="">{t('templates.pickStudentPlaceholder')}</option>
+                <option value="">
+                  {t('templates.pickStudentPlaceholder')}
+                </option>
                 {students.map((s) => (
                   <option key={s.studentId} value={s.studentId}>
                     {s.email}

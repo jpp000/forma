@@ -83,9 +83,7 @@ export function ProfessionalsListScreen() {
             key={pro.id}
             accessibilityRole="button"
             onPress={() =>
-              router.push(
-                `/(tabs)/professionals/${pro.slug ?? pro.id}` as Href,
-              )
+              router.push(`/(tabs)/professionals/${pro.slug ?? pro.id}` as Href)
             }
             style={styles.row}
             testID={`professional-row-${pro.id}`}

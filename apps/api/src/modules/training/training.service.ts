@@ -6,16 +6,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CoachingService } from '../coaching/coaching.service';
 import type { CreateExerciseDto } from './dto/create-exercise.dto';
 import type { CreateWorkoutPlanDto } from './dto/create-workout-plan.dto';
 import type { CreateWorkoutSessionDto } from './dto/create-workout-session.dto';
-import type { PrescribeWorkoutPlanDto } from './dto/prescribe-workout-plan.dto';
 import type {
   AssignPeriodizationDto,
   CreatePeriodizationDto,
 } from './dto/periodization.dto';
+import type { PrescribeWorkoutPlanDto } from './dto/prescribe-workout-plan.dto';
 import type {
   CreateWorkoutTemplateDto,
   TemplateExerciseItemDto,
@@ -216,12 +217,15 @@ export class TrainingService {
     return session ? session.completedAt.toISOString().slice(0, 10) : null;
   }
 
-  async createTemplate(professionalUserId: string, dto: CreateWorkoutTemplateDto) {
+  async createTemplate(
+    professionalUserId: string,
+    dto: CreateWorkoutTemplateDto,
+  ) {
     return this.prisma.trainingWorkoutTemplate.create({
       data: {
         professionalUserId,
         name: dto.name.trim(),
-        items: dto.items,
+        items: dto.items as unknown as Prisma.InputJsonValue,
       },
     });
   }
@@ -242,18 +246,26 @@ export class TrainingService {
     templateId: string,
     dto: UpdateWorkoutTemplateDto,
   ) {
-    const existing = await this.getOwnedTemplate(professionalUserId, templateId);
+    const existing = await this.getOwnedTemplate(
+      professionalUserId,
+      templateId,
+    );
     return this.prisma.trainingWorkoutTemplate.update({
       where: { id: existing.id },
       data: {
         ...(dto.name !== undefined ? { name: dto.name.trim() } : {}),
-        ...(dto.items !== undefined ? { items: dto.items } : {}),
+        ...(dto.items !== undefined
+          ? { items: dto.items as unknown as Prisma.InputJsonValue }
+          : {}),
       },
     });
   }
 
   async archiveTemplate(professionalUserId: string, templateId: string) {
-    const existing = await this.getOwnedTemplate(professionalUserId, templateId);
+    const existing = await this.getOwnedTemplate(
+      professionalUserId,
+      templateId,
+    );
     return this.prisma.trainingWorkoutTemplate.update({
       where: { id: existing.id },
       data: { archivedAt: new Date() },
@@ -281,7 +293,8 @@ export class TrainingService {
         throw new BadRequestException('errors.template_archived');
       }
       name = name || template.name;
-      items = (template.items as TemplateExerciseItemDto[]) ?? undefined;
+      items =
+        (template.items as unknown as TemplateExerciseItemDto[]) ?? undefined;
     }
 
     if (!name || !items?.length) {
@@ -395,24 +408,26 @@ export class TrainingService {
     const startedOn = new Date();
     startedOn.setUTCHours(0, 0, 0, 0);
 
-    const assignment = await this.prisma.trainingPeriodizationAssignment.upsert({
-      where: {
-        periodizationId_studentUserId: {
+    const assignment = await this.prisma.trainingPeriodizationAssignment.upsert(
+      {
+        where: {
+          periodizationId_studentUserId: {
+            periodizationId,
+            studentUserId: dto.studentUserId,
+          },
+        },
+        create: {
           periodizationId,
           studentUserId: dto.studentUserId,
+          startedOn,
+          activePosition: 0,
+        },
+        update: {
+          startedOn,
+          activePosition: 0,
         },
       },
-      create: {
-        periodizationId,
-        studentUserId: dto.studentUserId,
-        startedOn,
-        activePosition: 0,
-      },
-      update: {
-        startedOn,
-        activePosition: 0,
-      },
-    });
+    );
 
     const first = periodization.blocks[0];
     const plan = await this.prescribeWorkoutPlan(professionalUserId, {

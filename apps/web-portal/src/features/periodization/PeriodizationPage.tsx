@@ -61,9 +61,9 @@ export function PeriodizationPage() {
     }
   }
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only load
   useEffect(() => {
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleCreate(event: React.FormEvent) {
@@ -193,7 +193,9 @@ export function PeriodizationPage() {
               onChange={(e) => setName(e.target.value)}
             />
             <label className="fp-field" htmlFor="b1">
-              <span className="fp-field__label">{t('periodization.block1')}</span>
+              <span className="fp-field__label">
+                {t('periodization.block1')}
+              </span>
               <select
                 id="b1"
                 className="fp-field__input"
@@ -208,7 +210,9 @@ export function PeriodizationPage() {
               </select>
             </label>
             <label className="fp-field" htmlFor="b2">
-              <span className="fp-field__label">{t('periodization.block2')}</span>
+              <span className="fp-field__label">
+                {t('periodization.block2')}
+              </span>
               <select
                 id="b2"
                 className="fp-field__input"

@@ -54,17 +54,29 @@ export function DashboardPage() {
         <>
           <LocaleSwitcher />
           <Link to="/profile">
-            <Button type="button" variant="ghost" data-testid="dashboard-profile-cta">
+            <Button
+              type="button"
+              variant="ghost"
+              data-testid="dashboard-profile-cta"
+            >
               {t('dashboard.profileCta')}
             </Button>
           </Link>
           <Link to="/requests">
-            <Button type="button" variant="ghost" data-testid="dashboard-requests-cta">
+            <Button
+              type="button"
+              variant="ghost"
+              data-testid="dashboard-requests-cta"
+            >
               {t('dashboard.requestsCta')}
             </Button>
           </Link>
           <Link to="/templates">
-            <Button type="button" variant="ghost" data-testid="dashboard-templates-cta">
+            <Button
+              type="button"
+              variant="ghost"
+              data-testid="dashboard-templates-cta"
+            >
               {t('dashboard.templatesCta')}
             </Button>
           </Link>

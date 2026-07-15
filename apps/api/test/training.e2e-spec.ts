@@ -450,9 +450,9 @@ describe('Training (e2e)', () => {
       .get('/api/training/plans')
       .set('Authorization', `Bearer ${studentToken}`);
     expect(plans.status).toBe(200);
-    expect(plans.body.items.some((p: { id: string }) => p.id === prescribed.body.id)).toBe(
-      true,
-    );
+    expect(
+      plans.body.items.some((p: { id: string }) => p.id === prescribed.body.id),
+    ).toBe(true);
   });
 
   it('periodization assign and advance for linked student', async () => {

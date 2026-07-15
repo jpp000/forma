@@ -18,11 +18,11 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { CreateWorkoutPlanDto } from './dto/create-workout-plan.dto';
 import { CreateWorkoutSessionDto } from './dto/create-workout-session.dto';
 import { ListExercisesQueryDto } from './dto/list-exercises-query.dto';
-import { PrescribeWorkoutPlanDto } from './dto/prescribe-workout-plan.dto';
 import {
   AssignPeriodizationDto,
   CreatePeriodizationDto,
 } from './dto/periodization.dto';
+import { PrescribeWorkoutPlanDto } from './dto/prescribe-workout-plan.dto';
 import {
   CreateWorkoutTemplateDto,
   UpdateWorkoutTemplateDto,

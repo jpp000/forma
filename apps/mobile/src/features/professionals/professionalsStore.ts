@@ -92,9 +92,8 @@ export const useProfessionalsStore = create<ProfessionalsState>((set, get) => ({
   requestLink: async (professionalUserId) => {
     set({ requestLoading: true, requestError: null, requestSuccess: false });
     try {
-      const created = await getWiredCoachingApi().createLinkRequest(
-        professionalUserId,
-      );
+      const created =
+        await getWiredCoachingApi().createLinkRequest(professionalUserId);
       set({
         requestLoading: false,
         requestSuccess: true,
